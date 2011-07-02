@@ -10,7 +10,7 @@ en:
       name: web
       description: Assets imported from the web
     file:
-      name: My Computer
+      name: file
       description: Files found on this local computer
     places:
       name: places

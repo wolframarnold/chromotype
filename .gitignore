@@ -1,5 +1,10 @@
-.bundle
+.bundle/
 db/*.sqlite3
-log/*.log
 tmp/
 .idea/
+log/
+pkg/
+rdoc/
+doc/
+.DS_Store
+.yardoc/
