@@ -8,3 +8,4 @@ rdoc/
 doc/
 .DS_Store
 .yardoc/
+.sass-cache/

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110526005214) do
+ActiveRecord::Schema.define(:version => 20110710202614) do
 
   create_table "assets", :force => true do |t|
     t.string   "url"
@@ -26,6 +26,21 @@ ActiveRecord::Schema.define(:version => 20110526005214) do
   end
 
   add_index "assets_tags", ["tag_id", "asset_id"], :name => "index_assets_tags_on_tag_id_and_asset_id"
+
+  create_table "delayed_jobs", :force => true do |t|
+    t.integer  "priority",   :default => 0
+    t.integer  "attempts",   :default => 0
+    t.text     "handler"
+    t.text     "last_error"
+    t.datetime "run_at"
+    t.datetime "locked_at"
+    t.datetime "failed_at"
+    t.string   "locked_by"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "delayed_jobs", ["priority", "run_at"], :name => "delayed_jobs_priority"
 
   create_table "settings", :force => true do |t|
     t.string   "var",                       :null => false
