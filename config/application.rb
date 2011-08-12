@@ -50,6 +50,6 @@ module Photostructure
     # Enable the asset pipeline
     config.assets.enabled = true
 
-    config.autoload_paths += %W(#{config.root}/app/models/**)
+    # config.autoload_paths += %W(#{config.root}/app/models/**)
   end
 end
