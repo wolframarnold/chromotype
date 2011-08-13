@@ -11,7 +11,7 @@ sqlite-development:
 
 development:
   adapter: mysql2
-  database: ps_dev
+  database: ct_dev
   pool: 5
   timeout: 5000
 
