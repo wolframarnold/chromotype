@@ -49,14 +49,14 @@ Chromotype is a Ruby on Rails application.
 You'll need Ruby 1.9 (use RVM) and a database (I've only tested with
 MySQL, but Postgres should work too).
 
-.h3 How do I tell PhotoStructure where my stuff is?
+.h3 How do I tell Chromotype where my stuff is?
 
-You specify directories to import, and PhotoStructure will see when
+You specify directories to import, and Chromotype will see when
 you add new files and directories, and import them automatically.
 
-.h3 When does PhotoStructure synchronize my stuff?
+.h3 When does Chromotype synchronize my stuff?
 
-PhotoStructure runs different kind of "harvesters" to keep the db in
+Chromotype runs different kind of "harvesters" to keep the db in
 sync with reality.
 
 .h4 Fast Harvester

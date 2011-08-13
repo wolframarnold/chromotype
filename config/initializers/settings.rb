@@ -16,7 +16,7 @@ ActiveSupport.on_load(:active_record) do
 
   # Sleep this number of seconds between background tasks
   Settings.defaults[:naptime_between_tasks] = 0.5
-  Settings.defaults[:library_root] = File.join(h, "Pictures/PhotoStructure Library")
+  Settings.defaults[:library_root] = File.join(h, "Pictures/Chromotype Library")
 
   # TODO: determine this automatically by geoip against this host's public IP address
   Settings.defaults[:is_northern_hemisphere] = true
