@@ -10,12 +10,18 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110710202614) do
+ActiveRecord::Schema.define(:version => 20110812204917) do
 
   create_table "assets", :force => true do |t|
-    t.string   "url"
-    t.string   "checksum"
     t.string   "type"
+    t.integer  "directory_id"
+    t.string   "url"
+    t.string   "basename"
+    t.datetime "taken_at"
+    t.boolean  "favorite"
+    t.boolean  "hidden"
+    t.boolean  "active"
+    t.string   "checksum"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -41,6 +47,14 @@ ActiveRecord::Schema.define(:version => 20110710202614) do
   end
 
   add_index "delayed_jobs", ["priority", "run_at"], :name => "delayed_jobs_priority"
+
+  create_table "directories", :force => true do |t|
+    t.integer  "parent_id"
+    t.datetime "processed_at"
+    t.datetime "last_mtime"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "settings", :force => true do |t|
     t.string   "var",                       :null => false
