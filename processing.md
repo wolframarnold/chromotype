@@ -16,3 +16,4 @@ The thorough harvester doesn't skip any files -- it checks everything.
 
 When rails starts up, the nightly harvester is scheduled and a fast harvester is kicked off.
 
+Photos are prioritized by 100 + (current time - mtime) (so newer photos are processed before older photos).
