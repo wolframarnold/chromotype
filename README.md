@@ -4,7 +4,9 @@
 
 *After:* Your new favorite way of gathering, archiving, and viewing the photos and movies of your life.
 
-<em>Note that this is the Rails port of <a href="http://photostructure.com">PhotoStructure</a></em>.
+<em>This is the Rails port of <a href="http://photostructure.com">PhotoStructure</a></em>.
+
+*Unfortunately, it's not ready for public consumption yet.*
 
 ## Why not Google+/Facebook/Flickr?
 
