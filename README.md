@@ -6,7 +6,7 @@
 
 <em>This is the Rails port of <a href="http://photostructure.com">PhotoStructure</a></em>.
 
-**Unfortunately, it's not ready for public consumption yet.**
+**Unfortunately, it's not ready for public consumption yet.** Feel free to read on, but this still a work in progress.
 
 ## Why not Google+/Facebook/Flickr?
 
