@@ -1,8 +1,10 @@
 # Chromotype? #
 
-Before August 12, 2011: (noun) A sheet printed in colors by any process.
+*Before August 12, 2011:* (noun) A sheet printed in colors by any process.
 
-After: Your new favorite way of gathering, archiving, and viewing the photos and movies of your life.
+*After:* Your new favorite way of gathering, archiving, and viewing the photos and movies of your life.
+
+<em>Note that this is the Rails port of <a href="http://photostructure.com">PhotoStructure</a></em>.
 
 ## Why not Google+/Facebook/Flickr?
 
