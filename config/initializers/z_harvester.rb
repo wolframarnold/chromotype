@@ -1,0 +1,3 @@
+ActiveSupport.migration_safe_on_load do
+  Directory.process_mtime_deltas
+end

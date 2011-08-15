@@ -50,10 +50,17 @@ ActiveRecord::Schema.define(:version => 20110812204917) do
 
   create_table "directories", :force => true do |t|
     t.integer  "parent_id"
+    t.string   "path"
     t.datetime "processed_at"
     t.datetime "last_mtime"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "directories_hierarchies", :id => false, :force => true do |t|
+    t.integer "ancestor_id",   :null => false
+    t.integer "descendant_id", :null => false
+    t.integer "generations",   :null => false
   end
 
   create_table "settings", :force => true do |t|

@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails', '~>3.1.0.rc'
+gem 'rails', '~> 3.1.0.rc5'
 
 # Bundle edge Rails instead:
 # gem 'rails',     :git => 'git://github.com/rails/rails.git'
@@ -25,6 +25,8 @@ gem 'jquery-rails'
 # gem 'ruby-debug19', :require => 'ruby-debug'
 
 gem 'mysql2'
+#gem 'facter' # to detect number of cpus and system load
+gem 'parallel' # just for Parallel.processor_count
 
 gem 'exifr'
 gem 'closure_tree' #, :git => 'git://github.com/mceachen/closure_tree.git'
@@ -32,7 +34,7 @@ gem 'rails3-settings', :git => 'git://github.com/mceachen/rails-settings.git', :
 #gem 'spawn', :git => 'git://github.com/rfc2822/spawn'
 gem 'mini_magick', :git => 'git://github.com/hcatlin/mini_magick.git', :require => 'mini_gmagick'
 
-gem 'delayed_job', '2.1.4'
+gem 'delayed_job'
 #gem 'delayed_job', :git => 'git://github.com/mceachen/delayed_job.git' # <-- this has prerequisites support
 gem 'hirefire'
 

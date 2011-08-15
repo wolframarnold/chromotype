@@ -37,6 +37,9 @@ module Chromotype
     # Configure sensitive parameters which will be filtered from the log file.
     config.filter_parameters += [:password]
 
+    # Enable IdentityMap for Active Record, to disable set to false or remove the line below.
+    #config.active_record.identity_map = true
+
     # Enable the asset pipeline
     config.assets.enabled = true
 

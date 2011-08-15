@@ -21,7 +21,7 @@ libraries with that many assets.
 
 ## What's the solution?
 
-Chromotype. It runs on your local computer, but it can also be used to
+*Chromotype*. It runs on your local computer, but it can also be used to
 share your photos directly -- but *you* are the cloud.
 
 Chromotype imports both the photos you have on your computer, even in

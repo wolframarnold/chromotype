@@ -3,6 +3,7 @@ db/*.sqlite3
 log/
 tmp/
 .idea/
+*.ids
 pkg/
 rdoc/
 .DS_Store
