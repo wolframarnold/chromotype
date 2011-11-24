@@ -1,3 +1,0 @@
-* how to manage cron-like jobs?
-* get background processing working (assume there's a restart event thanks to monit/unicorn/passenger?)
-* add devise/auth

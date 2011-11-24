@@ -2,10 +2,12 @@ require File.expand_path('../boot', __FILE__)
 
 require 'rails/all'
 
-# If you have a Gemfile, require the default gems, the ones in the
-# current environment and also include :assets gems if in development
-# or test environments.
-Bundler.require *Rails.groups(:assets) if defined?(Bundler)
+if defined?(Bundler)
+  # If you precompile assets before deploying to production, use this line
+  Bundler.require(*Rails.groups(:assets => %w(development test)))
+  # If you want your assets lazily compiled in production, use this line
+  # Bundler.require(:default, :assets, Rails.env)
+end
 
 module Chromotype
   class Application < Rails::Application
@@ -37,12 +39,10 @@ module Chromotype
     # Configure sensitive parameters which will be filtered from the log file.
     config.filter_parameters += [:password]
 
-    # Enable IdentityMap for Active Record, to disable set to false or remove the line below.
-    #config.active_record.identity_map = true
-
     # Enable the asset pipeline
     config.assets.enabled = true
 
-    # config.autoload_paths += %W(#{config.root}/app/models/**)
+    # Version of your assets, change this if you want to expire all your assets
+    config.assets.version = '1.0'
   end
 end

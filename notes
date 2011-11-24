@@ -1,0 +1,2 @@
+
+gem install pg -- --with-pg-config=/opt/local/lib/postgresql84/bin/pg_config

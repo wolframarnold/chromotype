@@ -74,6 +74,15 @@ ActiveRecord::Schema.define(:version => 20110812204917) do
 
   add_index "settings", ["target_type", "target_id", "var"], :name => "index_settings_on_target_type_and_target_id_and_var", :unique => true
 
+  create_table "tag_hierarchies", :id => false, :force => true do |t|
+    t.integer "ancestor_id",   :null => false
+    t.integer "descendant_id", :null => false
+    t.integer "generations",   :null => false
+  end
+
+  add_index "tag_hierarchies", ["ancestor_id", "descendant_id"], :name => "index_tag_hierarchies_on_ancestor_id_and_descendant_id", :unique => true
+  add_index "tag_hierarchies", ["descendant_id"], :name => "index_tag_hierarchies_on_descendant_id"
+
   create_table "tags", :force => true do |t|
     t.integer "parent_id"
     t.string  "name",         :null => false
@@ -82,14 +91,5 @@ ActiveRecord::Schema.define(:version => 20110812204917) do
   end
 
   add_index "tags", ["name", "parent_id"], :name => "index_tags_on_name_and_parent_id", :unique => true
-
-  create_table "tags_hierarchies", :id => false, :force => true do |t|
-    t.integer "ancestor_id",   :null => false
-    t.integer "descendant_id", :null => false
-    t.integer "generations",   :null => false
-  end
-
-  add_index "tags_hierarchies", ["ancestor_id", "descendant_id"], :name => "index_tags_hierarchies_on_ancestor_id_and_descendant_id", :unique => true
-  add_index "tags_hierarchies", ["descendant_id"], :name => "index_tags_hierarchies_on_descendant_id"
 
 end

@@ -7,7 +7,7 @@ class CreateSettings < ActiveRecord::Migration
       t.string :target_type, :limit => 30, :null => true
       t.timestamps
     end
-    
+
     add_index :settings, [ :target_type, :target_id, :var ], :unique => true
   end
 end

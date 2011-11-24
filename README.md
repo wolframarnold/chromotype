@@ -18,7 +18,7 @@ amounts to the visual record of your life?
 ### Why not some other cloud service?
 
 If you've been taking photos regularly for a couple years, you'll have
-tens to hundreds of gigabytes of photos already. It would take weeks
+tens to hundreds of /gigabytes/ of photos already. It would take weeks
 or months to upload all of your photos and movies to the
 cloud. Desktop applications like iPhoto and Picasa just don't scale to
 libraries with that many assets.
@@ -50,28 +50,11 @@ or two.
 
 Chromotype is a Ruby on Rails application.
 
-You'll need Ruby 1.9 (use RVM) and a database (I've only tested with
-MySQL, but Postgres should work too).
+You'll need Ruby and an RDBMS (sqlite3, MySQL, or PostgreSQL).
 
 ### How do I tell Chromotype where my stuff is?
 
-You specify directories to import, and Chromotype will see when
-you add new files and directories, and import them automatically.
-
-### When does Chromotype synchronize my stuff?
-
-Chromotype runs different kind of "harvesters" to keep the db in
-sync with reality.
-
-### Fast Harvester
-
-This only processes the directories whose mtime != last_processed_mtime.
-
-This is fairly cheap, but it doesn't find files that are updated.
-
-### Thorough Harvester
-
-The thorough harvester doesn't skip any files -- it checks everything.
+You specify which directories to watch when you install Chromotype.
 
 ### When do harvesters run?
 
@@ -82,4 +65,5 @@ harvester is kicked off.
 
 Newer files are imported before older files, by setting priority to
 100 + (current time - mtime) (so newer photos are processed before
-older photos). Priorities < 100 are for user-facing tasks.
+older photos). Priorities < 100 are for user-requested tasks, like
+image rotations.
