@@ -52,5 +52,6 @@ gem 'delayed_job'
 gem 'hirefire'
 
 gem 'rspec-rails', :group => [:development, :test]
+gem 'webrat', :group => [:development, :test]
 gem 'database_cleaner', :group => :test
 gem 'factory_girl_rails', :group => :test
