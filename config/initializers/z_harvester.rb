@@ -1,3 +1,4 @@
 ActiveSupport.migration_safe_on_load do
-  Directory.process_mtime_deltas
+  #TODO: cron this? DirTag.process_roots
+  #UrlTag.process_roots
 end

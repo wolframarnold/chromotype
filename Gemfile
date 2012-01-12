@@ -2,21 +2,23 @@ source 'http://rubygems.org'
 
 gem 'rails', '>= 3.1'
 
+gem 'thin'
+
 # Bundle edge Rails instead:
 # gem 'rails',     :git => 'git://github.com/rails/rails.git'
 
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
-  gem 'sass-rails'#,   '~> 3.1.4'
-  gem 'coffee-rails'#, '~> 3.1.1'
-  gem 'uglifier'#, '>= 1.0.3'
+  gem 'sass-rails' #,   '~> 3.1.4'
+  gem 'coffee-rails' #, '~> 3.1.1'
+  gem 'uglifier' #, '>= 1.0.3'
 end
 
 gem 'jquery-rails'
 
 # To use ActiveModel has_secure_password
-gem 'bcrypt-ruby'#, '~> 3.0.0'
+gem 'bcrypt-ruby' #, '~> 3.0.0'
 
 gem 'guard' # file alteration monitoring
 gem 'rb-inotify', :require => false
@@ -46,12 +48,15 @@ gem 'closure_tree' #, :git => 'git://github.com/mceachen/closure_tree.git'
 gem 'ledermann-rails-settings', :require => 'rails-settings'
 #gem 'spawn', :git => 'git://github.com/rfc2822/spawn'
 gem 'mini_magick', :git => 'git://github.com/hcatlin/mini_magick.git', :require => 'mini_gmagick'
+# TODO: gem 'geokit-rails'
 
-gem 'delayed_job'
+gem 'delayed_job_active_record'
 #gem 'delayed_job', :git => 'git://github.com/mceachen/delayed_job.git' # <-- this has prerequisites support
 gem 'hirefire'
 
-gem 'rspec-rails', :group => [:development, :test]
-gem 'webrat', :group => [:development, :test]
-gem 'database_cleaner', :group => :test
-gem 'factory_girl_rails', :group => :test
+group :test do
+  gem 'rspec-rails'
+  gem 'webrat'
+  gem 'database_cleaner' #TODO: needed?
+  gem 'factory_girl_rails' #TODO: needed?
+end

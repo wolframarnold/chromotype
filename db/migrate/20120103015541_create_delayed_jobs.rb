@@ -1,6 +1,6 @@
 class CreateDelayedJobs < ActiveRecord::Migration
-  def change
-    create_table :delayed_jobs do |table|
+  def self.up
+    create_table :delayed_jobs, :force => true do |table|
       table.integer  :priority, :default => 0      # Allows some jobs to jump to the front of the queue
       table.integer  :attempts, :default => 0      # Provides for retries, but still fail eventually.
       table.text     :handler                      # YAML-encoded string of the object that will do work
@@ -9,16 +9,14 @@ class CreateDelayedJobs < ActiveRecord::Migration
       table.datetime :locked_at                    # Set when a client is working on this object
       table.datetime :failed_at                    # Set when all retries have failed (actually, by default, the record is deleted instead)
       table.string   :locked_by                    # Who is working on this object (if locked)
+      table.string   :queue                        # The name of the queue this job is in
       table.timestamps
     end
 
     add_index :delayed_jobs, [:priority, :run_at], :name => 'delayed_jobs_priority'
+  end
 
-    #create_table :delayed_job_prerequisites do |t|
-    #  t.integer :job_id
-    #  t.integer :prerequisite_job_id
-    #end
-    #
-    #add_index :delayed_job_prerequisites, [:job_id, :prerequisite_job_id], :unique => true, :name => "index_delayed_job_prerequisites_job_prereq"
+  def self.down
+    drop_table :delayed_jobs
   end
 end

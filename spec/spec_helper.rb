@@ -3,6 +3,7 @@ ENV["RAILS_ENV"] ||= 'test'
 require File.expand_path("../../config/environment", __FILE__)
 require 'rspec/rails'
 require 'rspec/autorun'
+require 'tmpdir'
 
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
@@ -34,4 +35,13 @@ end
 
 Webrat.configure do |config|
   config.mode = :rails
+end
+
+def with_tmp_dir(&block)
+  cwd = Dir.pwd
+  Dir.mktmpdir do |dir|
+    Dir.chdir(dir)
+    yield(dir)
+  end
+  Dir.chdir(cwd)
 end

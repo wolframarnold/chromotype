@@ -5,15 +5,23 @@ module ActiveSupport
         yield
       rescue ActiveRecord::StatementInvalid => e
         # Rails 3.0 and 3.1 have different error messages :(
-        if e.message =~ /table '[\S]+' doesn't exist/i || # mysql with rails 3
+        if e.message =~ /table '[\S]+' doesn't exist/i || # mysql with rails 3.0
           e.message =~ /could not find table '[\S]+'/i || # mysql with rails 3.1
           e.message =~ /relation "[\S]+" does not exist/ # postgres on rails 3.1
-          # The db migrations need to run
         else
           # We don't know what this exception is about. Raise.
           raise e
         end
       end
+    end
+  end
+end
+
+class Class
+  class << self
+    uncached_subclasses = instance_method(:subclasses)
+    define_method(:subclasses) do
+      @subclasses ||= uncached_subclasses
     end
   end
 end

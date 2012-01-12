@@ -1,13 +1,15 @@
 class CreateTags < ActiveRecord::Migration
   def change
     create_table :tags do |t|
+      t.string :type, :null => false
       t.integer :parent_id
       t.string :name, :null => false
-      t.string :display_name
       t.string :description
+      t.timestamps
     end
 
     add_index :tags, [:name, :parent_id], :unique => true
+    add_index :tags, [:type, :name, :parent_id], :unique => true
 
     create_table :tag_hierarchies, :id => false do |t|
       t.integer :ancestor_id, :null => false

@@ -28,17 +28,16 @@ libraries with that many assets.
 *Chromotype*. It runs on your local computer, but it can also be used to
 share your photos directly -- but *you* are the cloud.
 
-Chromotype imports both the photos you have on your computer, even in
+Chromotype imports the photos you have on your computer, even in
 your iPhoto and Picasa libraries. It also can import the photos and
 movies you previously uploaded in the cloud (like Flickr, Picasa, and
 Facebook), and archive those on your computer as well.
 
 ### Randomness makes you fast
  
-Chromotype, by default, shows you a "chronoshuffle" -- Your photos and
-images, sorted by time, gathered by event, with a random assortment
-from that event. This randomized algorithm makes finding that "needle
-in a haystack" always only a couple clicks away.
+Chromotype shows you /shuffled/ views of your photos and
+images. Finding that one shot, that "needle in a haystack," is always
+only a couple clicks away even if you don't know where to look at first.
 
 You can hide photos you don't want to see, give the images you love a
 star, and use web services to get your photo printed with just a click
@@ -50,16 +49,11 @@ or two.
 
 Chromotype is a Ruby on Rails application.
 
-You'll need Ruby and an RDBMS (sqlite3, MySQL, or PostgreSQL).
+You'll need to install Rails and an RDBMS (sqlite3, MySQL, or PostgreSQL).
 
 ### How do I tell Chromotype where my stuff is?
 
 You specify which directories to watch when you install Chromotype.
-
-### When do harvesters run?
-
-When rails starts up, the nightly harvester is scheduled and a fast
-harvester is kicked off.
 
 ### In what order do files get processed?
 

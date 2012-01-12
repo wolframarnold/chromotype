@@ -1,2 +1,6 @@
+# Make .rvmrc:
+rvm --rvmrc --create 1.8.7@chromotype
 
+# Build PostgreSQL:
 gem install pg -- --with-pg-config=/opt/local/lib/postgresql84/bin/pg_config
+

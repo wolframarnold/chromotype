@@ -10,25 +10,27 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110812204917) do
+ActiveRecord::Schema.define(:version => 20120103032104) do
 
   create_table "assets", :force => true do |t|
-    t.string   "type"
+    t.string   "type",         :null => false
     t.integer  "directory_id"
-    t.string   "url"
     t.string   "basename"
     t.datetime "taken_at"
     t.boolean  "favorite"
     t.boolean  "hidden"
     t.boolean  "active"
-    t.string   "checksum"
+    t.string   "thumbprint"
+    t.string   "caption"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
+  add_index "assets", ["thumbprint"], :name => "assets_thumbprint_udx", :unique => true
+
   create_table "assets_tags", :id => false, :force => true do |t|
-    t.integer "asset_id"
-    t.integer "tag_id"
+    t.integer "asset_id", :null => false
+    t.integer "tag_id",   :null => false
   end
 
   add_index "assets_tags", ["tag_id", "asset_id"], :name => "index_assets_tags_on_tag_id_and_asset_id"
@@ -42,26 +44,12 @@ ActiveRecord::Schema.define(:version => 20110812204917) do
     t.datetime "locked_at"
     t.datetime "failed_at"
     t.string   "locked_by"
+    t.string   "queue"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   add_index "delayed_jobs", ["priority", "run_at"], :name => "delayed_jobs_priority"
-
-  create_table "directories", :force => true do |t|
-    t.integer  "parent_id"
-    t.string   "path"
-    t.datetime "processed_at"
-    t.datetime "last_mtime"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "directories_hierarchies", :id => false, :force => true do |t|
-    t.integer "ancestor_id",   :null => false
-    t.integer "descendant_id", :null => false
-    t.integer "generations",   :null => false
-  end
 
   create_table "settings", :force => true do |t|
     t.string   "var",                       :null => false
@@ -84,12 +72,26 @@ ActiveRecord::Schema.define(:version => 20110812204917) do
   add_index "tag_hierarchies", ["descendant_id"], :name => "index_tag_hierarchies_on_descendant_id"
 
   create_table "tags", :force => true do |t|
-    t.integer "parent_id"
-    t.string  "name",         :null => false
-    t.string  "display_name"
-    t.string  "description"
+    t.string   "type",        :null => false
+    t.integer  "parent_id"
+    t.string   "name",        :null => false
+    t.string   "description"
+    t.datetime "mtime"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "tags", ["name", "parent_id"], :name => "index_tags_on_name_and_parent_id", :unique => true
+  add_index "tags", ["type", "name", "parent_id"], :name => "index_tags_on_type_and_name_and_parent_id", :unique => true
+
+  create_table "urls", :force => true do |t|
+    t.integer  "asset_id"
+    t.string   "url_sha2",   :limit => 64
+    t.string   "uri",        :limit => 2000
+    t.datetime "created_at"
+  end
+
+  add_index "urls", ["uri"], :name => "url_idx"
+  add_index "urls", ["url_sha2"], :name => "url_sha2_udx", :unique => true
 
 end
