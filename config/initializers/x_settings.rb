@@ -17,6 +17,7 @@ ActiveSupport.on_load(:active_record) do
   Settings.defaults[:hirefire_environment] = :local
   Settings.defaults[:hirefire_min_workers] = 1
   Settings.defaults[:hirefire_max_workers] = Parallel.processor_count
+  Settings.defaults[:mini_magick_processor] = 'gm'
 
   Settings.defaults[:library_root] = File.join(ENV["HOME"], *case RbConfig::CONFIG['host_os']
     when /darwin|linux|freebsd/

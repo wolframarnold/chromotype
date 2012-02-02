@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails', '>= 3.1'
+gem 'rails', '>= 3.2'
 
 gem 'thin'
 
@@ -43,11 +43,12 @@ gem 'haml-rails'
 #gem 'facter' # to detect number of cpus and system load
 gem 'parallel' # just for Parallel.processor_count
 
-gem 'exifr'
+# gem 'exifr'
+gem 'findler' #, :git => 'git://github.com/mceachen/findler.git'
 gem 'closure_tree' #, :git => 'git://github.com/mceachen/closure_tree.git'
 gem 'ledermann-rails-settings', :require => 'rails-settings'
 #gem 'spawn', :git => 'git://github.com/rfc2822/spawn'
-gem 'mini_magick', :git => 'git://github.com/hcatlin/mini_magick.git', :require => 'mini_gmagick'
+gem 'mini_magick', :git => 'https://github.com/mceachen/mini_magick.git', :require => 'mini_gmagick'
 # TODO: gem 'geokit-rails'
 
 gem 'delayed_job_active_record'
@@ -55,6 +56,11 @@ gem 'delayed_job_active_record'
 gem 'hirefire'
 
 group :test do
+  gem 'autotest'
+  gem 'spork'
+  gem 'autotest-rails-pure'
+  gem 'autotest-fsevent'
+  gem 'autotest-growl'
   gem 'rspec-rails'
   gem 'webrat'
   gem 'database_cleaner' #TODO: needed?

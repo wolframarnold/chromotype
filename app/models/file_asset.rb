@@ -1,3 +1,0 @@
-class FileAsset < Asset
-
-end

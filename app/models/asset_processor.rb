@@ -1,11 +1,23 @@
+require 'open-uri'
+
 class AssetProcessor
 
-  def initialize uri
-    @uri = uri
+  def self.for_directory(directory)
+    f = Findler.new directory
+    f.append_extensions ".jpeg", ".jpg", ".cr2"
+    f.case_insensitive!
+    new(f.iterator)
+  end
+
+  def initialize(iterator)
+    @iterator = iterator
+    @asset_types = [ExifAsset]
   end
 
   def process
-    self.class.process(@uri)
+    a = iterator.next
+
+    self.class.process(a)
   end
 
   def self.process(uri)

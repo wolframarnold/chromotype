@@ -1,12 +1,35 @@
+Class interactions:
+
+Processors gets a setup/teardown and a "process" for a given URI.
+
+Exif.features_for(asset) => {:taken_date =>
+
+
+* what iterates directories (dir_tag? )
+
+Given a URI:
+* skip if there isn't EXIF data
+* find_or_create uri,
+* find_or_create asset for a URI
+* for that asset, extract features (like taken_date, gps, faces, ...)
+* tags are then find_or_created from those features
+* small, medium, large images are created (and large image uploaded to S3 for backup?)
+
+
+
 == Backend
+
+* only import files with EXIF headers
 
 * cron job for processing? rufus-scheduler?
 * FAM integration with guard
 * verify hire-fire (and integrate with guard daemon?)
 * get background processing working (assume there's a restart event thanks to monit/unicorn/passenger?)
 * OpenCV face detection: http://www.cognotics.com/opencv/servo_2007_series/part_5/index.html
-* extract out Picasa EXIF face tags
+* extract out Picasa EXIF face tags (research EXIF-RDF)
 * https://github.com/maccman/juggernaut, and use resque instead?
+
+* write a flikr_iterator
 
 == URI structure
 
@@ -33,7 +56,7 @@ from PS:
 * move files into root/YYYY/yyyy-mm-dd/ automatically
 
 * do asset tombstoning, not deleting (in the case of moving photos to different directories)?
-* add auth (devise?)
+* add auth (devise? diy? )
 * asset rating
 * geotag labelling extraction
 * event grouping
@@ -47,3 +70,5 @@ from PS:
 
 * Use Procfile/foreman to manage multiple processes on start?
 * use STI for tags, so we can have DateTag, FileTag, UrlTag, ...?
+* Support gm or imagemagick http://www.graphicsmagick.org/FAQ.html
+* write file_iterator

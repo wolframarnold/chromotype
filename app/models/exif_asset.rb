@@ -1,15 +1,37 @@
-class ExifAsset < FileAsset
-  class << self
-    def import file
-# TODO
-    end
+class ExifAsset < Asset
 
-    def can_import? file
-      file = Pathname.as_path file
-      ext = file.extname
-      file.to_s
-      # TODO
-    end
+  # Returns a string key to
+  def features
+
+  end
+
+  def taken_at
+    magick["exif:DateTimeDigitized"]
+  end
+  def camera_model
+    magick["exif:Model"]
+  end
+  def iso_speed
+    magick["exif:ISOSpeedRatings"]
+  end
+  def focal_length
+    magick["exif:FocalLength"]
+  end
+  def exposure_time
+    magick["exif:ExposureTime"]
+  end
+  def f_number
+    magick["exif:FNumber"]
+  end
+
+  private
+
+  def magick
+    @magick ||= MiniMagick::Image.open uri
+  end
+
+  def exif
+    @exif ||= EXIFR::JPEG.new uri.path
   end
 
   # Resize dimensions:

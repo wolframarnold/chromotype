@@ -53,11 +53,16 @@ You'll need to install Rails and an RDBMS (sqlite3, MySQL, or PostgreSQL).
 
 ### How do I tell Chromotype where my stuff is?
 
-You specify which directories to watch when you install Chromotype.
+You specify root URIs when you install Chromotype. They're stored
+in the ```settings``` table.
 
-### In what order do files get processed?
+### How do the models interact?
 
-Newer files are imported before older files, by setting priority to
-100 + (current time - mtime) (so newer photos are processed before
-older photos). Priorities < 100 are for user-requested tasks, like
-image rotations.
+There are only two main models:
+
+* ```tags```, which are hierarchical and polymorphic
+* ```assets```, which represents a thing that can be tagged, like an image.
+
+When Chromotype starts, it recurses through each root URI, finds interesting things, extracts features, and imports.
+
+Currently only local filesystems are supported.
