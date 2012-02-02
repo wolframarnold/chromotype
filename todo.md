@@ -47,6 +47,7 @@ from PS:
 
 == Frontend
 
+* http://warpspire.com/experiments/history-api/ to infinity!
 * decompose page ajax requests
 * http://boedesign.com/demos/gritter/ for growl notification of async stuff
 * add https://github.com/rails/jquery-ujs ?

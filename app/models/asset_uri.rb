@@ -1,21 +1,10 @@
 class AssetUri < ActiveRecord::Base
 
-  class UriMarshal
-    def load(text)
-      text && URI.parse(text)
-    end
-
-    def dump(text)
-      text.to_s
-    end
-  end
-
   belongs_to :asset
-  validate :validate_uri
+  validate :normalized_uri
   before_save :set_sha
-  serialize :uri, UriMarshal.new
 
-  def validate_uri
+  def normalized_uri
     self.uri = URI.normalize(uri).to_s
   end
 

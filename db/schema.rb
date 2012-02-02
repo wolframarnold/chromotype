@@ -12,6 +12,16 @@
 
 ActiveRecord::Schema.define(:version => 20120103032104) do
 
+  create_table "asset_uris", :force => true do |t|
+    t.integer  "asset_id"
+    t.string   "sha",        :limit => 64
+    t.string   "uri",        :limit => 2000
+    t.datetime "created_at"
+  end
+
+  add_index "asset_uris", ["sha"], :name => "uri_sha_udx", :unique => true
+  add_index "asset_uris", ["uri"], :name => "uri_idx"
+
   create_table "assets", :force => true do |t|
     t.string   "type",         :null => false
     t.integer  "directory_id"
@@ -22,8 +32,9 @@ ActiveRecord::Schema.define(:version => 20120103032104) do
     t.boolean  "active"
     t.string   "thumbprint"
     t.string   "caption"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "mtime"
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
   end
 
   add_index "assets", ["thumbprint"], :name => "assets_thumbprint_udx", :unique => true
@@ -45,8 +56,8 @@ ActiveRecord::Schema.define(:version => 20120103032104) do
     t.datetime "failed_at"
     t.string   "locked_by"
     t.string   "queue"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                :null => false
+    t.datetime "updated_at",                :null => false
   end
 
   add_index "delayed_jobs", ["priority", "run_at"], :name => "delayed_jobs_priority"
@@ -56,8 +67,8 @@ ActiveRecord::Schema.define(:version => 20120103032104) do
     t.text     "value"
     t.integer  "target_id"
     t.string   "target_type", :limit => 30
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                :null => false
+    t.datetime "updated_at",                :null => false
   end
 
   add_index "settings", ["target_type", "target_id", "var"], :name => "index_settings_on_target_type_and_target_id_and_var", :unique => true
@@ -76,22 +87,11 @@ ActiveRecord::Schema.define(:version => 20120103032104) do
     t.integer  "parent_id"
     t.string   "name",        :null => false
     t.string   "description"
-    t.datetime "mtime"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
   end
 
   add_index "tags", ["name", "parent_id"], :name => "index_tags_on_name_and_parent_id", :unique => true
   add_index "tags", ["type", "name", "parent_id"], :name => "index_tags_on_type_and_name_and_parent_id", :unique => true
-
-  create_table "urls", :force => true do |t|
-    t.integer  "asset_id"
-    t.string   "url_sha2",   :limit => 64
-    t.string   "uri",        :limit => 2000
-    t.datetime "created_at"
-  end
-
-  add_index "urls", ["uri"], :name => "url_idx"
-  add_index "urls", ["url_sha2"], :name => "url_sha2_udx", :unique => true
 
 end

@@ -10,12 +10,8 @@ class Asset < ActiveRecord::Base
   end
 
   def uri= uri
-    uri = URI.parse(uri) unless uri.is_a? URI
-    if uri.scheme.nil?
-      p = Pathname.new(uri.path)
-      uri.path = p.realpath.to_s
-    end
-    asset_uris.find_or_create_by_uri(uri.to_s)
+    uri = URI.normalize(uri)
+    asset_uris.find_by_uri(uri) || asset_uris.create(:uri => uri)
   end
 
   def thumbprints
