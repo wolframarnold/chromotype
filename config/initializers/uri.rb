@@ -2,7 +2,7 @@ module URI
 
   def self.normalize uri
     uri = URI.parse(uri) unless uri.is_a? URI
-    uri.path = "/" if path.blank? && uri.scheme
+    uri.path = "/" if uri.path.blank? && uri.scheme
     if uri.scheme.nil?
       p = Pathname.new(uri.path)
       uri.path = p.realpath.to_s

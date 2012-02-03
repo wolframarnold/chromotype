@@ -61,6 +61,7 @@ group :test do
   gem 'autotest-rails-pure'
   gem 'autotest-fsevent'
   gem 'autotest-growl'
+  gem 'rspec', '~> 2.7.0'
   gem 'rspec-rails'
   gem 'webrat'
   gem 'database_cleaner' #TODO: needed?
