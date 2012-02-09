@@ -4,7 +4,7 @@ class AssetProcessor
 
   def self.for_directory(directory)
     f = Findler.new directory
-    f.append_extensions ".jpeg", ".jpg", ".cr2"
+    f.append_extensions ExifAsset.FILE_EXTENSIONS
     f.case_insensitive!
     new(f.iterator)
   end
@@ -16,7 +16,6 @@ class AssetProcessor
 
   def process
     a = iterator.next
-
     self.class.process(a)
   end
 
@@ -26,13 +25,13 @@ class AssetProcessor
 
     if asset.nil?
       # TODO: assumes there's only one subclass that can process a given URI -- or at least the first one wins.
-      clazz = Asset.subclasses.detect { |ea| ea.can_process? uri }
-      thumbprint = clazz.thumbprint(uri)
-      asset = clazz.find_by_thumbprint(thumbprint)
+      klass = Asset.subclasses.detect { |ea| ea.can_process? uri }
+      thumbprint = klass.thumbprint(uri)
+      asset = klass.find_by_thumbprint(thumbprint)
     end
 
     if asset.nil?
-      asset = clazz.process(:uri => uri)
+      asset = klass.process(:uri => uri)
     else
       asset.process(uri)
     end
@@ -40,5 +39,4 @@ class AssetProcessor
     asset.child_uris.each { |ea| AssetProcessor.new(ea).process }
   end
 
-  handle_asynchronously :process
 end

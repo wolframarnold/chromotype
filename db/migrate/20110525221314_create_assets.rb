@@ -7,10 +7,10 @@ class CreateAssets < ActiveRecord::Migration
       t.timestamp :taken_at
       t.boolean :favorite
       t.boolean :hidden
-      t.boolean :active
       t.string :thumbprint
       t.string :caption
       t.datetime :mtime
+      t.boolean :deleted, :default => false
       t.timestamps
     end
 

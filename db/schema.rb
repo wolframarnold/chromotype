@@ -23,18 +23,18 @@ ActiveRecord::Schema.define(:version => 20120103032104) do
   add_index "asset_uris", ["uri"], :name => "uri_idx"
 
   create_table "assets", :force => true do |t|
-    t.string   "type",         :null => false
+    t.string   "type",                            :null => false
     t.integer  "directory_id"
     t.string   "basename"
     t.datetime "taken_at"
     t.boolean  "favorite"
     t.boolean  "hidden"
-    t.boolean  "active"
     t.string   "thumbprint"
     t.string   "caption"
     t.datetime "mtime"
-    t.datetime "created_at",   :null => false
-    t.datetime "updated_at",   :null => false
+    t.boolean  "deleted",      :default => false
+    t.datetime "created_at",                      :null => false
+    t.datetime "updated_at",                      :null => false
   end
 
   add_index "assets", ["thumbprint"], :name => "assets_thumbprint_udx", :unique => true

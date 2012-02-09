@@ -55,7 +55,7 @@ ActiveSupport.on_load(:active_record) do
     require 'nokogiri'
     require 'open-uri'
 
-    # Yeah, I'm going to hell for this, but it's just to be nice to the user, so it's OK.
+    # Yeah, I'm going to geek hell for the xpaths, but it's just to be nice to the user, so it's OK.
     def self.latitude_maxmind
       doc = Nokogiri::HTML(open('http://www.maxmind.com/app/locate_my_ip'))
       doc.xpath('//td[contains(text(), "Latitude")]/following-sibling::td').text.split("/").first.strip

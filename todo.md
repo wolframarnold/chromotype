@@ -1,3 +1,7 @@
+* finish process_file in ExifAsset
+* move first part to new FileAsset?
+* who calls ExifAsset.process_file?
+
 Class interactions:
 
 Processors gets a setup/teardown and a "process" for a given URI.
@@ -14,8 +18,6 @@ Given a URI:
 * for that asset, extract features (like taken_date, gps, faces, ...)
 * tags are then find_or_created from those features
 * small, medium, large images are created (and large image uploaded to S3 for backup?)
-
-
 
 == Backend
 

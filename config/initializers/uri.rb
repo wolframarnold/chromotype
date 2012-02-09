@@ -1,13 +1,44 @@
+require 'uri/generic'
+require 'pathname'
+
+class Pathname
+  def to_uri
+    URI.parse("file:" + URI.escape(to_s))
+  end
+
+  def self.from_uri(uri)
+    new(URI.unescape(uri.path))
+  end
+end
+
 module URI
 
-  def self.normalize uri
-    uri = URI.parse(uri) unless uri.is_a? URI
-    uri.path = "/" if uri.path.blank? && uri.scheme
-    if uri.scheme.nil?
-      p = Pathname.new(uri.path)
-      uri.path = p.realpath.to_s
+  class Generic
+
+    def pathname
+      @pathname ||= Pathname.from_uri(self)
     end
-    uri
+
+    alias :orig_set_path :set_path
+
+    def set_path(new_path)
+      orig_set_path(new_path)
+      @pathname = nil
+    end
+
+    alias :orig_normalize! :normalize!
+
+    def normalize!
+      orig_normalize!
+      if scheme.nil? ||scheme == "file"
+        set_path(pathname.realpath.to_s) if pathname.exist?
+      end
+      self
+    end
+  end
+
+  def self.from_file filename
+    Pathname.new(filename).to_uri
   end
 
   # Returns an array of URIs
@@ -52,4 +83,3 @@ module URI
     end
   end
 end
-

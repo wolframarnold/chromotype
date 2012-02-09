@@ -1,11 +1,19 @@
 class AssetUri < ActiveRecord::Base
 
   belongs_to :asset
-  validate :normalized_uri
   before_save :set_sha
+  validates_presence_of :uri
 
-  def normalized_uri
-    self.uri = URI.normalize(uri).to_s
+  def self.with_uri(uri)
+    where :sha => sha(uri)
+  end
+
+  def self.with_filename(filename)
+    where :sha => sha_for_filename(filename)
+  end
+
+  def self.with_any_filename(filenames)
+    where :sha => filenames.collect { |ea| sha_for_filename(ea) }
   end
 
   def set_sha
@@ -13,11 +21,13 @@ class AssetUri < ActiveRecord::Base
   end
 
   def self.sha(uri, normalize = true)
-    uri = URI.normalize(uri).to_s if normalize
-    Digest::SHA2.hexdigest(uri)
+    uri = URI.parse(uri) unless uri.is_a? URI
+    uri.normalize! if normalize
+    Digest::SHA2.hexdigest(uri.to_s)
   end
 
-  def self.find_by_uri(uri)
-    find_by_sha(sha(uri))
+  def self.sha_for_filename(filename)
+    sha(URI.from_file(filename))
   end
+
 end

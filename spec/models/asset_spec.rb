@@ -10,10 +10,10 @@ describe Asset do
     end
 
     def assert_path
-      @ea.uri.should == @path
+      @ea.uri.should == "file:" + @path
       @ea.should have(1).asset_uris
       au = @ea.asset_uris.first
-      au.uri.should == @path
+      au.uri.should == "file:" + @path
     end
 
     it "should assign a new asset_uri on a new asset with #uri=" do
@@ -34,7 +34,7 @@ describe Asset do
       @ea.save!
       @ea.should have(2).asset_uris
       au = @ea.asset_uris.first
-      au.uri.should == @path + ".lock"
+      au.uri.should == "file:" + @path + ".lock"
     end
   end
   #maybe? it "should delegate to proper Asset class methods to process a URI"
