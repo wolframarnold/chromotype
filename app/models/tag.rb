@@ -1,6 +1,7 @@
 class Tag < ActiveRecord::Base
   acts_as_tree
-  has_and_belongs_to_many :assets
+  has_many :asset_tags
+  has_many :assets, :through => :asset_tags
 
   def deactivate_assets
     Asset.update_all({:active => false}, {:tag_id => self_and_children.collect { |ea| ea.id }})

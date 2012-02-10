@@ -1,32 +1,22 @@
-class ExifAsset < Asset
+class ExifAsset < FileAsset
 
   FILE_EXTENSIONS = %w{jpeg jpg 3fr ari arw bay cap cr2 crw dcr dcs dng drf eip erf fff iiq k25 kdc mef mos mrw nef nrw orf pef ptx pxn r3d raf raw rw2 rwl rwz sr2 srf srw x3f}
 
+  def self.add_processor(method)
+    (@processors ||= []) << method
+  end
+
   def self.process_exif(filename)
     a = asset_for_file(filename, FILE_EXTENSIONS)
-    return a if a == true || a == false
+    return a if a == !!a # is boolean
 
-    if a.nil?
-      # Do we have EXIF header information?
-      exif = self.exif()
-    p = Pathname.new(filename)
-    if p.exist?
-      with_filename(filename).each { |ea| ea.deleted! }
-      return true
-    end
+    return false if a.exif.nil?
 
-    asset = with_filename(filename, create = true)
-    uri = URI.normalize uri
-    suffix = uri.normalize
-    return nil unless uri.path.ends_with?
-
-#* skip if there isn't EXIF data
-#* find_or_create uri,
-#* find_or_create asset for a URI
+    @processors.each { |method| method.call(a) }
 #* for that asset, extract features (like taken_date, gps, faces, ...)
 #* tags are then find_or_created from those features
 #* small, medium, large images are created (and large image uploaded to S3 for backup?)
-
+    a
   end
 
   add_processor_method_for_extnames(ExifAsset.method("process_exif"), FILE_EXTENSIONS)
@@ -55,13 +45,12 @@ class ExifAsset < Asset
     magick["exif:FNumber"]
   end
 
-  private
-
   def magick
     @magick ||= MiniMagick::Image.open uri
   end
 
-    def self.exif pathname
+  def exif
+    @exif ||= begin
       if %w{.jpeg .jpg}.include?(pathname.extname.downcase)
         begin
           return EXIFR::JPEG.new pathname.to_s
@@ -76,10 +65,6 @@ class ExifAsset < Asset
           return nil
         end
       end
-      end
-
-  def exif
-    @exif ||= self.class.exif(pathname)
     end
   end
 

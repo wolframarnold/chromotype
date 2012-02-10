@@ -11,7 +11,7 @@ class FileAsset < Asset
     if allowable_extensions
       path = paths.last
       suffix = path.extname.strip_prefix(".")
-      return false unless FILE_EXTENSIONS.include? suffix
+      return false unless allowable_extensions.include? suffix
     end
 
     # first adopt the asset if there is one...
@@ -24,5 +24,9 @@ class FileAsset < Asset
     asset = assets.first || self.new
     paths.each { |ea| asset.uri = ea.to_uri }
     asset
+  end
+
+  def pathname
+    uri.pathname
   end
 end

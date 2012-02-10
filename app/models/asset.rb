@@ -1,8 +1,9 @@
 class Asset < ActiveRecord::Base
-  has_and_belongs_to_many :tags
+  has_many :asset_tags
+  has_many :tags, :through => :asset_tags
   has_many :asset_uris, :order => 'id desc', :dependent => :destroy
 
-  PROCESSORS = Hash.new { |_h, _k| _h[_k] = [] }
+  PROCESSORS = Hash.new { |h, k| h[k] = [] }
 
   def self.add_processor_method_for_extnames(method, extnames)
     extnames.each do |ea|
@@ -11,7 +12,7 @@ class Asset < ActiveRecord::Base
     end
   end
 
-  def normalized_extname filename
+  def self.normalized_extname filename
     p = filename.is_a?(Pathname) ? filename : Pathname.new(filename)
     extname = p.extname
     extname ? extname.downcase : nil
@@ -29,6 +30,9 @@ class Asset < ActiveRecord::Base
     joins(:asset_uris) & AssetUri.with_uri(uri)
   end
 
+  def self.with_tag(tag)
+    joins(:asset_tags) && AssetTag.find_by_tag_id(tag.id)
+
   def self.with_filename(filename)
     joins(:asset_uris) & AssetUri.with_filename(filename)
   end
@@ -38,11 +42,11 @@ class Asset < ActiveRecord::Base
   end
 
   def uri
-    asset_uris.first.uri
+    asset_uris.first.try(:uri)
   end
 
   def uri= uri
-    asset_uris.with_uri(uri) || asset_uris.build(:uri => uri)
+    asset_uris.with_uri(uri).first || asset_uris.build(:uri => uri)
   end
 
   def deleted!
