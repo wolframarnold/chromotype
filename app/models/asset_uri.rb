@@ -1,32 +1,35 @@
 class AssetUri < ActiveRecord::Base
   belongs_to :asset
-  before_save :set_sha
   validates_presence_of :uri
+  before_save :normalize_uri_and_sha
 
-  def self.with_uri(uri)
-    where :sha => sha(uri)
+  def normalize_uri_and_sha
+    nuri = self.uri.to_uri.normalize
+    self.uri = nuri.to_s
+    self.sha = self.class.sha(nuri)
   end
 
-  def self.with_filename(filename)
-    where :sha => sha_for_filename(filename)
+  scope :with_uri, lambda { |uri|
+    where(:sha => sha(uri)).order("created_at DESC")
+  }
+
+  scope :with_filename, lambda { |filename|
+    where("asset_uris.sha = ?", sha_for_filename(filename))
+  }
+
+  scope :with_any_filename, lambda { |filenames|
+    where("asset_uris.sha" => filenames.collect { |ea| sha_for_filename(ea) })
+  }
+
+  def to_uri
+    @uri ||= self.uri.to_uri
   end
 
-  def self.with_any_filename(filenames)
-    where :sha => filenames.collect { |ea| sha_for_filename(ea) }
-  end
-
-  def set_sha
-    self.sha = self.class.sha(uri, false)
-  end
-
-  def self.sha(uri, normalize = true)
-    uri = URI.parse(uri) unless uri.is_a? URI
-    uri.normalize! if normalize
-    Digest::SHA2.hexdigest(uri.to_s)
+  def self.sha(uri)
+    Digest::SHA2.hexdigest(uri.to_uri.normalize.to_s)
   end
 
   def self.sha_for_filename(filename)
     sha(URI.from_file(filename))
   end
-
 end

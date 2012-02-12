@@ -1,6 +1,24 @@
 class SeasonTag < Tag
-  def self.for_date(t)
-    firnd_or_create_by_path I18n.t("tags.events.children.seasons.children.#{t.season.to_s}.name")
+
+  def self.root_name
+    "seasons"
   end
+
+  def self.seasons_root
+    named_root(DateTag.named_root)
+  end
+
+  def self.for_date(date)
+    I18n.t("tags.#{self.root_name}.name")
+    season_name = I18n.t("tags.seasons.#{date.season.to_s}")
+    seasons_root.find_or_create_by_path season_name
+  end
+
+  def self.add_season_tag(asset)
+    date = asset.captured_at.to_date
+    asset.add_tag(for_date(date))
+  end
+
+  Asset.add_processor SeasonTag.method("add_season_tag")
 
 end

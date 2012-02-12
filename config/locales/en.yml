@@ -3,38 +3,24 @@
 
 en:
   tags:
-    date:
-      name: date
-      description: The date that the asset was taken, or the "creation date"
-    url:
-      name: web
-      description: Assets imported from the web
+    when:
+      name: when
+      description: When something was originally captured
+    seasons:
+      name: seasons
+      spring: spring
+      summer: summer
+      autumn: autumn
+      winter: winter
+    where:
+      name: where
+      description: Where in the world this is from
     file:
       name: file
       description: Files found on this local computer
-    places:
-      name: places
-      description: The location of where the asset was geo-tagged
-      children:
-        united_states:
-          name: United States
-          children:
-            california:
-              name: California
-    things:
-      name: things
-## TODO: children: animals, architecture, art, beach, bridge, buildings, castle, church, city, clouds, flowers, hdr, lake, landscape, mountains, nature, night, panorama, park, river, sea, sky, snow, sunset, travel, trees, water
-    events:
-      name: events
-      children:
-        seasons:
-          name: seasons
-          children:
-            spring:
-              name: spring
-            summer:
-              name: summer
-            autumn:
-              name: autumn
-            winter:
-              name: winter
+    with:
+      name: with
+      description: The make and model of the capture device
+    who:
+      name: who
+      description: Face tags

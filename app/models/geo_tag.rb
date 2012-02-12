@@ -2,13 +2,17 @@ require 'geonames'
 
 class GeoTag < Tag
 
+  def self.root_name
+    "where"
+  end
+
   def self.add_geo_tags(exif_asset)
     # todo: short-circuit if we already have geo tags
     gps = exif_asset.try(:exif).try(:gps)
     lat = gps.try(:latitude)
     lon = gps.try(:longitude)
     tag = tag_for_lat_lon(lat, lon)
-    exif_asset.tags << tag unless tag.nil?
+    exif_asset.add_tag tag unless tag.nil?
   end
 
   def self.tag_for_lat_lon(lat, lon)
@@ -18,8 +22,9 @@ class GeoTag < Tag
     return nil if nearest.nil? || nearest.geoname_id.to_i == 0
     places = Geonames::WebService.hierarchy(nearest.geoname_id)
     return nil if places.empty?
-    GeoTag.find_or_create_by_path(places.collect { |ea| ea.name })
+    named_root.find_or_create_by_path(places.collect { |ea| ea.name })
   end
 
   ExifAsset.add_processor GeoTag.method("add_geo_tags")
+  
 end

@@ -6,6 +6,7 @@ class String
       self
     end
   end
+
   def ensure_prefix prefix
     if start_with?(prefix)
       self[(prefix.size)..-1]

@@ -12,6 +12,13 @@
 
 ActiveRecord::Schema.define(:version => 20120103032104) do
 
+  create_table "asset_tags", :id => false, :force => true do |t|
+    t.integer "asset_id", :null => false
+    t.integer "tag_id",   :null => false
+  end
+
+  add_index "asset_tags", ["tag_id", "asset_id"], :name => "index_asset_tags_on_tag_id_and_asset_id"
+
   create_table "asset_uris", :force => true do |t|
     t.integer  "asset_id"
     t.string   "sha",        :limit => 64
@@ -23,7 +30,7 @@ ActiveRecord::Schema.define(:version => 20120103032104) do
   add_index "asset_uris", ["uri"], :name => "uri_idx"
 
   create_table "assets", :force => true do |t|
-    t.string   "type",                            :null => false
+    t.string   "type"
     t.integer  "directory_id"
     t.string   "basename"
     t.datetime "taken_at"
@@ -32,19 +39,12 @@ ActiveRecord::Schema.define(:version => 20120103032104) do
     t.string   "thumbprint"
     t.string   "caption"
     t.datetime "mtime"
-    t.boolean  "deleted",      :default => false
-    t.datetime "created_at",                      :null => false
-    t.datetime "updated_at",                      :null => false
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
+    t.datetime "deleted_at"
   end
 
   add_index "assets", ["thumbprint"], :name => "assets_thumbprint_udx", :unique => true
-
-  create_table "assets_tags", :id => false, :force => true do |t|
-    t.integer "asset_id", :null => false
-    t.integer "tag_id",   :null => false
-  end
-
-  add_index "assets_tags", ["tag_id", "asset_id"], :name => "index_assets_tags_on_tag_id_and_asset_id"
 
   create_table "delayed_jobs", :force => true do |t|
     t.integer  "priority",   :default => 0

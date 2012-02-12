@@ -3,7 +3,8 @@ require 'pathname'
 
 class Pathname
   def to_uri
-    URI.parse("file:" + URI.escape(to_s))
+    URI::Generic.new("file", nil, nil, nil, nil,
+      URI.escape(absolutepath.to_s), nil, nil, nil)
   end
 
   def self.from_uri(uri)
@@ -11,34 +12,27 @@ class Pathname
   end
 end
 
+class String
+  def to_uri
+    URI.parse(self)
+  end
+end
+
 module URI
 
   class Generic
-
     def pathname
-      @pathname ||= Pathname.from_uri(self)
+      Pathname.from_uri(self)
     end
 
-    alias :orig_set_path :set_path
-
-    def set_path(new_path)
-      orig_set_path(new_path)
-      @pathname = nil
-    end
-
-    alias :orig_normalize! :normalize!
-
-    def normalize!
-      orig_normalize!
-      if scheme.nil? ||scheme == "file"
-        set_path(pathname.realpath.to_s) if pathname.exist?
-      end
+    def to_uri
       self
     end
   end
 
-  def self.from_file filename
-    Pathname.new(filename).to_uri
+  def self.from_file pathname
+    pathname = Pathname.new(pathname) unless pathname.is_a? Pathname
+    pathname.to_uri
   end
 
   # Returns an array of URIs
@@ -48,9 +42,11 @@ module URI
     options[:redirect_urls] ||= []
     options[:method] ||= Net::HTTP::Head
 
-    return File.follow_redirects(url, {:paths => options[:max_redirects]}) if uri.scheme.nil? && File.exists?(uri.path)
-
-    return options[:redirect_urls] if options[:max_redirects] <= options[:redirect_urls].size
+    if uri.scheme.nil? && pathname.exist?
+      return File.follow_redirects(url, {:paths => options[:max_redirects]})
+    elsif options[:redirect_urls].size >= options[:max_redirects]
+      return options[:redirect_urls]
+    end
 
     uri = normalize(url)
     http = Net::HTTP.new(uri.host, uri.port)

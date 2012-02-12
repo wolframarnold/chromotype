@@ -1,29 +1,18 @@
 class DateTag < Tag
-  def self.for_date(t)
-    d = t.to_date
-    YearTag.
-      find_or_create_by_path([d.year]).
-      find_or_create_by_path([d.month], :type => MonthTag.to_s).
-      find_or_create_by_path([d.day], :type => DayTag.to_s)
-  end
-end
 
-class YearTag < DateTag
-  def to_s
-    name
+  def self.root_name
+    "when"
   end
-end
 
-class MonthTag
-  def to_s
-    # TODO: i18n
-    name
+  def self.for_date(d)
+   named_root.find_or_create_by_path([d.year.to_s, d.month.to_s, d.day.to_s])
   end
-end
 
-class DayTag
-  def to_s
-    # TODO: i18n
-    name
+  def self.add_captured_at_tag(asset)
+    date = asset.captured_at.to_date
+    asset.add_tag(for_date(date))
   end
+
+  Asset.add_processor DateTag.method("add_captured_at_tag")
+
 end

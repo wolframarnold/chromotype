@@ -1,54 +1,26 @@
-class ExifAsset < FileAsset
+require 'exifr'
+
+class ExifAsset < Asset
 
   FILE_EXTENSIONS = %w{jpeg jpg 3fr ari arw bay cap cr2 crw dcr dcs dng drf eip erf fff iiq k25 kdc mef mos mrw nef nrw orf pef ptx pxn r3d raf raw rw2 rwl rwz sr2 srf srw x3f}
 
-  def self.add_processor(method)
-    (@processors ||= []) << method
-  end
-
-  def self.process_exif(filename)
+  def self.import_exif_file(filename)
     a = asset_for_file(filename, FILE_EXTENSIONS)
     return a if a == !!a # is boolean
-
-    # EXIF headers are mandatory.
-    return false if a.exif.nil?
-
+    return false if a.exif.nil? # EXIF headers are mandatory.
     a.save! # So the processors have something persisted to associate to
-    @processors.each { |method| method.call(a) }
-#* for that asset, extract features (like taken_date, gps, faces, ...)
-#* tags are then find_or_created from those features
-#* small, medium, large images are created (and large image uploaded to S3 for backup?)
+    a.process
     a
   end
 
-  add_processor_method_for_extnames(ExifAsset.method("process_exif"), FILE_EXTENSIONS)
-
-  def taken_at
-    magick["exif:DateTimeDigitized"]
-  end
-
-  def camera_model
-    magick["exif:Model"]
-  end
-
-  def iso_speed
-    magick["exif:ISOSpeedRatings"]
-  end
-
-  def focal_length
-    magick["exif:FocalLength"]
-  end
-
-  def exposure_time
-    magick["exif:ExposureTime"]
-  end
-
-  def f_number
-    magick["exif:FNumber"]
-  end
+  add_importer(ExifAsset.method("import_exif_file"), FILE_EXTENSIONS)
 
   def magick
     @magick ||= MiniMagick::Image.open uri
+  end
+
+  def captured_at
+    exif.try(:date_time_original) || super
   end
 
   def exif

@@ -1,7 +1,7 @@
 class CreateAssets < ActiveRecord::Migration
   def change
     create_table :assets do |t|
-      t.string :type, :null => false
+      t.string :type
       t.references :directory
       t.string :basename
       t.timestamp :taken_at
@@ -10,8 +10,8 @@ class CreateAssets < ActiveRecord::Migration
       t.string :thumbprint
       t.string :caption
       t.datetime :mtime
-      t.boolean :deleted, :default => false
       t.timestamps
+      t.datetime :deleted_at
     end
 
     add_index :assets, [:thumbprint], :name => 'assets_thumbprint_udx', :unique => true

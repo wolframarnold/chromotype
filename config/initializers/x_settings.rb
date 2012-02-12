@@ -70,10 +70,10 @@ ActiveSupport.on_load(:active_record) do
       latitude_maxmind
     rescue StandardError
       begin
-      latitude_geoiptool
+        latitude_geoiptool
       rescue StandardError
-      nil
-        end
+        nil
+      end
     end
 
     def self.is_northern_hemisphere

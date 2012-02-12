@@ -58,14 +58,16 @@ gem 'delayed_job_active_record'
 gem 'hirefire'
 
 group :test do
-  gem 'autotest'
-  gem 'spork'
-  gem 'autotest-rails-pure'
-  gem 'autotest-fsevent'
-  gem 'autotest-growl'
   gem 'rspec', '~> 2.7.0'
   gem 'rspec-rails'
   gem 'webrat'
-  gem 'database_cleaner' #TODO: needed?
-  gem 'factory_girl_rails' #TODO: needed?
+  gem 'watchr' # See http://www.rubyinside.com/how-to-rails-3-and-rspec-2-4336.html
+  gem 'spork'
+  gem 'growl', :require => false
+  #gem 'autotest'
+  #gem 'autotest-rails-pure'
+  #gem 'autotest-fsevent'
+  #gem 'autotest-growl'
+  #gem 'database_cleaner' #TODO: needed?
+  #gem 'factory_girl_rails' #TODO: needed?
 end
