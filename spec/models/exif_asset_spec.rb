@@ -13,10 +13,20 @@ describe ExifAsset do
   it "should process JPG assets with EXIF headers" do
     ea = ExifAsset.import_exif_file("spec/images/Canon 20D.jpg")
     ea.should_not be_nil
-    ea.reload.tags.collect { |t| t.ancestry_path.join("/") }.should =~ [
+    ea.tags.collect { |t| t.ancestry_path.join("/") }.should =~ [
         "when/2004/9/19",
         "when/seasons/autumn",
         "with/Canon/Canon EOS 20D",
+        "file" + (Rails.root + "spec/images").to_s
+    ]
+  end
+  it "should process GPS-tagged asset" do
+    ea = ExifAsset.import_exif_file("spec/images/iPhone 4S.jpg")
+    ea.tags.collect { |t| t.ancestry_path.join("/") }.should =~ [
+        "when/2011/11/23",
+        "when/seasons/autumn",
+        "with/Apple/iPhone 4S",
+        "where/Earth/North America/United States/California/San Mateo County/El Granada",
         "file" + (Rails.root + "spec/images").to_s
     ]
   end
