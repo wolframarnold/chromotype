@@ -83,7 +83,7 @@ ActiveRecord::Schema.define(:version => 20120103032104) do
   add_index "tag_hierarchies", ["descendant_id"], :name => "index_tag_hierarchies_on_descendant_id"
 
   create_table "tags", :force => true do |t|
-    t.string   "type",        :null => false
+    t.string   "type"
     t.integer  "parent_id"
     t.string   "name",        :null => false
     t.string   "description"

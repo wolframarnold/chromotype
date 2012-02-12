@@ -10,8 +10,10 @@ class ExifAsset < FileAsset
     a = asset_for_file(filename, FILE_EXTENSIONS)
     return a if a == !!a # is boolean
 
+    # EXIF headers are mandatory.
     return false if a.exif.nil?
 
+    a.save! # So the processors have something persisted to associate to
     @processors.each { |method| method.call(a) }
 #* for that asset, extract features (like taken_date, gps, faces, ...)
 #* tags are then find_or_created from those features

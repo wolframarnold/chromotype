@@ -32,6 +32,7 @@ class Asset < ActiveRecord::Base
 
   def self.with_tag(tag)
     joins(:asset_tags) && AssetTag.find_by_tag_id(tag.id)
+  end
 
   def self.with_filename(filename)
     joins(:asset_uris) & AssetUri.with_filename(filename)

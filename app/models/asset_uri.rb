@@ -1,5 +1,4 @@
 class AssetUri < ActiveRecord::Base
-
   belongs_to :asset
   before_save :set_sha
   validates_presence_of :uri

@@ -43,6 +43,8 @@ gem 'haml-rails'
 #gem 'facter' # to detect number of cpus and system load
 gem 'parallel' # just for Parallel.processor_count
 
+gem 'ruby-geonames', :git => 'https://github.com/mceachen/ruby-geonames.git'
+
 gem 'exifr' # extracts gps information that `identify` doesn't
 gem 'findler' #, :git => 'git://github.com/mceachen/findler.git'
 gem 'closure_tree' #, :git => 'git://github.com/mceachen/closure_tree.git'
