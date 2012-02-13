@@ -14,11 +14,9 @@ class SeasonTag < Tag
     seasons_root.find_or_create_by_path season_name
   end
 
-  def self.add_season_tag(asset)
+  def self.process(asset)
     date = asset.captured_at.to_date
     asset.add_tag(for_date(date))
   end
-
-  Asset.add_processor SeasonTag.method("add_season_tag")
 
 end

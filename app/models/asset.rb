@@ -13,11 +13,19 @@ class Asset < ActiveRecord::Base
     end
   end
 
-  # "Processors" take an asset and do something with it -- tagging, resizing, ...
-  PROCESSORS = []
+  add_importer(ExifAsset.method("import_exif_file"), ExifAsset::FILE_EXTENSIONS)
 
-  def self.add_processor(method)
-    PROCESSORS << method
+  # "Processors" take an asset and do something with it -- tagging, resizing, ...
+  PROCESSORS = [
+    CameraTag,
+    DateTag,
+    DirTag,
+    GeoTag,
+    SeasonTag
+  ]
+
+  def process
+    PROCESSORS.each{|ea|ea.process(self)}
   end
 
   def self.normalized_extname filename
@@ -86,10 +94,6 @@ class Asset < ActiveRecord::Base
 
   def thumbprints
     []
-  end
-
-  def process
-    PROCESSORS.each{|ea|ea.call(self)}
   end
 
   def add_tag(tag)

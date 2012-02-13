@@ -13,8 +13,6 @@ class ExifAsset < Asset
     a
   end
 
-  add_importer(ExifAsset.method("import_exif_file"), FILE_EXTENSIONS)
-
   def magick
     @magick ||= MiniMagick::Image.open uri
   end

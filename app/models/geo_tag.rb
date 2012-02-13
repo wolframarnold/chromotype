@@ -6,7 +6,7 @@ class GeoTag < Tag
     "where"
   end
 
-  def self.add_geo_tags(exif_asset)
+  def self.process(exif_asset)
     # todo: short-circuit if we already have geo tags
     gps = exif_asset.try(:exif).try(:gps)
     lat = gps.try(:latitude)
@@ -25,6 +25,4 @@ class GeoTag < Tag
     named_root.find_or_create_by_path(places.collect { |ea| ea.name })
   end
 
-  ExifAsset.add_processor GeoTag.method("add_geo_tags")
-  
 end
