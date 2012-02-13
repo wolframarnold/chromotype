@@ -3,10 +3,6 @@ class Tag < ActiveRecord::Base
   has_many :asset_tags
   has_many :assets, :through => :asset_tags
 
-  def deactivate_assets
-    Asset.update_all({:active => false}, {:tag_id => self_and_children.collect { |ea| ea.id }})
-  end
-
   def to_s
     name
   end

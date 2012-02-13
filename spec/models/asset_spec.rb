@@ -29,7 +29,6 @@ describe Asset do
   end
 
   it "should find with_filename(to_s)" do
-    puts Asset.with_filename(@path.to_s).to_sql
     Asset.with_filename(@path.to_s).to_a.should == [@asset]
   end
 

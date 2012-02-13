@@ -33,6 +33,12 @@ class Asset < ActiveRecord::Base
     joins(:asset_tags).merge(AssetTag.find_by_tag_id(tag.id))
   }
 
+  scope :with_tag_or_descendents, lambda { |tag|
+    joins(:asset_tags).
+      joins("join #{Tag.hierarchy_table_name} on asset_tags.tag_id = #{Tag.hierarchy_table_name}.descendant_id").
+      where("#{Tag.hierarchy_table_name}.ancestor_id = ?", tag.id)
+  }
+
   #scope :with_tag_or_descendants, lambda { |tag| includes(:tags => [:ancestors]).where("ancestors_tags.id = ? or tags.id = ?", tag.id, tag.id) }
 
   scope :with_uri, lambda { |uri|
@@ -46,6 +52,9 @@ class Asset < ActiveRecord::Base
   scope :with_filename, lambda { |filename|
     joins(:asset_uris).merge(AssetUri.with_filename(filename))
   }
+
+  scope :deleted, where("#{table_name}.deleted_at IS NOT NULL")
+  scope :not_deleted, where("#{table_name}.deleted_at IS NULL")
 
   def pathname
     uri.pathname
@@ -71,6 +80,10 @@ class Asset < ActiveRecord::Base
     update_attribute(:deleted_at, Time.now)
   end
 
+  def deleted?
+    !self.deleted_at.nil?
+  end
+
   def thumbprints
     []
   end
@@ -80,7 +93,7 @@ class Asset < ActiveRecord::Base
   end
 
   def add_tag(tag)
-    asset_tags.find_by_tag_id(tag.id) || asset_tags.create(:tag_id => tag.id)
+    asset_tags.find_or_create_by_tag_id(tag.id)
   end
 
   def self.asset_for_file(filename, allowable_extensions = nil)

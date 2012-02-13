@@ -49,7 +49,7 @@ ActiveSupport.on_load(:active_record) do
     end
 
     def self.cache_dir_for_date(date)
-      (library_root + date.strftime("Cache/%Y/%m/")).tap { |p| p.mkpath }
+      (library_root + date.strftime(".cache/%Y/%m/")).tap { |p| p.mkpath }
     end
 
     require 'nokogiri'

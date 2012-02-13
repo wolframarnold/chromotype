@@ -1,22 +1,7 @@
-* finish process_file in ExifAsset
-* move first part to new FileAsset?
-* who calls ExifAsset.process_file?
-
-Class interactions:
-
-Processors gets a setup/teardown and a "process" for a given URI.
-
-Exif.features_for(asset) => {:taken_date =>
 
 
 * what iterates directories (dir_tag? )
 
-Given a URI:
-* skip if there isn't EXIF data
-* find_or_create uri,
-* find_or_create asset for a URI
-* for that asset, extract features (like taken_date, gps, faces, ...)
-* tags are then find_or_created from those features
 * small, medium, large images are created (and large image uploaded to S3 for backup?)
 
 == Backend
