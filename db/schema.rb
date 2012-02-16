@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120103032104) do
+ActiveRecord::Schema.define(:version => 20120213071058) do
 
   create_table "asset_tags", :id => false, :force => true do |t|
     t.integer "asset_id", :null => false
@@ -18,6 +18,17 @@ ActiveRecord::Schema.define(:version => 20120103032104) do
   end
 
   add_index "asset_tags", ["tag_id", "asset_id"], :name => "index_asset_tags_on_tag_id_and_asset_id"
+
+  create_table "asset_thumbprints", :force => true do |t|
+    t.integer  "asset_id"
+    t.string   "type",       :limit => 20
+    t.string   "thumbprint", :limit => 512
+    t.datetime "created_at",                :null => false
+    t.datetime "updated_at",                :null => false
+  end
+
+  add_index "asset_thumbprints", ["asset_id"], :name => "index_asset_thumbprints_on_asset_id"
+  add_index "asset_thumbprints", ["thumbprint"], :name => "index_asset_thumbprints_on_thumbprint"
 
   create_table "asset_uris", :force => true do |t|
     t.integer  "asset_id"
@@ -27,7 +38,6 @@ ActiveRecord::Schema.define(:version => 20120103032104) do
   end
 
   add_index "asset_uris", ["sha"], :name => "uri_sha_udx", :unique => true
-  add_index "asset_uris", ["uri"], :name => "uri_idx"
 
   create_table "assets", :force => true do |t|
     t.string   "type"

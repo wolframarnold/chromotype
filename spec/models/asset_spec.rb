@@ -21,7 +21,7 @@ describe Asset do
   end
 
   it "should find with_filename(pathname)" do
-    Asset.with_filename(@path).to_a.should == [@asset]
+    Asset.with_any_filename([@path]).to_a.should == [@asset]
   end
 
   it "should find with_uri(pathname)" do
@@ -29,7 +29,7 @@ describe Asset do
   end
 
   it "should find with_filename(to_s)" do
-    Asset.with_filename(@path.to_s).to_a.should == [@asset]
+    Asset.with_any_filename([@path.to_s]).to_a.should == [@asset]
   end
 
   it "should find the prior asset" do

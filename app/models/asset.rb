@@ -2,6 +2,7 @@ class Asset < ActiveRecord::Base
   has_many :asset_tags
   has_many :tags, :through => :asset_tags
   has_many :asset_uris, :order => 'id desc', :dependent => :destroy
+  has_many :asset_thumbprints, :order => 'id desc', :dependent => :destroy
 
   # "Importers" take a URI and (possibly) return an asset. This is a global.
   IMPORTERS = Hash.new { |h, k| h[k] = [] }
@@ -20,12 +21,18 @@ class Asset < ActiveRecord::Base
     CameraTag,
     DateTag,
     DirTag,
+    FaceTag,
     GeoTag,
     SeasonTag
   ]
 
+  # "Thumbprinters" take an asset and extract a smallish string which can be used to match the asset with a duplicate file.
+  THUMBPRINTERS = [
+    ExifAssetThumbprint
+  ]
+
   def process
-    PROCESSORS.each{|ea|ea.process(self)}
+    PROCESSORS.each { |ea| ea.process(self) }
   end
 
   def self.normalized_extname filename
@@ -36,7 +43,7 @@ class Asset < ActiveRecord::Base
     filename = filename.to_pathname
     IMPORTERS[normalized_extname(filename)].find { |ea| ea.call(filename) }
   end
-  
+
   scope :with_tag, lambda { |tag|
     joins(:asset_tags).merge(AssetTag.find_by_tag_id(tag.id))
   }
@@ -53,13 +60,10 @@ class Asset < ActiveRecord::Base
     joins(:asset_uris).merge AssetUri.with_uri(uri)
   }
 
-  scope :with_any_filename, lambda { |filenames|
-    joins(:asset_uris).merge(AssetUri.with_any_filename(filenames))
-  }
-
-  scope :with_filename, lambda { |filename|
-    joins(:asset_uris).merge(AssetUri.with_filename(filename))
-  }
+  scope :with_filename, lambda { |filename| joins(:asset_uris).merge AssetUri.with_any_filename([filename]) }
+  scope :with_any_filename, lambda { |filenames| joins(:asset_uris).merge AssetUri.with_any_filename(filenames) }
+  scope :with_thumbprint, lambda { |thumbprint| joins(:asset_thumbprints).merge AssetThumbprint.with_any_thumbprint([thumbprint]) }
+  scope :with_any_thumbprint, lambda { |thumbprints| joins(:asset_thumbprints).merge AssetThumbprint.with_any_thumbprint(thumbprints) }
 
   scope :deleted, where("#{table_name}.deleted_at IS NOT NULL")
   scope :not_deleted, where("#{table_name}.deleted_at IS NULL")
@@ -92,12 +96,14 @@ class Asset < ActiveRecord::Base
     !self.deleted_at.nil?
   end
 
-  def thumbprints
-    []
-  end
-
   def add_tag(tag)
     asset_tags.find_or_create_by_tag_id(tag.id)
+  end
+
+  def self.add_thumbprint(asset_thumbprint)
+    asset_thumbprints.find_or_create_by_type_and_thumbprint(
+      :type => asset_thumbprint.class,
+        :thumbprint => asset_thumbprint.thumbprint)
   end
 
   def self.asset_for_file(filename, allowable_extensions = nil)
@@ -109,8 +115,9 @@ class Asset < ActiveRecord::Base
       return true
     end
 
+    path = paths.last
+
     if allowable_extensions
-      path = paths.last
       suffix = path.extname.strip_prefix(".")
       return false unless allowable_extensions.include? suffix
     end
@@ -122,7 +129,10 @@ class Asset < ActiveRecord::Base
       raise ArgumentError, "Multiple assets found with paths: #{paths_to_s}"
     end
 
-    asset = assets.first || self.new
+    asset = assets.first
+    # Adopt from thumbprint:
+    asset ||= self.with_any_thumbprint(THUMBPRINTERS.collect { |ea| ea.thumbprint(path) }).first
+    asset ||= self.new
     paths.each { |ea| asset.uri = ea.to_uri }
     asset
   end

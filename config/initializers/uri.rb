@@ -31,8 +31,7 @@ module URI
   end
 
   def self.from_file pathname
-    pathname = Pathname.new(pathname) unless pathname.is_a? Pathname
-    pathname.to_uri
+    pathname.to_pathname.to_uri
   end
 
   # Returns an array of URIs

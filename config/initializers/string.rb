@@ -1,3 +1,5 @@
+require 'digest/sha2'
+
 class String
   def strip_prefix prefix
     if start_with?(prefix)
@@ -13,5 +15,9 @@ class String
     else
       self
     end
+  end
+
+  def to_sha2
+    Digest::SHA2.hexdigest(self)
   end
 end

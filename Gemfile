@@ -46,6 +46,8 @@ gem 'parallel' # just for Parallel.processor_count
 gem 'ruby-geonames', :git => 'https://github.com/mceachen/ruby-geonames.git'
 
 gem 'exifr' # extracts gps information that `identify` doesn't
+gem 'mini_exiftool', :require => false # super-robust, but depends on installing a perl script :(
+#gem 'xmp' # todo: extract xmp data so we can be pure ruby?
 gem 'findler' #, :git => 'git://github.com/mceachen/findler.git'
 gem 'closure_tree' #, :git => 'git://github.com/mceachen/closure_tree.git'
 gem 'ledermann-rails-settings', :require => 'rails-settings'
@@ -58,7 +60,7 @@ gem 'delayed_job_active_record'
 gem 'hirefire'
 
 group :test do
-  gem 'rspec', '~> 2.7.0'
+  gem 'rspec'#, '~> 2.7.0'
   gem 'rspec-rails'
   gem 'webrat'
   gem 'watchr' # See http://www.rubyinside.com/how-to-rails-3-and-rspec-2-4336.html

@@ -31,7 +31,7 @@ ActiveSupport.on_load(:active_record) do
 
   # TODO Settings.defaults[:library_originals] = File.join "Originals", "%Y", "%m", "%d"
   # TODO Settings.defaults[:ignorable_patterns] = %w{Thumbs/ Previews/ tmp/}
-  # TODO Settings.defaults[:minimum_image_pixels] = 1024*620
+  Settings.defaults[:minimum_image_pixels] = 1024*768
 
   # TODO: determine this automatically by geoip against this host's public IP address
   Settings.defaults[:is_northern_hemisphere] = true # <-- used for seasons tagging
@@ -49,7 +49,7 @@ ActiveSupport.on_load(:active_record) do
     end
 
     def self.cache_dir_for_date(date)
-      (library_root + date.strftime(".cache/%Y/%m/")).tap { |p| p.mkpath }
+      (library_root + "Cache" + date.strftime("%Y/%m/")).tap { |p| p.mkpath }
     end
 
     require 'nokogiri'

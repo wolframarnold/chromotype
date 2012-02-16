@@ -19,7 +19,8 @@ describe Tag do
     Asset.with_tag_or_descendents(@tag2).should =~ @assets.last(2)
     Asset.with_tag_or_descendents(@tag3).should =~ @assets.last(1)
   end
-  
+
+  # I don't know if/when I'd need this... :\
   #context :deletion do
   #  before :each do
   #    puts Asset.deleted.to_a

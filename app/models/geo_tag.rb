@@ -8,11 +8,9 @@ class GeoTag < Tag
 
   def self.process(exif_asset)
     # todo: short-circuit if we already have geo tags
-    gps = exif_asset.try(:exif).try(:gps)
-    lat = gps.try(:latitude)
-    lon = gps.try(:longitude)
-    tag = tag_for_lat_lon(lat, lon)
-    exif_asset.add_tag tag unless tag.nil?
+    if tag = tag_for_lat_lon(*exif_asset.gps_lat_lon)
+      exif_asset.add_tag tag
+    end
   end
 
   def self.tag_for_lat_lon(lat, lon)
