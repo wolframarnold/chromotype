@@ -1,14 +1,14 @@
 require 'geonames'
 
 class GeoTag < Tag
-
   def self.root_name
     "where"
   end
 
-  def self.process(exif_asset)
+  def self.visit_asset(exif_asset)
     # todo: short-circuit if we already have geo tags
-    if tag = tag_for_lat_lon(*exif_asset.gps_lat_lon)
+    e = exif_asset.exif
+    if tag = tag_for_lat_lon(e[:gps_latitude], e[:gps_longitude])
       exif_asset.add_tag tag
     end
   end
@@ -22,5 +22,4 @@ class GeoTag < Tag
     return nil if places.empty?
     named_root.find_or_create_by_path(places.collect { |ea| ea.name })
   end
-
 end

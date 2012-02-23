@@ -6,66 +6,21 @@ class ExifAsset < Asset
     a = asset_for_file(filename, FILE_EXTENSIONS)
     return a if a == !!a # is boolean
     return false if a.exif.nil? # EXIF headers are mandatory.
-    return false if (a.exif[:width] * a.exif[:height]) < Settings.minimum_image_pixels
+    return false if (a.exif[:width].to_i * a.exif[:height].to_i) < Settings.minimum_image_pixels
     a.save! # So the processors have something persisted to associate to
-    a.process
+    a.process(iterator.next)
     a
   end
 
   def magick
-    @magick ||= MiniMagick::Image.open uri
+    @magick ||= MiniMagick::Image.open self.uri
   end
 
   def captured_at
     exif[:date_time_original] || super
   end
 
-  def gps_lat_lon
-    return nil unless exif[:gps_latitude] && exif[:gps_longitude]
-    [exif[:gps_latitude].to_f * (exif[:gps_latitude_ref] == 'S' ? -1 : 1),
-      exif[:gps_longitude].to_f * (exif[:gps_longitude_ref] == 'W' ? -1 : 1)]
-  end
-
-  def self.exif(pathname)
-    # try exiftool first, because it's AMAZING.
-    @library_method ||= begin
-      require 'mini_exiftool'
-      self.method(:exiftool)
-    rescue StandardError
-      self.method(:exifr)
-    end
-
-    @library_method.call(pathname.to_pathname)
-  end
-
-  def self.exiftool(pathname)
-    h = { }
-    mini_exiftool = MiniExiftool.new(pathname.realpath.to_s)
-    mini_exiftool.to_hash.each { |k, v| h[k.underscore.to_s] = v }
-    h
-  end
-
-  def self.exifr(pathname)
-    if %w{.jpeg .jpg}.include?(pathname.extname.downcase)
-      begin
-        return EXIFR::JPEG.new(pathname.to_s).to_hash
-      rescue EXIFR::MalformedJPEG => e
-        return nil
-      end
-    else
-      # Try TIFF.
-      begin
-        EXIFR::TIFF.new(pathname.to_s).to_hash
-      rescue EXIFR::MalformedTIFF => e
-        return nil
-      end
-    end
-  end
-
-  def exif
-    @exif ||= self.class.exif(pathname)
-  end
-
+  include Exiffed
 
   # Resize dimensions:
   #Square

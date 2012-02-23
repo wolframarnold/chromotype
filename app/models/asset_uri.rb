@@ -12,6 +12,10 @@ class AssetUri < ActiveRecord::Base
     where(:sha => sha(uri)).order("created_at DESC")
   }
 
+  scope :with_filename, lambda { |filename|
+    where(:sha => sha_for_filename(filename))
+  }
+
   scope :with_any_filename, lambda { |filenames|
     where(:sha => filenames.collect { |ea| sha_for_filename(ea) })
   }

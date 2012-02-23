@@ -3,46 +3,7 @@ class Asset < ActiveRecord::Base
   has_many :tags, :through => :asset_tags
   has_many :asset_uris, :order => 'id desc', :dependent => :destroy
   has_many :asset_thumbprints, :order => 'id desc', :dependent => :destroy
-
-  # "Importers" take a URI and (possibly) return an asset. This is a global.
-  IMPORTERS = Hash.new { |h, k| h[k] = [] }
-
-  def self.add_importer(method, extnames)
-    extnames.each do |ea|
-      ea = ea.downcase.ensure_prefix(".") unless ea.nil?
-      IMPORTERS[ea] << method
-    end
-  end
-
-  add_importer(ExifAsset.method("import_exif_file"), ExifAsset::FILE_EXTENSIONS)
-
-  # "Processors" take an asset and do something with it -- tagging, resizing, ...
-  PROCESSORS = [
-    CameraTag,
-    DateTag,
-    DirTag,
-    FaceTag,
-    GeoTag,
-    SeasonTag
-  ]
-
-  # "Thumbprinters" take an asset and extract a smallish string which can be used to match the asset with a duplicate file.
-  THUMBPRINTERS = [
-    ExifAssetThumbprint
-  ]
-
-  def process
-    PROCESSORS.each { |ea| ea.process(self) }
-  end
-
-  def self.normalized_extname filename
-    filename.to_pathname.extname.try(:downcase)
-  end
-
-  def self.import_file filename
-    filename = filename.to_pathname
-    IMPORTERS[normalized_extname(filename)].find { |ea| ea.call(filename) }
-  end
+  has_many :duplicate_assets, :foreign_key => 'parent_dupe_id'
 
   scope :with_tag, lambda { |tag|
     joins(:asset_tags).merge(AssetTag.find_by_tag_id(tag.id))
@@ -60,9 +21,9 @@ class Asset < ActiveRecord::Base
     joins(:asset_uris).merge AssetUri.with_uri(uri)
   }
 
-  scope :with_filename, lambda { |filename| joins(:asset_uris).merge AssetUri.with_any_filename([filename]) }
+  scope :with_filename, lambda { |filename| joins(:asset_uris).merge AssetUri.with_filename(filename) }
   scope :with_any_filename, lambda { |filenames| joins(:asset_uris).merge AssetUri.with_any_filename(filenames) }
-  scope :with_thumbprint, lambda { |thumbprint| joins(:asset_thumbprints).merge AssetThumbprint.with_any_thumbprint([thumbprint]) }
+  scope :with_thumbprint, lambda { |thumbprint| joins(:asset_thumbprints).merge AssetThumbprint.with_thumbprint(thumbprint) }
   scope :with_any_thumbprint, lambda { |thumbprints| joins(:asset_thumbprints).merge AssetThumbprint.with_any_thumbprint(thumbprints) }
 
   scope :deleted, where("#{table_name}.deleted_at IS NOT NULL")
@@ -80,7 +41,7 @@ class Asset < ActiveRecord::Base
     asset_uris.first.try(:to_uri)
   end
 
-  def uri= uri
+  def uri=(uri)
     return unless asset_uris.with_uri(uri).empty?
     # Do I need to steal the uri from another asset?
     dupes = AssetUri.with_uri(uri)
@@ -106,35 +67,5 @@ class Asset < ActiveRecord::Base
         :thumbprint => asset_thumbprint.thumbprint)
   end
 
-  def self.asset_for_file(filename, allowable_extensions = nil)
-    filename = filename.to_pathname
-    paths = filename.follow_redirects
-    if paths.nil?
-      # the file has been deleted, so mark the assets accordingly
-      with_filename(filename).each { |ea| ea.delete! }
-      return true
-    end
-
-    path = paths.last
-
-    if allowable_extensions
-      suffix = path.extname.strip_prefix(".")
-      return false unless allowable_extensions.include? suffix
-    end
-
-    # first adopt the asset if there is one...
-    assets = with_any_filename(paths)
-    if assets.size > 1
-      paths_to_s = paths.collect { |ea| ea.to_s }.join ","
-      raise ArgumentError, "Multiple assets found with paths: #{paths_to_s}"
-    end
-
-    asset = assets.first
-    # Adopt from thumbprint:
-    asset ||= self.with_any_thumbprint(THUMBPRINTERS.collect { |ea| ea.thumbprint(path) }).first
-    asset ||= self.new
-    paths.each { |ea| asset.uri = ea.to_uri }
-    asset
-  end
 
 end

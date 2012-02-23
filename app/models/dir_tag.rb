@@ -4,7 +4,7 @@ class DirTag < Tag
     "file"
   end
 
-  def self.process(asset)
+  def self.visit_asset(asset)
     path = asset.pathname.parent.path_array
     tag = named_root.find_or_create_by_path path
     asset.add_tag(tag)

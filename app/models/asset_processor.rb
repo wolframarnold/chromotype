@@ -1,6 +1,15 @@
-require 'open-uri'
-
 class AssetProcessor
+
+  # "Visitors" are sent #visit_asset when assets are imported.
+  VISITORS = [CameraTag,
+    DateTag,
+    DirTag,
+    FaceTag,
+    GeoTag,
+    SeasonTag
+  ]
+
+  # "Thumbprinters" take a URI and extract a smallish string which can be used to match the asset with a duplicate file.
 
   def self.for_directory(directory)
     f = Findler.new directory
@@ -11,32 +20,25 @@ class AssetProcessor
 
   def initialize(iterator)
     @iterator = iterator
-    @asset_types = [ExifAsset]
   end
 
-  def process
-    a = iterator.next
-    self.class.process(a)
+  def process_next
+    process(iterator.next)
   end
 
-  def self.process(uri)
-    uri = URI.parse(uri) unless uri.is_a? URI
-    asset = Asset.with_uri(uri.to_s).first
-
-    if asset.nil?
-      # TODO: assumes there's only one subclass that can process a given URI -- or at least the first one wins.
-      klass = Asset.subclasses.detect { |ea| ea.can_process? uri }
-      thumbprint = klass.thumbprint(uri)
-      asset = klass.find_by_thumbprint(thumbprint)
+  def process(pathname)
+    pa = ProtoAsset.new(pathname)
+    asset = pa.find_or_initialize_asset
+    if asset
+      asset.save!
+      visit_asset(asset)
+      asset
     end
-
-    if asset.nil?
-      asset = klass.process(:uri => uri)
-    else
-      asset.process(uri)
-    end
-
-    asset.child_uris.each { |ea| AssetProcessor.new(ea).process }
   end
 
+  def visit_asset(asset)
+    VISITORS.each { |v| v.visit_asset(asset) }
+  end
 end
+
+

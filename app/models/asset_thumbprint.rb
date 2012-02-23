@@ -1,12 +1,18 @@
 class AssetThumbprint < ActiveRecord::Base
   belongs_to :asset
+
   validates_presence_of :thumbprint
 
-  scope :with_any_thumbprint, lambda { |thumbprints|
-    where(:thumbprint => thumbprints)
+  scope :with_thumbprint, lambda { |thumbprint|
+    where(if thumbprint.is_a?(AssetThumbprint)
+      { :type => thumbprint.type,
+        :thumbprint => thumbprint.thumbprint }
+    else
+      { :thumbprint => thumbprint.to_s }
+    end)
   }
 
   def self.mk_sha(array)
-    array.collect{|ea|ea.to_s}.join(":").to_sha2
+    array.collect { |ea| ea.to_s }.join(":").to_sha2
   end
 end

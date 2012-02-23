@@ -4,7 +4,7 @@ class CameraTag < Tag
     "with"
   end
 
-  def self.process(exif_asset)
+  def self.visit_asset(exif_asset)
     # todo: short-circuit if we already have camera tags
     exif = exif_asset.exif
     return if exif.nil?

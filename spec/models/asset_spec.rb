@@ -2,9 +2,10 @@ require "spec_helper.rb"
 
 describe Asset do
   before :each do
-    @asset = Asset.asset_for_file("Gemfile")
+    @asset = Asset.new
+    @path = "Gemfile".to_pathname.realpath
+    @asset.uri = @path
     @asset.save!
-    @path = Pathname.new("Gemfile").realpath
     @uri = @path.to_uri.to_s
   end
 
@@ -32,11 +33,6 @@ describe Asset do
     Asset.with_any_filename([@path.to_s]).to_a.should == [@asset]
   end
 
-  it "should find the prior asset" do
-    a2 = Asset.asset_for_file("Gemfile")
-    a2.should == @asset
-  end
-
   it "should be a no-op on Asset.uri= with existing uri" do
     @asset.uri = Pathname.new("Gemfile")
     @asset.save!
@@ -60,8 +56,5 @@ describe Asset do
     a = Asset.create!
     lambda { a.uri = Pathname.new("Gemfile") }.should raise_error(ArgumentError)
   end
-
-  # TODO? it "should delegate to proper Asset class methods to process a URI"
-
 end
 
