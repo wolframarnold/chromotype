@@ -1,4 +1,4 @@
-require "spec_helper.rb"
+require "minitest_helper"
 
 describe Asset do
   before :each do
@@ -10,11 +10,11 @@ describe Asset do
   end
 
   def assert_path
-    @asset.uri.should == @path.to_uri
+    @asset.uri.must_equal(@path.to_uri)
     @asset.should have(1).asset_uris
     au = @asset.asset_uris.first
-    au.to_uri.should == @path.to_uri
-    au.uri.should == @path.to_uri.to_s
+    au.to_uri.must_equal(@path.to_uri)
+    au.uri.must_equal(@path.to_uri.to_s)
   end
 
   it "should work on insert" do
@@ -22,15 +22,15 @@ describe Asset do
   end
 
   it "should find with_filename(pathname)" do
-    Asset.with_any_filename([@path]).to_a.should == [@asset]
+    Asset.with_any_filename([@path]).to_a.must_equal([@asset])
   end
 
   it "should find with_uri(pathname)" do
-    Asset.with_uri(@path.to_uri).to_a.should == [@asset]
+    Asset.with_uri(@path.to_uri).to_a.must_equal([@asset])
   end
 
   it "should find with_filename(to_s)" do
-    Asset.with_any_filename([@path.to_s]).to_a.should == [@asset]
+    Asset.with_any_filename([@path.to_s]).to_a.must_equal([@asset])
   end
 
   it "should be a no-op on Asset.uri= with existing uri" do
@@ -48,8 +48,8 @@ describe Asset do
     @asset.save!
     @asset.reload.should have(2).asset_uris
     au = @asset.asset_uris.first
-    au.uri.should == u
-    @asset.asset_uris.second.uri.should == @uri
+    au.uri.must_equal(u)
+    @asset.asset_uris.second.uri.must_equal(@uri)
   end
 
   it "should fail to give the same URI to another asset" do

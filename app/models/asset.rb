@@ -21,10 +21,9 @@ class Asset < ActiveRecord::Base
     joins(:asset_uris).merge AssetUri.with_uri(uri)
   }
 
-  scope :with_filename, lambda { |filename| joins(:asset_uris).merge AssetUri.with_filename(filename) }
-  scope :with_any_filename, lambda { |filenames| joins(:asset_uris).merge AssetUri.with_any_filename(filenames) }
-  scope :with_thumbprint, lambda { |thumbprint| joins(:asset_thumbprints).merge AssetThumbprint.with_thumbprint(thumbprint) }
-  scope :with_any_thumbprint, lambda { |thumbprints| joins(:asset_thumbprints).merge AssetThumbprint.with_any_thumbprint(thumbprints) }
+  scope :with_filename, lambda { |filename| joins(:asset_uris).merge(AssetUri.with_filename(filename)).readonly(false) }
+  scope :with_any_filename, lambda { |filenames| joins(:asset_uris).merge(AssetUri.with_any_filename(filenames)).readonly(false) }
+  scope :with_thumbprint, lambda { |thumbprint| joins(:asset_thumbprints).merge(AssetThumbprint.with_thumbprint(thumbprint)).readonly(false) }
 
   scope :deleted, where("#{table_name}.deleted_at IS NOT NULL")
   scope :not_deleted, where("#{table_name}.deleted_at IS NULL")

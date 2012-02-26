@@ -1,4 +1,15 @@
 GIT
+  remote: git@github.com:rawongithub/minitest-rails.git
+  revision: 1287d6e83f0cf3229f4d9e42fec94914a1330caa
+  branch: gemspec
+  specs:
+    minitest-rails (0.0.5)
+      actionpack (~> 3.1)
+      activesupport (~> 3.1)
+      minitest (~> 2.10)
+      railties (~> 3.1)
+
+GIT
   remote: https://github.com/mceachen/mini_magick.git
   revision: 4f25e64937d270f2232001541b50e21519aa7a33
   specs:
@@ -12,7 +23,7 @@ GIT
     ruby-geonames (0.3.0)
 
 GEM
-  remote: http://rubygems.org/
+  remote: https://rubygems.org/
   specs:
     actionmailer (3.2.1)
       actionpack (= 3.2.1)
@@ -42,8 +53,8 @@ GEM
       i18n (~> 0.6)
       multi_json (~> 1.0)
     addressable (2.2.7)
-    arel (3.0.1)
-    bcrypt-ruby (3.0.1)
+    ansi (1.4.2)
+    arel (3.0.2)
     bitarray (0.0.1)
     bloomer (0.0.4)
       bitarray
@@ -63,27 +74,19 @@ GEM
     delayed_job_active_record (0.3.2)
       activerecord (> 2.1.0)
       delayed_job (~> 3.0.0)
-    diff-lcs (1.1.3)
     erubis (2.7.0)
     eventmachine (0.12.10)
     execjs (1.3.0)
       multi_json (~> 1.0)
-    exiftoolr (0.0.4)
+    exiftoolr (0.0.6)
       json
     fattr (2.2.1)
     ffi (1.0.11)
     findler (0.0.4)
       bloomer
-    growl (1.0.3)
     guard (1.0.0)
       ffi (>= 0.5.0)
       thor (~> 0.14.6)
-    haml (3.1.4)
-    haml-rails (0.3.4)
-      actionpack (~> 3.0)
-      activesupport (~> 3.0)
-      haml (~> 3.0)
-      railties (~> 3.0)
     heroku (2.20.1)
       launchy (>= 0.3.2)
       rest-client (~> 1.6.1)
@@ -94,7 +97,7 @@ GEM
       heroku (>= 1.4)
       rush (~> 0.6.7)
     i18n (0.6.0)
-    journey (1.0.2)
+    journey (1.0.3)
     jquery-rails (2.0.0)
       railties (>= 3.2.0.beta, < 5.0)
       thor (~> 0.14)
@@ -108,11 +111,18 @@ GEM
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
     mime-types (1.17.2)
+    mini_shoulda (0.4.0)
+      minitest (> 2.1.0)
+    minitest (2.11.2)
+    minitest-reporters (0.5.1)
+      ansi
+      minitest (~> 2.0)
+      ruby-progressbar
     multi_json (1.1.0)
     mysql2 (0.3.11)
     nokogiri (1.5.0)
-    parallel (0.5.14)
-    pg (0.13.1)
+    parallel (0.5.15)
+    pg (0.13.2)
     polyglot (0.3.3)
     rack (1.4.1)
     rack-cache (1.1)
@@ -146,19 +156,7 @@ GEM
       json (~> 1.4)
     rest-client (1.6.7)
       mime-types (>= 1.16)
-    rspec (2.7.0)
-      rspec-core (~> 2.7.0)
-      rspec-expectations (~> 2.7.0)
-      rspec-mocks (~> 2.7.0)
-    rspec-core (2.7.1)
-    rspec-expectations (2.7.0)
-      diff-lcs (~> 1.1.2)
-    rspec-mocks (2.7.0)
-    rspec-rails (2.7.0)
-      actionpack (~> 3.0)
-      activesupport (~> 3.0)
-      railties (~> 3.0)
-      rspec (~> 2.7.0)
+    ruby-progressbar (0.0.10)
     rubyzip (0.9.6.1)
     rush (0.6.7)
       session
@@ -169,7 +167,6 @@ GEM
       tilt (~> 1.3)
     session (3.1.0)
       fattr
-    spork (0.9.0)
     sprockets (2.1.2)
       hike (~> 1.2)
       rack (~> 1.0)
@@ -190,43 +187,36 @@ GEM
     uglifier (1.2.3)
       execjs (>= 0.3.0)
       multi_json (>= 1.0.2)
-    watchr (0.7)
-    webrat (0.7.3)
-      nokogiri (>= 1.2.0)
-      rack (>= 1.0)
-      rack-test (>= 0.5.3)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
-  bcrypt-ruby
   closure_tree
   coffee-rails
   delayed_job_active_record
   exiftoolr
   findler
-  growl
   guard
-  haml-rails
   hirefire
   jquery-rails
+  json
   ledermann-rails-settings
   mini_magick!
+  mini_shoulda
+  minitest
+  minitest-rails!
+  minitest-reporters
   mysql2
+  nokogiri
   parallel
   pg
-  rails (>= 3.2)
+  rails (= 3.2.1)
   rb-fchange
   rb-fsevent
   rb-inotify
-  rspec (~> 2.7.0)
-  rspec-rails
   ruby-geonames!
   sass-rails
-  spork
   sqlite3
   thin
-  uglifier
-  watchr
-  webrat
+  uglifier (>= 1.0.3)

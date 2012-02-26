@@ -40,10 +40,7 @@ class ProtoAsset
     return nil if exif? && self.image_pixels < Settings.minimum_image_pixels
 
     paths.each { |p| asset.uri = p.to_uri }
-    thumbprints.each { |t| asset.asset_thumbprints.build(
-      :type => t.type,
-        :thumbprint => t.thumbprint
-    ) }
+    thumbprints.each { |t| t.asset = asset }
     # no need to re-read the exif headers!
     asset.exiftoolr = self.exiftoolr
     asset

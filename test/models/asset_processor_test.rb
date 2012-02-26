@@ -1,8 +1,8 @@
-require "spec_helper.rb"
+require "minitest_helper"
 
 describe AssetProcessor do
   before :each do
-    p = Pathname.new("spec/images/IMG_2452.jpg")
+    p = Pathname.new("test/images/IMG_2452.jpg")
     @asset = AssetProcessor.new(nil).process(p)
     @asset.save!
     @path = p.realpath
@@ -10,11 +10,11 @@ describe AssetProcessor do
   end
 
   def assert_path
-    @asset.uri.should == @path.to_uri
-    @asset.should have(1).asset_uris
+    @asset.uri.must_equal(@path.to_uri)
+    @asset.asset_uris.size.must_equal 1
     au = @asset.asset_uris.first
-    au.to_uri.should == @path.to_uri
-    au.uri.should == @path.to_uri.to_s
+    au.to_uri.must_equal(@path.to_uri)
+    au.uri.must_equal(@path.to_uri.to_s)
   end
 
   it "should work on insert" do
@@ -23,7 +23,7 @@ describe AssetProcessor do
 
   it "should find the prior asset" do
     a2 = AssetProcessor.new(nil).process(@path)
-    a2.should == @asset
+    a2.must_equal(@asset)
   end
 end
 

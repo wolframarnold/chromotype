@@ -1,4 +1,4 @@
-require "spec_helper.rb"
+require "minitest_helper"
 
 describe Tag do
 
@@ -29,11 +29,11 @@ describe Tag do
   #
   #  it "should deactivate direct assets" do
   #    @tag3.deactivate_assets
-  #    Asset.deleted.to_a.should == [@assets[2]]
+  #    Asset.deleted.to_a.must_equal([@assets[2]])
   #  end
   #  it "should deactivate indirect assets" do
   #    @tag1.deactivate_assets
-  #    Asset.deleted.to_a.should == @assets
+  #    Asset.deleted.to_a.must_equal(@assets)
   #    Asset.not_deleted.to_a.should be_empty
   #  end
   #end
