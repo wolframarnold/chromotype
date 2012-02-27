@@ -44,7 +44,9 @@ class Asset < ActiveRecord::Base
     return unless asset_uris.with_uri(uri).empty?
     # Do I need to steal the uri from another asset?
     dupes = AssetUri.with_uri(uri)
-    raise ArgumentError, "Asset #{dupes.first.asset.id} already points to #{uri}" unless dupes.empty?
+    unless dupes.empty?
+      raise ArgumentError, "Asset #{dupes.first.asset.id} already points to #{uri}"
+    end
     asset_uris.build(:uri => uri)
   end
 

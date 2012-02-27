@@ -4,7 +4,7 @@ class Tag < ActiveRecord::Base
   has_many :assets, :through => :asset_tags
 
   def to_s
-    name
+    self.name
   end
 
   def path

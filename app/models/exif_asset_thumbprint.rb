@@ -1,21 +1,30 @@
 require 'exiftoolr'
 
 class ExifAssetThumbprint < AssetThumbprint
+  class ExifTarget
+    attr_accessor :pathname
+    include Exiffed
+    def initialize(pathname)
+      @pathname = pathname
+    end
+  end
+
   def self.thumbprint(pathname, exif_result = nil)
-    exif_result ||= Exiftoolr.new(pathname).result_for(pathname)
-    return nil if exif_result.errors?
-    new(:thumbprint => mk_sha(exif_thumbprint_array(exif_result)))
+    new(:thumbprint => mk_sha(exif_thumbprint_array(pathname, exif_result)))
   end
 
   # These fields are presumed to be highly unlikely to be changed when edited:
-  def self.exif_thumbprint_array(exif)
+  def self.exif_thumbprint_array(pathname, exif_result = nil)
+    exif_result ||= ExifTarget.new(pathname).exif_result
+    return nil if exif_result.errors?
+
     # Can't use :serial_number or :image_number because Preview.app deletes that tag.
-    [exif[:create_date].to_i,
-      exif[:f_number].to_s,
-      exif[:iso].to_s,
-      exif[:aperture].to_s,
-      exif[:shutter_speed].to_s,
-      exif[:make],
-      exif[:model]] unless exif.nil?
+    [exif_result[:create_date].to_i,
+      exif_result[:f_number].to_s,
+      exif_result[:iso].to_s,
+      exif_result[:aperture].to_s,
+      exif_result[:shutter_speed].to_s,
+      exif_result[:make],
+      exif_result[:model]]
   end
 end

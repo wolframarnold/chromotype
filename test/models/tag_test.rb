@@ -4,6 +4,7 @@ describe Tag do
 
   before :each do
     Asset.delete_all
+    AssetUri.delete_all
     Tag.delete_all
     @assets = 3.times.collect { Asset.create! }
     @tag3 = Tag.find_or_create_by_path %w{parent child grandchild}
@@ -15,9 +16,9 @@ describe Tag do
   end
 
   it "should find descendant associations" do
-    Asset.with_tag_or_descendents(@tag1).should =~ @assets
-    Asset.with_tag_or_descendents(@tag2).should =~ @assets.last(2)
-    Asset.with_tag_or_descendents(@tag3).should =~ @assets.last(1)
+    Asset.with_tag_or_descendents(@tag1).must_equal(@assets)
+    Asset.with_tag_or_descendents(@tag2).must_equal(@assets.last(2))
+    Asset.with_tag_or_descendents(@tag3).must_equal(@assets.last(1))
   end
 
   # I don't know if/when I'd need this... :\

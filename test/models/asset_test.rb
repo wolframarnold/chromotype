@@ -2,6 +2,9 @@ require "minitest_helper"
 
 describe Asset do
   before :each do
+    Asset.delete_all
+    AssetUri.delete_all
+
     @asset = Asset.new
     @path = "Gemfile".to_pathname.realpath
     @asset.uri = @path
@@ -11,7 +14,7 @@ describe Asset do
 
   def assert_path
     @asset.uri.must_equal(@path.to_uri)
-    @asset.should have(1).asset_uris
+    @asset.asset_uris.collect{|ea|ea.uri}.must_equal [@uri]
     au = @asset.asset_uris.first
     au.to_uri.must_equal(@path.to_uri)
     au.uri.must_equal(@path.to_uri.to_s)
@@ -46,7 +49,7 @@ describe Asset do
     u = "https://s3.amazonaws.com/test/test/Gemfile"
     @asset.uri = u
     @asset.save!
-    @asset.reload.should have(2).asset_uris
+    @asset.reload.asset_uris.collect{|ea|ea.uri}.must_equal [u, @uri]
     au = @asset.asset_uris.first
     au.uri.must_equal(u)
     @asset.asset_uris.second.uri.must_equal(@uri)
@@ -54,7 +57,7 @@ describe Asset do
 
   it "should fail to give the same URI to another asset" do
     a = Asset.create!
-    lambda { a.uri = Pathname.new("Gemfile") }.should raise_error(ArgumentError)
+    lambda { a.uri = Pathname.new("Gemfile") }.must_raise(ArgumentError)
   end
 end
 

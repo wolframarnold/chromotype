@@ -67,6 +67,16 @@ from PS:
 * find images like your starred images
 * transcode/upload to flickr/vimeo?
 
+* "good" photo prediction:
+libsvm/SVR, random forests, lin regression of very simple features(time of day, season, colors?)
+  https://github.com/febeling/rb-libsvm
+  https://github.com/tomz/libsvm-ruby-swig
+  http://creativemachines.cornell.edu/eureqa
+
+* ditch rails?
+  https://github.com/bbwharris/examples/tree/master/sinatra/test/
+  http://carlosgabaldon.com/articles/singing-with-sinatra/
+
 == Done
 
 * Use Procfile/foreman to manage multiple processes on start?
