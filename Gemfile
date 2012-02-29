@@ -55,7 +55,7 @@ gem 'closure_tree' #, :git => 'git://github.com/mceachen/closure_tree.git'
 gem 'exiftoolr' #, :git => 'git://github.com/mceachen/exiftoolr.git'
 gem 'ledermann-rails-settings', :require => 'rails-settings', :git => 'git://github.com/ledermann/rails-settings.git'
 #gem 'spawn', :git => 'git://github.com/rfc2822/spawn'
-gem 'mini_magick', :require => 'mini_gmagick', :git => 'git://github.com/mceachen/mini_magick.git'
+gem 'mini_magick' #, :require => 'mini_gmagick', :git => 'git://github.com/mceachen/mini_magick.git'
 
 gem 'delayed_job_active_record'
 #gem 'delayed_job', :git => 'git://github.com/mceachen/delayed_job.git' # <-- this has prerequisites support

@@ -1,4 +1,5 @@
 class ImageResizer
+  MiniMagick.processor = nil
   def self.visit_asset(exif_asset)
     m = exif_asset.magick
     #m.strip # remove exif headers
@@ -6,7 +7,7 @@ class ImageResizer
     resizes = Settings.resizes.sort_by { |a| a.to_i }.reverse
     files = resizes.collect do |size|
       # The '>' prevents enlargements.
-      m.resize(size + ">")
+      m.resize(size + "\\>")
 
       w, h = size.split("x")
       p = exif_asset.cache_path_for_size(w.to_i, h.to_i, "jpg")

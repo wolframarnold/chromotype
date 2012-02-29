@@ -22,10 +22,22 @@ ActiveSupport.on_load(:active_record) do
   Settings.defaults[:hirefire_max_workers] = Parallel.processor_count
   #Settings.defaults[:mini_magick_processor] = 'gm'
 
-  prefix = RbConfig::CONFIG['host_os'] =~ /mswin|mingw/ ? "My " : ""
+  host_os = RbConfig::CONFIG['host_os']
+  prefix = host_os =~ /mswin|mingw/ ? "My " : ""
 
-  Settings.defaults[:library_root] = File.join(ENV["HOME"],
-    "#{prefix}Pictures", "Chromotype")
+  Settings.defaults[:library_root] = File.join(
+    ENV["HOME"],
+    "#{prefix}Pictures",
+    "Chromotype"
+  )
+
+  if host_os =~ /darwin/
+    Settings.defaults[:cache_dir] = File.join(
+      ENV["HOME"], "Library", "Caches", "com.chromotype.1"
+    )
+  else
+    File.join(Settings[:library_root] + "Cache")
+  end
 
   # TODO Settings.defaults[:duplicate_directory] = File.join h, "Duplicates"
   # TODO Settings.defaults[:move_duplicates] = false # set to true to move duplicates into dupe purgatory
@@ -46,7 +58,6 @@ ActiveSupport.on_load(:active_record) do
     75x75
   }
 
-
   # TODO: determine this automatically by geoip against this host's public IP address
   Settings.defaults[:is_northern_hemisphere] = true # <-- used for seasons tagging
 
@@ -58,10 +69,6 @@ ActiveSupport.on_load(:active_record) do
 
     def self.library_root
       self[:library_root].to_pathname.tap{|d|d.mkpath}
-    end
-
-    def self.cache_dir
-      library_root + "Cache"
     end
 
     require 'nokogiri'
