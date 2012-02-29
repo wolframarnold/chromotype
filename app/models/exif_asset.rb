@@ -3,7 +3,7 @@ class ExifAsset < Asset
   FILE_EXTENSIONS = %w{jpeg jpg 3fr ari arw bay cap cr2 crw dcr dcs dng drf eip erf fff iiq k25 kdc mef mos mrw nef nrw orf pef ptx pxn r3d raf raw rw2 rwl rwz sr2 srf srw x3f}
 
   def magick
-    @magick ||= MiniMagick::Image.open self.uri
+    MiniMagick::Image.open(pathname.to_s)
   end
 
   def captured_at
@@ -12,20 +12,20 @@ class ExifAsset < Asset
 
   include Exiffed
 
-  # Resize dimensions:
-  #Square
-  #  (75 x 75)
-  #Thumbnail
-  #(100 x 80)
-  #Small
-  #()
-  #Medium 500
-  #(400 x 400)
-  #Medium 640
-  #(800x800)
-  #Large
-  #(1200x1200)
-  #Original
-  #(2634 x 2105)
+  def short_sha
+    @short_sha ||= ExifAssetThumbprint.thumbprint_for_asset(self).first(8)
+  end
 
+  def canonical_name
+    timestamp = captured_at.strftime("%Y%m%d_%H:%M")
+     "#{timestamp}-#{short_sha}"
+  end
+
+  def cache_dir
+    @cache_dir ||= (Settings.cache_dir + captured_at.strftime("%Y/%m"))
+  end
+
+  def cache_path_for_size(width, height, suffix = 'jpg')
+    cache_dir + "#{canonical_name}_#{width}x#{height}.#{suffix}"
+  end
 end

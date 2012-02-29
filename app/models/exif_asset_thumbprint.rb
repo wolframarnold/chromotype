@@ -10,7 +10,11 @@ class ExifAssetThumbprint < AssetThumbprint
   end
 
   def self.thumbprint(pathname, exif_result = nil)
-    new(:thumbprint => mk_sha(exif_thumbprint_array(pathname, exif_result)))
+    new(:thumbprint => mk_sha1(exif_thumbprint_array(pathname, exif_result)))
+  end
+
+  def self.thumbprint_for_asset(exif_asset)
+    mk_sha1(exif_thumbprint_array(exif_asset.pathname, exif_asset.exif_result))
   end
 
   # These fields are presumed to be highly unlikely to be changed when edited:

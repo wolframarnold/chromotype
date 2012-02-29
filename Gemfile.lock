@@ -1,12 +1,19 @@
 GIT
-  remote: https://github.com/mceachen/mini_magick.git
+  remote: git://github.com/ledermann/rails-settings.git
+  revision: 27f4f93f5683e2912dfadeb471991f19421ceece
+  specs:
+    ledermann-rails-settings (1.0.1)
+      activerecord (>= 2.3)
+
+GIT
+  remote: git://github.com/mceachen/mini_magick.git
   revision: 4f25e64937d270f2232001541b50e21519aa7a33
   specs:
     mini_magick (3.4)
       subexec (~> 0.2.1)
 
 GIT
-  remote: https://github.com/mceachen/ruby-geonames.git
+  remote: git://github.com/mceachen/ruby-geonames.git
   revision: 6ec73d0a92efaac91cb7302f1659958aa237516d
   specs:
     ruby-geonames (0.3.0)
@@ -93,8 +100,6 @@ GEM
     json (1.6.5)
     launchy (2.0.5)
       addressable (~> 2.2.6)
-    ledermann-rails-settings (1.0.1)
-      activerecord (>= 2.3)
     mail (2.4.1)
       i18n (>= 0.4.0)
       mime-types (~> 1.16)
@@ -191,7 +196,7 @@ DEPENDENCIES
   hirefire
   jquery-rails
   json
-  ledermann-rails-settings
+  ledermann-rails-settings!
   mini_backtrace
   mini_magick!
   minitest

@@ -12,7 +12,7 @@ class AssetThumbprint < ActiveRecord::Base
     end)
   }
 
-  def self.mk_sha(array)
-    array.collect { |ea| ea.to_s }.join(":").to_sha2
+  def self.mk_sha1(array)
+    array.collect { |ea| ea.to_s }.join(":").to_sha1
   end
 end

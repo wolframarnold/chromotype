@@ -49,13 +49,13 @@ gem 'rb-fchange', :require => false
 
 # gem 'haml-rails'
 gem 'parallel' # just for Parallel.processor_count
-gem 'ruby-geonames', :git => 'https://github.com/mceachen/ruby-geonames.git'
+gem 'ruby-geonames', :git => 'git://github.com/mceachen/ruby-geonames.git'
 gem 'findler' #, :git => 'git://github.com/mceachen/findler.git'
 gem 'closure_tree' #, :git => 'git://github.com/mceachen/closure_tree.git'
 gem 'exiftoolr' #, :git => 'git://github.com/mceachen/exiftoolr.git'
-gem 'ledermann-rails-settings', :require => 'rails-settings'
+gem 'ledermann-rails-settings', :require => 'rails-settings', :git => 'git://github.com/ledermann/rails-settings.git'
 #gem 'spawn', :git => 'git://github.com/rfc2822/spawn'
-gem 'mini_magick', :git => 'https://github.com/mceachen/mini_magick.git', :require => 'mini_gmagick'
+gem 'mini_magick', :require => 'mini_gmagick', :git => 'git://github.com/mceachen/mini_magick.git'
 
 gem 'delayed_job_active_record'
 #gem 'delayed_job', :git => 'git://github.com/mceachen/delayed_job.git' # <-- this has prerequisites support

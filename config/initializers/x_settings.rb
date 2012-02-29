@@ -1,5 +1,8 @@
 ActiveSupport.on_load(:active_record) do
 
+  Settings.cache = ActiveSupport::Cache::MemoryStore.new
+  Settings.cache_options = { :expires_in => 5.minutes }
+
   class Settings
     def self.default_roots(home=ENV["HOME"])
       home = Pathname.new(home) unless home.is_a? Pathname
@@ -17,14 +20,12 @@ ActiveSupport.on_load(:active_record) do
   Settings.defaults[:hirefire_environment] = :local
   Settings.defaults[:hirefire_min_workers] = 1
   Settings.defaults[:hirefire_max_workers] = Parallel.processor_count
-  Settings.defaults[:mini_magick_processor] = 'gm'
+  #Settings.defaults[:mini_magick_processor] = 'gm'
 
-  Settings.defaults[:library_root] = File.join(ENV["HOME"], *case RbConfig::CONFIG['host_os']
-    when /darwin|linux|freebsd/
-      ["Pictures", "Chromotype Library"]
-    when /mswin|mingw/
-      ["My Pictures", "Chromotype Library"]
-  end)
+  prefix = RbConfig::CONFIG['host_os'] =~ /mswin|mingw/ ? "My " : ""
+
+  Settings.defaults[:library_root] = File.join(ENV["HOME"],
+    "#{prefix}Pictures", "Chromotype")
 
   # TODO Settings.defaults[:duplicate_directory] = File.join h, "Duplicates"
   # TODO Settings.defaults[:move_duplicates] = false # set to true to move duplicates into dupe purgatory
@@ -32,6 +33,19 @@ ActiveSupport.on_load(:active_record) do
   # TODO Settings.defaults[:library_originals] = File.join "Originals", "%Y", "%m", "%d"
   # TODO Settings.defaults[:ignorable_patterns] = %w{Thumbs/ Previews/ tmp/}
   Settings.defaults[:minimum_image_pixels] = 1024*768
+  Settings.defaults[:resizes] = %w{
+    2560×1600
+    1920×1080
+    1280x720
+    640x360
+    320x180
+    160x90
+  }
+
+  Settings.defaults[:square_crops] = %w{
+    75x75
+  }
+
 
   # TODO: determine this automatically by geoip against this host's public IP address
   Settings.defaults[:is_northern_hemisphere] = true # <-- used for seasons tagging
@@ -43,13 +57,11 @@ ActiveSupport.on_load(:active_record) do
     end
 
     def self.library_root
-      r = Pathname.new self[:library_root]
-      r.mkpath unless r.exist?
-      r
+      self[:library_root].to_pathname.tap{|d|d.mkpath}
     end
 
-    def self.cache_dir_for_date(date)
-      (library_root + "Cache" + date.strftime("%Y/%m/")).tap { |p| p.mkpath }
+    def self.cache_dir
+      library_root + "Cache"
     end
 
     require 'nokogiri'
