@@ -46,17 +46,15 @@ ActiveSupport.on_load(:active_record) do
   # TODO Settings.defaults[:ignorable_patterns] = %w{Thumbs/ Previews/ tmp/}
   Settings.defaults[:minimum_image_pixels] = 1024*768
   Settings.defaults[:resizes] = %w{
-    2560×1600
-    1920×1080
+    2560x1600
+    1920x1080
     1280x720
     640x360
     320x180
     160x90
   }
 
-  Settings.defaults[:square_crops] = %w{
-    75x75
-  }
+  Settings.defaults[:square_crop_sizes] = [128, 64]
 
   # TODO: determine this automatically by geoip against this host's public IP address
   Settings.defaults[:is_northern_hemisphere] = true # <-- used for seasons tagging
@@ -69,6 +67,20 @@ ActiveSupport.on_load(:active_record) do
 
     def self.library_root
       self[:library_root].to_pathname.tap{|d|d.mkpath}
+    end
+
+    def self.resizes
+      sort_dimensions(self[:resizes])
+    end
+
+    def self.square_crop_sizes
+      self[:square_crop_sizes].sort.reverse
+    end
+
+    def self.sort_dimensions(dimensions)
+      dimensions.sort_by do |a|
+        a.split(/[^\d]/).first(2).inject(1) { |p, i| p * i.to_i }
+      end.reverse
     end
 
     require 'nokogiri'

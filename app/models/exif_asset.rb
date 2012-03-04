@@ -3,7 +3,7 @@ class ExifAsset < Asset
   FILE_EXTENSIONS = %w{jpeg jpg 3fr ari arw bay cap cr2 crw dcr dcs dng drf eip erf fff iiq k25 kdc mef mos mrw nef nrw orf pef ptx pxn r3d raf raw rw2 rwl rwz sr2 srf srw x3f}
 
   def magick
-    MiniMagick::Image.open(pathname.to_s)
+    MicroMagick::Convert.new(pathname.to_s)
   end
 
   def captured_at
@@ -22,7 +22,11 @@ class ExifAsset < Asset
   end
 
   def cache_dir
-    @cache_dir ||= (Settings.cache_dir + captured_at.strftime("%Y/%m"))
+    @cache_dir ||= begin
+      p = Settings.cache_dir.to_pathname + captured_at.strftime("%Y/%m")
+      p.mkpath unless p.directory?
+      p
+    end
   end
 
   def cache_path_for_size(width, height, suffix = 'jpg')

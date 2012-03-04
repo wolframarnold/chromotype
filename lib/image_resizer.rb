@@ -1,31 +1,33 @@
 class ImageResizer
-  MiniMagick.processor = nil
   def self.visit_asset(exif_asset)
-    m = exif_asset.magick
-    #m.strip # remove exif headers
-    #m.quality(85) #TODO: needed?
-    resizes = Settings.resizes.sort_by { |a| a.to_i }.reverse
-    files = resizes.collect do |size|
-      # The '>' prevents enlargements.
-      m.resize(size + "\\>")
-
+    out = [exif_asset.pathname.to_s]
+    Settings.resizes.each do |size|
+      # Use the second-to-last as the resize source to prevent aliasing:
+      m = MicroMagick::Convert.new(out.last(2).first)
+      m.strip # remove exif headers
+      m.resize(size + ">") # The '>' prevents enlargements.
       w, h = size.split("x")
-      p = exif_asset.cache_path_for_size(w.to_i, h.to_i, "jpg")
-      p.parent.mkpath
-      m.format("jpg")
-      m.write(p)
-      p
+      f = exif_asset.cache_path_for_size(w.to_i, h.to_i, "jpg").to_s
+      out << f
+      m.write(f)
     end
 
-    # For the cropped square, load the 2nd-to-last and crop (to handle panoramas properly)
-    m = MiniMagick::Image.open files[-3]
-    min = [m.height, m.width].min
-    m.gravity("Center")
-    m.crop("#{min}x#{min}")
-    Settings.square_crops.each do |size|
-      m.resize(size)
-      w, h = size.split("x")
-      m.write(exif_asset.cache_path_for_size(w.to_i, h.to_i))
+    # For the cropped square, load the crop source (to handle panoramas properly)
+    biggest_square = Settings.square_crop_sizes.first
+    src = out.reverse.find do |f|
+      g = MicroMagick::Geometry.new(f)
+      [g.width, g.height].min > biggest_square
+    end
+    src ||= out.first
+    m = MicroMagick::Convert.new(src)
+    Settings.square_crop_sizes.each do |w|
+      m.strip
+      m.square_crop
+      m.resize("#{w}x#{w}")
+      f = exif_asset.cache_path_for_size(w.to_i, w.to_i).to_s
+      m.write(f)
+      # TODO: is this faster? It'll create aliasing.
+      # m = MicroMagick::Convert.new(f)
     end
   end
 end
