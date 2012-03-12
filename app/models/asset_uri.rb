@@ -2,6 +2,7 @@ class AssetUri < ActiveRecord::Base
   belongs_to :asset
   validates_presence_of :uri
   before_save :normalize_uri_and_sha
+  attr_accessible :uri
 
   def normalize_uri_and_sha
     self.uri = self.uri.to_uri.normalize.to_s

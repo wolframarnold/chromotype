@@ -10,15 +10,20 @@ class ExifAsset < Asset
     exif[:date_time_original] || super
   end
 
-  include Exiffed
+  include ExifMixin
+
+  def sha
+    # We can't/shouldn't use the exif thumbprint, because if they change how the image looks, the caches should be redone.
+    @sha ||= Digest::SHA1.hexdigest(pathname.to_s)
+  end
 
   def short_sha
-    @short_sha ||= ExifAssetThumbprint.thumbprint_for_asset(self).first(8)
+    @short_sha ||= sha.first(8)
   end
 
   def canonical_name
     timestamp = captured_at.strftime("%Y%m%d_%H:%M")
-     "#{timestamp}-#{short_sha}"
+    "#{timestamp}-#{short_sha}"
   end
 
   def cache_dir

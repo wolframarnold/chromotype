@@ -2,6 +2,7 @@ class AssetThumbprint < ActiveRecord::Base
   belongs_to :asset
 
   validates_presence_of :thumbprint
+  attr_accessible :thumbprint
 
   scope :with_thumbprint, lambda { |thumbprint|
     where(if thumbprint.is_a?(AssetThumbprint)

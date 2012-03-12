@@ -1,6 +1,7 @@
 require 'exiftoolr'
 
-module Exiffed
+# Assumes the mixin consumer has a "pathname" method
+module ExifMixin
 
   attr_writer :exiftoolr
 

@@ -5,6 +5,8 @@ class Asset < ActiveRecord::Base
   has_many :asset_thumbprints, :order => 'id desc', :dependent => :destroy
   has_many :duplicate_assets, :foreign_key => 'parent_dupe_id'
 
+  attr_accessible :uri
+
   scope :with_tag, lambda { |tag|
     joins(:asset_tags).merge(AssetTag.find_by_tag_id(tag.id))
   }

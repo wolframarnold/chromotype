@@ -3,6 +3,8 @@ class Tag < ActiveRecord::Base
   has_many :asset_tags
   has_many :assets, :through => :asset_tags
 
+  attr_accessible :name, :description
+
   def to_s
     self.name
   end

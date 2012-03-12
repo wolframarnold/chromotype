@@ -3,7 +3,7 @@ require 'exiftoolr'
 class ExifAssetThumbprint < AssetThumbprint
   class ExifTarget
     attr_accessor :pathname
-    include Exiffed
+    include ExifMixin
     def initialize(pathname)
       @pathname = pathname
     end

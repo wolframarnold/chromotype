@@ -48,6 +48,7 @@ describe AssetProcessor do
         "with/Canon/Canon EOS 20D",
         "file" + (Rails.root + "test/images").to_s
     ].sort
+
   end
 
   it "should process GPS-tagged asset" do
@@ -60,4 +61,6 @@ describe AssetProcessor do
         "file" + (Rails.root + "test/images").to_s
     ].sort
   end
+
+  it "should create resized image assets"
 end

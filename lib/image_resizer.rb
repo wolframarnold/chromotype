@@ -7,7 +7,7 @@ class ImageResizer
       m.strip # remove exif headers
       m.resize(size + ">") # The '>' prevents enlargements.
       w, h = size.split("x")
-      f = exif_asset.cache_path_for_size(w.to_i, h.to_i, "jpg").to_s
+      f = exif_asset.cache_path_for_size(w.to_i, h.to_i).to_s
       out << f
       m.write(f)
     end
@@ -26,8 +26,6 @@ class ImageResizer
       m.resize("#{w}x#{w}")
       f = exif_asset.cache_path_for_size(w.to_i, w.to_i).to_s
       m.write(f)
-      # TODO: is this faster? It'll create aliasing.
-      # m = MicroMagick::Convert.new(f)
     end
   end
 end

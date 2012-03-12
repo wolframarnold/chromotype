@@ -1,6 +1,6 @@
 class ProtoAsset
 
-  include Exiffed
+  include ExifMixin
   THUMBPRINTERS = [ShaThumbprint, ExifAssetThumbprint]
 
   def initialize(uri)
