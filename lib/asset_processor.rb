@@ -16,6 +16,7 @@ class AssetProcessor
     f = Findler.new directory
     f.append_extensions ExifAsset.FILE_EXTENSIONS
     f.case_insensitive!
+    f.add_filter :exif_only
     new(f.iterator)
   end
 

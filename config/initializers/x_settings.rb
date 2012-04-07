@@ -20,7 +20,6 @@ ActiveSupport.migration_safe_on_load do
   Settings.defaults[:hirefire_environment] = :local
   Settings.defaults[:hirefire_min_workers] = 1
   Settings.defaults[:hirefire_max_workers] = Parallel.processor_count
-  #Settings.defaults[:mini_magick_processor] = 'gm'
 
   host_os = RbConfig::CONFIG['host_os']
   prefix = host_os =~ /mswin|mingw/ ? "My " : ""
@@ -45,6 +44,14 @@ ActiveSupport.migration_safe_on_load do
     320x180
     160x90
   }
+
+  # Common screen resolutions:
+  # 1280 x 720   (720p)
+  # 1366 x 768   (11" MBA)
+  # 1440 by 900  (13" MBA)
+  # 1920 by 1080 (1080p, 21" iMac)
+  # 1920 by 1200 (17" MBP)
+  # 2560 by 1440 (27" iMac)
 
   Settings.defaults[:square_crop_sizes] = [128, 64]
 
@@ -111,6 +118,20 @@ ActiveSupport.migration_safe_on_load do
         end
       end
     end
-  end
-end
 
+    def self.magick_engine=(engine)
+      Settings["magick_engine"] = engine
+      setup_micromagick
+    end
+
+    def self.setup_micromagick
+      begin
+        MicroMagick.use(Settings.magick_engine)
+      rescue MicroMagick::InvalidArgument => e
+        Rails.logger.warn("MicroMagick doesn't support using '#{magick_powers}'")
+      end
+    end
+  end
+
+  Settings.setup_micromagick
+end
