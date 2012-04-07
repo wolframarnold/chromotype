@@ -16,8 +16,9 @@ rvm:
 #  - DB=mysql
 #  - DB=postgresql
 
-script: bundle exec rake --trace db:create db:migrate test
+script: bundle exec rake --trace test
 
-#before_script:
+before_script:
 #  - mysql -e 'create database chromotype_test'
 #  - psql -c 'create database chromotype_test' -U postgres
+ - RAILS_ENV=test bundle exec rake --trace db:create db:migrate
