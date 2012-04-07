@@ -18,6 +18,7 @@ postgresql: &postgresql
 defaults: &defaults
   pool: 5
   timeout: 5000
+  host: localhost
   <<: *<%= ENV['DB'] || "postgresql" %>
 
 # TODO: would it be cleaner to just monkeypatch rails' database.yml reader?

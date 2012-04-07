@@ -1,4 +1,4 @@
-ActiveSupport.on_load(:active_record) do
+ActiveSupport.migration_safe_on_load do
 
   Settings.cache = ActiveSupport::Cache::MemoryStore.new
   Settings.cache_options = { :expires_in => 5.minutes }
