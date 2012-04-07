@@ -16,9 +16,8 @@ env:
   - DB=mysql
   - DB=postgresql
 
-script: bundle exec rake --trace db:migrate test
+script: bundle exec rake --trace test
 
 before_script:
   - mysql -e 'create database chromotype_test'
   - psql -c 'create database chromotype_test' -U postgres
-  - bundle install
