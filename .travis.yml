@@ -16,7 +16,7 @@ rvm:
 #  - DB=mysql
 #  - DB=postgresql
 
-script: bundle exec rake --trace test
+script: bundle exec rake --trace db:create db:migrate test
 
 #before_script:
 #  - mysql -e 'create database chromotype_test'
