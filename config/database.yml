@@ -27,9 +27,9 @@ development:
   <<: *defaults
 
 test:
-  adapter: sqlite3
-  database: ":memory:"
-  timeout: 500
+  adapter: sqlite # because travis CI does "sanity checking" without ERB.
+  <<: *defaults
 
 production:
   <<: *defaults
+  # presumably, we'd erb-echo the production password from /etc/something here.
