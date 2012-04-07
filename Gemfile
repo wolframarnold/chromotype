@@ -62,6 +62,8 @@ gem 'delayed_job_active_record'
 gem 'hirefire'
 gem 'nokogiri'
 
+gem 'rufus-lru'
+
 #group :test do
   #gem 'rspec', '~> 2.7.0'
   #gem 'rspec-rails'

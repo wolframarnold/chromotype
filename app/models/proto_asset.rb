@@ -41,8 +41,6 @@ class ProtoAsset
 
     paths.each { |p| asset.uri = p.to_uri }
     thumbprints.each { |t| t.asset = asset }
-    # no need to re-read the exif headers!
-    asset.exiftoolr = self.exiftoolr
     asset
   end
 

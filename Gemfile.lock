@@ -148,6 +148,7 @@ GEM
       mime-types (>= 1.16)
     ruby-progressbar (0.0.10)
     rubyzip (0.9.6.1)
+    rufus-lru (1.0.5)
     rush (0.6.8)
       session
     sass (3.1.15)
@@ -203,6 +204,7 @@ DEPENDENCIES
   rb-fsevent
   rb-inotify
   ruby-geonames!
+  rufus-lru
   sass-rails
   sqlite3
   thin
