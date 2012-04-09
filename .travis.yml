@@ -11,8 +11,9 @@ rvm:
 #  - ci/Gemfile.rails-3.0.x
 #  - ci/Gemfile.rails-3.1.x
 #  - ci/Gemfile.rails-3.2.x
+
 env:
-  - DB=sqlite3
+  - DB=sqlite
   - DB=mysql
   - DB=postgresql
 
