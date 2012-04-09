@@ -1,4 +1,4 @@
-# Chromotype? #
+# Chromotype
 
 **Before August 12, 2011:** (noun) A sheet printed in colors by any process.
 
@@ -6,7 +6,9 @@
 
 <em>This is the Rails port of <a href="http://photostructure.com">PhotoStructure</a></em>.
 
-**Unfortunately, it's not ready for public consumption yet.** Feel free to read on, but this still a work in progress.
+**Unfortunately, it's not ready for public consumption yet.** Feel free to read on, but know this still a work in progress.
+
+[![Build Status](https://secure.travis-ci.org/mceachen/chromotype.png?branch=master)](http://travis-ci.org/mceachen/chromotype)
 
 ## Why not Google+/Facebook/Flickr?
 
@@ -15,7 +17,7 @@ settings changed behind your back, and hundreds of photo sharing sites
 going out of business, why *would* you trust a company to store what
 amounts to the visual record of your life?
 
-### Why not some other cloud service?
+### Why not iPhoto/Picasa/…?
 
 If you've been taking photos regularly for a couple years, you'll have
 tens to hundreds of /gigabytes/ of photos already. It would take weeks
