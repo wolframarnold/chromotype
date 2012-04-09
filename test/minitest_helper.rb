@@ -1,9 +1,30 @@
-require "minitest/spec"
-require 'minitest/reporters'
-require "minitest/autorun"
-
 ENV["RAILS_ENV"] = "test"
-require File.expand_path('../../config/environment', __FILE__)
+require File.expand_path("../../config/environment", __FILE__)
+
+require 'minitest/autorun'
+require 'minitest/reporters'
+require 'active_support/testing/setup_and_teardown'
+require 'miniskirt'
+require 'factories'
+
+=begin
+require "capybara/rails"
+
+class IntegrationTest < MiniTest::Spec
+  include Rails.application.routes.url_helpers
+  include Capybara::DSL
+  register_spec_type(/integration$/, self)
+end
+
+class HelperTest < MiniTest::Spec
+  include ActiveSupport::Testing::SetupAndTeardown
+  include ActionView::TestCase::Behavior
+  register_spec_type(/Helper$/, self)
+end
+
+Turn.config.format = :outline
+=end
+
 
 MiniTest::Unit.runner = MiniTest::SuiteRunner.new
 if ENV["RM_INFO"] || ENV["TEAMCITY_VERSION"]

@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails', '>= 3.2.2'
+gem 'rails', '>= 3.2.3'
 
 gem 'thin'
 
@@ -20,7 +20,7 @@ group :assets do
   gem 'coffee-rails' #, '~> 3.2.1'
 
   # See https://github.com/sstephenson/execjs#readme for more supported runtimes
-  # gem 'therubyracer'
+  # gem 'therubyracer', :platform => :ruby
 
   gem 'uglifier', '>= 1.0.3'
 end
@@ -41,6 +41,7 @@ gem 'jquery-rails'
 
 # To use debugger
 # gem 'ruby-debug'
+# gem 'ruby-debug19', :require => 'ruby-debug'
 
 gem 'guard' # file alteration monitoring
 gem 'rb-inotify', :require => false
@@ -79,9 +80,12 @@ gem 'rufus-lru'
   #gem 'factory_girl_rails' #TODO: needed?
 #end
 
-group :test, :development do
-  gem 'minitest' # At least v2.0.2 if using MiniShoulda.
+group :test do
+  gem 'minitest'
   gem 'minitest-reporters'
-  gem 'mini_backtrace' # Use Rails.backtrace_cleaner with MiniTest.
-  #gem 'mini_shoulda' # A small Shoulda syntax on top of MiniTest::Spec.
+  gem 'miniskirt'
+
+  #gem 'mini_backtrace' # Use Rails.backtrace_cleaner with MiniTest.
+  # gem 'capybara'
+  #gem 'turn'
 end

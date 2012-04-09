@@ -27,7 +27,6 @@ development:
   <<: *defaults
 
 test:
-  adapter: sqlite3 # because travis CI does "sanity checking" without ERB.
   <<: *defaults
 
 production:
