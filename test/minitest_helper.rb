@@ -6,6 +6,7 @@ require 'minitest/reporters'
 require 'active_support/testing/setup_and_teardown'
 require 'miniskirt'
 require 'factories'
+require 'mocha'
 
 =begin
 require "capybara/rails"

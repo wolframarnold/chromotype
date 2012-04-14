@@ -1,30 +1,31 @@
 require "minitest_helper"
 
-describe AssetProcessor do
+describe "asset processing without image resizing" do
   before :each do
-    p = Pathname.new("test/images/IMG_2452.jpg")
+    ImageResizer.stubs(:visit_asset) # this takes a while, and we aren't testing it here, so skip.
     @ap = AssetProcessor.new(nil)
-    @asset = @ap.process(p)
-    @asset.save!
-    @path = p.realpath
-    @uri = @path.to_uri.to_s
   end
 
-  def assert_path
-    @asset.uri.must_equal(@path.to_uri)
-    @asset.asset_uris.size.must_equal 1
-    au = @asset.asset_uris.first
-    au.to_uri.must_equal(@path.to_uri)
-    au.uri.must_equal(@path.to_uri.to_s)
+  def process_img_2452
+    p = Pathname.new("test/images/IMG_2452.jpg")
+    asset = @ap.process(p)
+    asset.save!
+    return asset, p.realpath
   end
 
   it "should work on insert" do
-    assert_path
+    asset, path = process_img_2452
+    asset.uri.must_equal(path.to_uri)
+    asset.asset_uris.size.must_equal 1
+    au = asset.asset_uris.first
+    au.to_uri.must_equal(path.to_uri)
+    au.uri.must_equal(path.to_uri.to_s)
   end
 
   it "should find the prior asset" do
-    a2 = @ap.process(@path)
-    a2.must_equal(@asset)
+    asset, path = process_img_2452
+    a2 = @ap.process(path)
+    a2.must_equal(asset)
   end
 
   it "should return false for non-exif-encoded assets" do
@@ -62,5 +63,21 @@ describe AssetProcessor do
     ].sort
   end
 
-  it "should create resized image assets"
+end
+
+describe "asset processing with image resizing" do
+  it "should create resized image assets" do
+    #with_tmp_dir do |dir|
+    dir = "/var/tmp/testing123"
+    Settings.defaults[:cache_dir] = dir.to_pathname
+    ap = AssetProcessor.new(nil)
+    ap.process("test/images/Canon 20D.jpg")
+    expected_sizes = Settings.resizes + Settings.square_crop_sizes.collect { |i| "#{i}x#{i}" }
+    actual_sizes = Dir["#{dir}/**/*.jpg"].collect do |f|
+      r = ExifMixin.exif_result(f)
+      "#{r[:image_width].to_i}x#{r[:image_height].to_i}"
+    end
+    actual_sizes.sort.must_equal expected_sizes.sort
+    #end
+  end
 end

@@ -63,7 +63,7 @@ gem 'delayed_job_active_record'
 gem 'hirefire'
 gem 'nokogiri'
 
-gem 'rufus-lru'
+#gem 'rufus-lru'
 
 #group :test do
   #gem 'rspec', '~> 2.7.0'
@@ -80,10 +80,15 @@ gem 'rufus-lru'
   #gem 'factory_girl_rails' #TODO: needed?
 #end
 
+group :development do
+# TODO: seemed cool:  gem "rails-erd"
+end
+
 group :test do
   gem 'minitest'
   gem 'minitest-reporters'
   gem 'miniskirt'
+  gem 'mocha'
 
   #gem 'mini_backtrace' # Use Rails.backtrace_cleaner with MiniTest.
   # gem 'capybara'
