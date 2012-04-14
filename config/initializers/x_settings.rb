@@ -37,7 +37,6 @@ ActiveSupport.migration_safe_on_load do
   # TODO Settings.defaults[:ignorable_patterns] = %w{Thumbs/ Previews/ tmp/}
   Settings.defaults[:minimum_image_pixels] = 1024*768
   Settings.defaults[:resizes] = %w{
-    2560x1600
     1920x1080
     1280x720
     640x360
@@ -48,10 +47,13 @@ ActiveSupport.migration_safe_on_load do
   # Common screen resolutions:
   # 1280 x 720   (720p)
   # 1366 x 768   (11" MBA)
-  # 1440 by 900  (13" MBA)
-  # 1920 by 1080 (1080p, 21" iMac)
-  # 1920 by 1200 (17" MBP)
-  # 2560 by 1440 (27" iMac)
+  # 1440 x 900  (13" MBA)
+  # 1920 x 1080 (1080p, 21" iMac)
+  # 1920 x 1200 (17" MBP)
+  # 2560 x 1440 (27" iMac)
+
+  # 2560 x 1600 (30" LCD) -- but by adding this resolution, we double the time
+  # it takes to process an image.
 
   Settings.defaults[:square_crop_sizes] = [128, 64]
 
