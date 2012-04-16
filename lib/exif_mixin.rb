@@ -3,8 +3,7 @@ require 'exiftoolr'
 # Assumes the mixin consumer has a "pathname" method
 module ExifMixin
 
-  # re-using exif lookups when possible
-  EXIF_RESULTS = Rufus::Lru::Hash.new(500)
+  CACHE = ActiveSupport::Cache.lookup_store(:memory_store)
 
   # Returns hash of filename => Exiftoolr::Results for
   # all the files that have valid EXIF headers. Results
@@ -12,23 +11,25 @@ module ExifMixin
   def self.exif_results *filenames
     results = {}
     filenames = filenames.collect { |ea| ea.to_s }
-    filenames.each { |ea| results[ea] = EXIF_RESULTS[ea] }
+    filenames.each { |ea| results[ea] = CACHE.read(ea) }
     results.delete_if { |k, v| v.nil? || v.errors? }
     missing = filenames - results.keys
     e = Exiftoolr.new(missing)
     missing.each do |ea|
       result = e.result_for(ea)
-      EXIF_RESULTS[ea] = result
+      CACHE.write(ea, result)
       results[ea] = result unless result.errors?
     end
     results
   end
 
+  def self.exif_result filename
+    f = filename.to_s
+    exif_results(f)[f]
+  end
+
   def exif_result
-    @exif_result ||= begin
-      p = pathname.to_s
-      ExifMixin.exif_results(p)[p]
-    end
+    @exif_result ||= ExifMixin.exif_result(pathname)
   end
 
   def exif?

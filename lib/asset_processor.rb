@@ -1,7 +1,10 @@
+require 'benchmark'
+
 class AssetProcessor
 
   # "Visitors" are sent #visit_asset when assets are imported.
-  VISITORS = [CameraTag,
+  VISITORS = [
+    CameraTag,
     DateTag,
     DirTag,
     FaceTag,
@@ -10,7 +13,9 @@ class AssetProcessor
     ImageResizer
   ]
 
-  # "Thumbprinters" take a URI and extract a smallish string which can be used to match the asset with a duplicate file.
+  # "Thumbprinters" take a URI and extract a smallish string
+  # which can be used to match the asset with a duplicate file.
+  # (see ProtoAsset)
 
   def self.for_directory(directory)
     f = Findler.new directory

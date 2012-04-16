@@ -67,17 +67,27 @@ end
 
 describe "asset processing with image resizing" do
   it "should create resized image assets" do
-    #with_tmp_dir do |dir|
     dir = "/var/tmp/testing123"
-    Settings.defaults[:cache_dir] = dir.to_pathname
+    Settings.cache_dir = dir.to_pathname
     ap = AssetProcessor.new(nil)
     ap.process("test/images/Canon 20D.jpg")
-    expected_sizes = Settings.resizes + Settings.square_crop_sizes.collect { |i| "#{i}x#{i}" }
-    actual_sizes = Dir["#{dir}/**/*.jpg"].collect do |f|
-      r = ExifMixin.exif_result(f)
-      "#{r[:image_width].to_i}x#{r[:image_height].to_i}"
+
+    widths, heights = [], []
+    Settings.resizes.each do |ea|
+      w, h = ea.split("x").to_i
+      widths << w
+      heights << h
     end
-    actual_sizes.sort.must_equal expected_sizes.sort
-    #end
+    widths += Settings.square_crop_sizes
+    heights += Settings.square_crop_sizes
+
+    Dir["#{Settings.cache_dir}/**/*.jpg"].each do |f|
+      r = ExifMixin.exif_result(f)
+      w = r[:image_width].to_i
+      h = r[:image_height].to_i
+      if !widths.include?(w) && !heights.include?(h)
+        flunk "weird sized cache file: #{f} (#{w}x#{h})"
+      end
+    end
   end
 end

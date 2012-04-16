@@ -13,7 +13,8 @@ class ExifAsset < Asset
   include ExifMixin
 
   def sha
-    # We can't/shouldn't use the exif thumbprint, because if they change how the image looks, the caches should be redone.
+    # We can't/shouldn't use the exif thumbprint, because
+    # if they change how the image looks, the image caches should be rebuilt.
     @sha ||= Digest::SHA1.hexdigest(pathname.to_s)
   end
 
@@ -27,11 +28,9 @@ class ExifAsset < Asset
   end
 
   def cache_dir
-    @cache_dir ||= begin
-      p = Settings.cache_dir.to_pathname + captured_at.strftime("%Y/%m")
-      p.mkpath unless p.directory?
-      p
-    end
+    p = Settings.cache_dir.to_pathname + captured_at.strftime("%Y/%m")
+    p.mkpath unless p.directory?
+    p
   end
 
   def cache_path_for_size(width, height, suffix = 'jpg')
