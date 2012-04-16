@@ -63,6 +63,20 @@ describe "asset processing without image resizing" do
     ].sort
   end
 
+  it "should extract face tags from picasa" do
+    ea = @ap.process("test/images/faces.jpg")
+    ea.reload.tags.collect { |t| t.ancestry_path.join("/") }.sort.must_equal [
+      "when/2005/11/26",
+        "with/Canon/Canon EOS 20D",
+        "when/seasons/autumn",
+        "who/McEachen/James",
+        "who/McEachen/Jamie",
+        "who/McEachen/Karen",
+        "who/McEachen/Matthew",
+        "who/McEachen/Ruth",
+        "file" + (Rails.root + "test/images").to_s
+    ].sort
+  end
 end
 
 describe "asset processing with image resizing" do

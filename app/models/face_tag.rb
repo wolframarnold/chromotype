@@ -4,12 +4,17 @@ class FaceTag < Tag
   end
 
   def self.visit_asset(exif_asset)
-    # todo: short-circuit if we already have face tags
     types = exif_asset.exif[:region_type]
     names = exif_asset.exif[:region_name]
+
     return if types.nil? || names.nil?
-    faces = []
-    types.each_with_index { |ea, i| faces << names[i] if ea.downcase == "face" }
-    faces.collect { |ea| exif_asset.add_tag(named_root.find_or_create_by_name(ea)) }
+
+    faces = names.zip(types).collect{|name, type| name if type.to_s.downcase == "face" }.compact
+
+    faces.each do |face|
+      face_path = Settings.split_face_names ? face.split : [face]
+      face_path.reverse! if Settings.reverse_face_paths
+      exif_asset.add_tag(named_root.find_or_create_by_path(face_path))
+    end
   end
 end

@@ -44,6 +44,15 @@ ActiveSupport.migration_safe_on_load do
     160x90
   }
 
+  # Do you want to store "Firstname Lastname",
+  # or "Firstname/Lastname" for face tags?
+  # (See FaceTag)
+  Settings.defaults[:split_face_names] = true
+
+  # Do you want "lastname/firstname", or "firstname/lastname"?
+  # (See FaceTag)
+  Settings.defaults[:reverse_face_paths] = true
+
   # Common screen resolutions:
   # 1280 x 720   (720p)
   # 1366 x 768   (11" MBA)
