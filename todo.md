@@ -33,6 +33,7 @@
 * download from flickr
 * large image uploaded to S3 for backup?
 * OpenCV face detection: http://www.cognotics.com/opencv/servo_2007_series/part_5/index.html
+* Bootstrap the training of OpenCV by using picasa/iPhoto face tags
 * "good" photo prediction:
 libsvm/SVR, random forests, lin regression of very simple features(time of day, season, colors?)
   https://github.com/febeling/rb-libsvm
