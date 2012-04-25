@@ -16,6 +16,8 @@ ActiveSupport.migration_safe_on_load do
 
   Settings.defaults[:roots] = Settings.default_roots
 
+  Settings.defaults[:exclusion_patterns] = %w(cache caches previews secret temp thumbs tmp)
+
   # Normally use locally-spun delayed job daemons. Switch this to :no_op or :heroku to install on a server.
   Settings.defaults[:hirefire_environment] = :local
   Settings.defaults[:hirefire_min_workers] = 1
@@ -30,8 +32,8 @@ ActiveSupport.migration_safe_on_load do
     "Chromotype"
   )
 
-  # TODO Settings.defaults[:duplicate_directory] = File.join h, "Duplicates"
-  # TODO Settings.defaults[:move_duplicates] = false # set to true to move duplicates into dupe purgatory
+  Settings.defaults[:duplicates_directory] = Settings.library_root + "Duplicates"
+  Settings.defaults[:move_duplicates] = false # set to true to move duplicates into dupe purgatory
 
   # TODO Settings.defaults[:library_originals] = File.join "Originals", "%Y", "%m", "%d"
   # TODO Settings.defaults[:ignorable_patterns] = %w{Thumbs/ Previews/ tmp/}

@@ -2,6 +2,10 @@ require 'benchmark'
 
 class AssetProcessor
 
+  # "Thumbprinters" take a URI and extract a smallish string
+  # which can be used to match the asset with a duplicate file.
+  # (see ProtoAsset)
+
   # "Visitors" are sent #visit_asset when assets are imported.
   VISITORS = [
     CameraTag,
@@ -13,15 +17,12 @@ class AssetProcessor
     ImageResizer
   ]
 
-  # "Thumbprinters" take a URI and extract a smallish string
-  # which can be used to match the asset with a duplicate file.
-  # (see ProtoAsset)
-
   def self.for_directory(directory)
     f = Findler.new directory
     f.append_extensions ExifAsset.FILE_EXTENSIONS
     f.case_insensitive!
-    f.add_filter :exif_only
+    f.exclude_hidden!
+    f.add_filters :skip_exclusion_patterns, :exif_only
     new(f.iterator)
   end
 
