@@ -1,3 +1,5 @@
+require 'fileutils'
+
 class ExifAsset < Asset
 
   FILE_EXTENSIONS = %w{jpeg jpg 3fr ari arw bay cap cr2 crw dcr dcs dng drf eip erf fff iiq k25 kdc mef mos mrw nef nrw orf pef ptx pxn r3d raf raw rw2 rwl rwz sr2 srf srw x3f}
@@ -7,7 +9,7 @@ class ExifAsset < Asset
   end
 
   def captured_at
-    exif[:date_time_original] || super
+    exif[:date_time_original] || exif[:create_date] || super
   end
 
   include ExifMixin
@@ -15,7 +17,7 @@ class ExifAsset < Asset
   def sha
     # We can't/shouldn't use the exif thumbprint, because
     # if they change how the image looks, the image caches should be rebuilt.
-    @sha ||= Digest::SHA1.hexdigest(pathname.to_s)
+    @sha ||= pathname.sha
   end
 
   def short_sha
@@ -27,13 +29,28 @@ class ExifAsset < Asset
     "#{timestamp}-#{short_sha}"
   end
 
-  def cache_dir
-    p = Settings.cache_dir.to_pathname + captured_at.strftime("%Y/%m")
-    p.mkpath unless p.directory?
-    p
+  def thumbnail_dir
+    (Settings.thumbnail_root + ymd_dirs).ensure_directory
+  end
+
+  def ymd_dirs
+    captured_at.strftime("%Y/%m/%d")
   end
 
   def cache_path_for_size(width, height, suffix = 'jpg')
-    cache_dir + "#{canonical_name}_#{width}x#{height}.#{suffix}"
+    thumbnail_dir + "#{canonical_name}_#{width}x#{height}.#{suffix}"
+  end
+
+  def move_to_originals
+    mv_to(Settings.originals_root)
+  end
+
+  def move_to_duplicates
+    mv_to(Settings.duplicates_root)
+  end
+
+  def mv_to(basedir)
+    dest = basedir + ymd_dirs + pathname.basename
+    FileUtils.mv(pathname, dest)
   end
 end

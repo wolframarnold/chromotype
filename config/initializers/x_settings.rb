@@ -1,10 +1,29 @@
 ActiveSupport.migration_safe_on_load do
 
-  Settings.cache = ActiveSupport::Cache::MemoryStore.new
-  Settings.cache_options = { :expires_in => 5.minutes }
+  # Note that all these settings are defaults -- the user can override them
+  # persistently in the database.
 
   class Settings
-    def self.default_roots(home=ENV["HOME"])
+
+    self.cache = ActiveSupport::Cache::MemoryStore.new
+    self.cache_options = {:expires_in => 5.minutes}
+
+    # The library root holds the imported original, duplicate, and thumbnail assets.
+
+    def self.default_library_root(host_os = RbConfig::CONFIG['host_os'])
+      prefix = host_os =~ /mswin|mingw/ ? "My " : ""
+      ENV["HOME"].to_pathname + "#{prefix}Pictures" + "Chromotype"
+    end
+
+    defaults[:library_root] = default_library_root
+
+    def self.library_root
+      self[:library_root].to_pathname.ensure_directory
+    end
+
+    # The "roots" are directories that are scanned for assets to import.
+
+    def self.default_roots(home = ENV["HOME"])
       home = Pathname.new(home) unless home.is_a? Pathname
       roots = %w{Pictures Movies Documents Public public_html}.collect do |type|
         Dir.glob((home + "*#{type}").to_s, File::FNM_CASEFOLD)
@@ -12,33 +31,45 @@ ActiveSupport.migration_safe_on_load do
       roots.flatten!
       roots.select { |r| File.directory? r }
     end
-  end
 
-  Settings.defaults[:roots] = Settings.default_roots
+    defaults[:roots] = Settings.default_roots
 
-  Settings.defaults[:exclusion_patterns] = %w(cache caches previews secret temp thumbs tmp)
+    def self.thumbnail_root
+      (library_root + "Thumbnails").ensure_directory
+    end
 
-  # Normally use locally-spun delayed job daemons. Switch this to :no_op or :heroku to install on a server.
-  Settings.defaults[:hirefire_environment] = :local
-  Settings.defaults[:hirefire_min_workers] = 1
-  Settings.defaults[:hirefire_max_workers] = Parallel.processor_count
+    def self.originals_root
+      (library_root + "Originals").ensure_directory
+    end
 
-  host_os = RbConfig::CONFIG['host_os']
-  prefix = host_os =~ /mswin|mingw/ ? "My " : ""
+    def self.duplicates_root
+      (library_root + "Duplicates").ensure_directory
+    end
 
-  Settings.defaults[:library_root] = File.join(
-    ENV["HOME"],
-    "#{prefix}Pictures",
-    "Chromotype"
-  )
+    def self.roots
+      # If people edit files in the originals or duplicates roots, we should see it.
+      self[:roots] + [originals_root, duplicates_root]
+    end
 
-  Settings.defaults[:duplicates_directory] = Settings.library_root + "Duplicates"
-  Settings.defaults[:move_duplicates] = false # set to true to move duplicates into dupe purgatory
+    def self.keys
+      defaults.keys + Settings.pluck(:var)
+    end
 
-  # TODO Settings.defaults[:library_originals] = File.join "Originals", "%Y", "%m", "%d"
-  # TODO Settings.defaults[:ignorable_patterns] = %w{Thumbs/ Previews/ tmp/}
-  Settings.defaults[:minimum_image_pixels] = 1024*768
-  Settings.defaults[:resizes] = %w{
+    defaults[:move_to_library] = false
+    defaults[:exclusion_patterns] = %w(cache caches previews secret temp thumbs tmp)
+
+    # Normally use locally-spun delayed job daemons. Switch this to :no_op or :heroku to install on a server.
+    defaults[:hirefire_environment] = :local
+    defaults[:hirefire_min_workers] = 1
+    defaults[:hirefire_max_workers] = Parallel.processor_count
+
+    defaults[:duplicates_root] = Settings.library_root + "Duplicates"
+    defaults[:move_duplicates] = false # set to true to move duplicates into dupe purgatory
+
+    # TODO Settings.defaults[:library_originals] = File.join "Originals", "%Y", "%m", "%d"
+    # TODO Settings.defaults[:ignorable_patterns] = %w{Thumbs/ Previews/ tmp/}
+    defaults[:minimum_image_pixels] = 1024*768
+    defaults[:resizes] = %w{
     1920x1080
     1280x720
     640x360
@@ -46,42 +77,29 @@ ActiveSupport.migration_safe_on_load do
     160x90
   }
 
-  # Do you want to store "Firstname Lastname",
-  # or "Firstname/Lastname" for face tags?
-  # (See FaceTag)
-  Settings.defaults[:split_face_names] = true
+    # iPhoto uses 640x480 and 360x270 (?)
 
-  # Do you want "lastname/firstname", or "firstname/lastname"?
-  # (See FaceTag)
-  Settings.defaults[:reverse_face_paths] = true
+    # Do you want to store "Firstname Lastname",
+    # or "Firstname/Lastname" for face tags?
+    # (See FaceTag)
+    defaults[:split_face_names] = true
 
-  # Common screen resolutions:
-  # 1280 x 720   (720p)
-  # 1366 x 768   (11" MBA)
-  # 1440 x 900  (13" MBA)
-  # 1920 x 1080 (1080p, 21" iMac)
-  # 1920 x 1200 (17" MBP)
-  # 2560 x 1440 (27" iMac)
+    # Do you want "lastname/firstname", or "firstname/lastname"?
+    # (See FaceTag)
+    defaults[:reverse_face_paths] = true
 
-  # 2560 x 1600 (30" LCD) -- but by adding this resolution, we double the time
-  # it takes to process an image.
+    # Common screen resolutions:
+    # 1280 x 720   (720p)
+    # 1366 x 768   (11" MBA)
+    # 1440 x 900  (13" MBA)
+    # 1920 x 1080 (1080p, 21" iMac)
+    # 1920 x 1200 (17" MBP)
+    # 2560 x 1440 (27" iMac)
 
-  Settings.defaults[:square_crop_sizes] = [128, 64]
+    # 2560 x 1600 (30" LCD) -- but by adding this resolution, we double the time
+    # it takes to process an image.
 
-  # TODO: determine this automatically by geoip against this host's public IP address
-  Settings.defaults[:is_northern_hemisphere] = true # <-- used for seasons tagging
-
-  class Settings
-
-    def self.roots
-      [library_root] + self[:roots]
-    end
-
-    def self.library_root
-      self[:library_root].to_pathname.tap{|d|d.mkpath}
-    end
-
-    Settings.defaults[:cache_dir] = Settings.library_root + ".cache"
+    defaults[:square_crop_sizes] = [128, 64]
 
     def self.resizes
       sort_dimensions(self[:resizes])
@@ -97,39 +115,10 @@ ActiveSupport.migration_safe_on_load do
       end.reverse
     end
 
-    require 'nokogiri'
-    require 'open-uri'
-
-    # Yeah, I'm going to geek hell for the xpaths, but it's just to be nice to the user, so it's OK.
-    def self.latitude_maxmind
-      doc = Nokogiri::HTML(open('http://www.maxmind.com/app/locate_my_ip'))
-      doc.xpath('//td[contains(text(), "Latitude")]/following-sibling::td').text.split("/").first.strip
-    end
-
-    def self.latitude_geoiptool
-      doc = Nokogiri::HTML(open('http://www.geoiptool.com/en/'))
-      doc.xpath('//span[text()="Latitude:"]/../../td[2]').text
-    end
-
-    def self.latitude
-      latitude_maxmind
-    rescue StandardError
-      begin
-        latitude_geoiptool
-      rescue StandardError
-        nil
-      end
-    end
-
-    def self.is_northern_hemisphere
-      self[:is_northern_hemisphere] || begin
-        l = latitude
-        if l.nil?
-          true
-        else
-          self[:is_northern_hemisphere] = l.to_f > 0
-        end
-      end
+    # Used for seasons tagging. This is expensive, so we only do it once
+    # and save it, rather than just setting a default.
+    if self[:is_northern_hemisphere].nil?
+      self[:is_northern_hemisphere] = IpLocation.northern_hemisphere? || true
     end
 
     def self.magick_engine=(engine)
@@ -144,7 +133,7 @@ ActiveSupport.migration_safe_on_load do
         Rails.logger.warn("MicroMagick doesn't support using '#{magick_powers}'")
       end
     end
-  end
 
-  Settings.setup_micromagick
+    self.setup_micromagick
+  end
 end

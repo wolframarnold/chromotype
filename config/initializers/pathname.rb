@@ -10,12 +10,20 @@ class Pathname
     self
   end
 
+  def sha
+    Digest::SHA1.file(to_s).hexdigest
+  end
+
   # Returns the current path, split into an array.
   # Pathname.new("/a/b/c").path_array = ["a", "b", "c"]
   def path_array
     a = []
     each_filename{|ea|a << ea}
     a
+  end
+
+  def ensure_directory
+    self.tap { |d| d.mkpath }
   end
 
   # returns either nil (if !#exists?), or an array of Pathname instances

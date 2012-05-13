@@ -80,7 +80,7 @@ describe "asset processing without image resizing" do
 end
 
 describe "asset processing with image resizing" do
-  it "should create resized image assets" do
+  it "creates resized image assets" do
     dir = "/var/tmp/testing123"
     Settings.cache_dir = dir.to_pathname
     ap = AssetProcessor.new(nil)
@@ -95,7 +95,9 @@ describe "asset processing with image resizing" do
     widths += Settings.square_crop_sizes
     heights += Settings.square_crop_sizes
 
-    Dir["#{Settings.cache_dir}/**/*.jpg"].each do |f|
+    thumbnail_root = Settings.thumbnail_root
+    thumbnail_root.wont_be_nil
+    Dir["#{thumbnail_root}/**/*.jpg"].each do |f|
       r = ExifMixin.exif_result(f)
       w = r[:image_width].to_i
       h = r[:image_height].to_i

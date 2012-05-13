@@ -17,11 +17,7 @@ class String
     end
   end
 
-  def to_sha2
-    Digest::SHA2.hexdigest(self)
-  end
-
-  def to_sha1
+  def sha
     Digest::SHA1.hexdigest(self)
   end
 end

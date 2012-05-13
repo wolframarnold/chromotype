@@ -1,4 +1,4 @@
-# Chromotype
+# Chromotype [![Build Status](https://secure.travis-ci.org/mceachen/chromotype.png?branch=master)](http://travis-ci.org/mceachen/chromotype)
 
 **Before August 12, 2011:** (noun) A sheet printed in colors by any process.
 
@@ -7,8 +7,6 @@
 <em>This is the Rails port of <a href="http://photostructure.com">PhotoStructure</a></em>.
 
 **Unfortunately, it's not ready for public consumption yet.** Feel free to read on, but know this still a work in progress.
-
-[![Build Status](https://secure.travis-ci.org/mceachen/chromotype.png?branch=master)](http://travis-ci.org/mceachen/chromotype)
 
 ## Why not Google+/Facebook/Flickr?
 

@@ -1,15 +1,21 @@
 require "minitest_helper"
 
+
 describe Pathname do
 
   describe "path_array" do
-    it "should split paths properly" do
+    it "splits paths properly" do
       Pathname.new("/a/b/c").path_array.must_equal(%w{a b c})
     end
   end
 
+  it "computes sha correctly" do
+    p = Rails.root + "test/images/faces.jpg"
+    p.sha.must_equal("d6711de05a5ad9baac82a7e8957a0633f6b471ae")
+  end
+
   describe "follow_redirects" do
-    it "should follow relative symlinks" do
+    it "follows relative symlinks" do
       with_tmp_dir do |dir|
         `ln -s c b`
         `ln -s b a`
@@ -28,15 +34,15 @@ describe Pathname do
   end
 
   describe "absolutepath" do
-    it "should work with simple files" do
+    it "works with simple files" do
       p = Pathname.new "Gemfile"
       p.absolutepath.must_equal(p.realpath)
     end
-    it "should work with non-existent paths from real paths" do
+    it "works with non-existent paths from real paths" do
       p = Pathname.new "a/b/c"
       p.absolutepath.must_equal(Rails.root + p)
     end
-    it "should work with symlinks" do
+    it "works with symlinks" do
       with_tmp_dir do |dir|
         `ln -s b a`
         p = Pathname.new "b"

@@ -60,4 +60,8 @@ class ProtoAsset
     nil
   end
 
+  def find_all_with_thumbprint
+    Asset.with_any_thumbprint(thumbprints)
+  end
+
 end

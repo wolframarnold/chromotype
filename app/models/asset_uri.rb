@@ -6,30 +6,30 @@ class AssetUri < ActiveRecord::Base
 
   def normalize_uri_and_sha
     self.uri = self.uri.to_uri.normalize.to_s
-    self.sha = self.uri.to_sha2
+    self.uri_sha = self.uri.sha
+  end
+
+  def self.sha_for_uri(uri)
+    uri.to_uri.normalize.to_s.sha
   end
 
   scope :with_uri, lambda { |uri|
-    where(:sha => sha(uri)).order("created_at DESC")
+    where(:uri_sha => sha_for_uri(uri))
   }
 
+  def self.sha_for_filename(filename)
+    filename.to_pathname.to_uri.to_s.sha
+  end
+
   scope :with_filename, lambda { |filename|
-    where(:sha => sha_for_filename(filename))
+    where(:uri_sha => sha_for_filename(filename))
   }
 
   scope :with_any_filename, lambda { |filenames|
-    where(:sha => filenames.collect { |ea| sha_for_filename(ea) })
+    where(:uri_sha => filenames.collect { |ea| sha_for_filename(ea) })
   }
 
   def to_uri
     @uri ||= self.uri.to_uri
-  end
-
-  def self.sha(uri)
-    uri.to_uri.normalize.to_s.to_sha2
-  end
-
-  def self.sha_for_filename(filename)
-    sha(filename.to_pathname)
   end
 end

@@ -1,6 +1,6 @@
 class ShaThumbprint < AssetThumbprint
   attr_accessible :thumbprint
   def self.thumbprint(pathname, ignored)
-    new(:thumbprint => Digest::SHA2.file(pathname).hexdigest)
+    new(:thumbprint => pathname.to_pathname.sha)
   end
 end

@@ -33,12 +33,12 @@ ActiveRecord::Schema.define(:version => 20120213071058) do
 
   create_table "asset_uris", :force => true do |t|
     t.integer  "asset_id"
-    t.string   "sha",        :limit => 64
     t.string   "uri",        :limit => 2000
+    t.string   "uri_sha",    :limit => 40
     t.datetime "created_at"
   end
 
-  add_index "asset_uris", ["sha"], :name => "uri_sha_udx", :unique => true
+  add_index "asset_uris", ["uri_sha"], :name => "uri_sha_udx", :unique => true
 
   create_table "assets", :force => true do |t|
     t.string   "type"

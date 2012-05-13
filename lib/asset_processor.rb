@@ -38,6 +38,13 @@ class AssetProcessor
     pa = ProtoAsset.new(pathname)
     asset = pa.find_or_initialize_asset
     if asset
+      if Settings.move_to_library
+        # Are we the only one?
+        dupes = pa.find_all_with_thumbprint.sort_by(:mtime)
+        winner = dupes.pop # most-recently-touched wins
+        winner.move_to_originals
+        dupes.each { |ea| ea.move_to_duplicates }
+      end
       asset.save!
       visit_asset(asset)
       asset

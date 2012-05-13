@@ -1,13 +1,17 @@
 ## Backend
 
-* move files into root/YYYY/yyyy-mm-dd/ automatically
-  * what to do with dupes? shove into dupe dir?
+* move files into root/Originals/YYYY/mm/dd/ automatically
+  * exact dupes are deleted
+  * auto-rotate (if setting is set)
+  * TODO: if exact dupes are found, the non-IMG_NNN-name is taken, or added to a tag?
+  * close dupes (orig image - new image delta is small, or after rotations)
+    get moved into root/Duplicates/YYYY/mm/dd/hhmmss_#{orig_name}
 * cron job for processing? rufus-scheduler?
 * remove auto-built tags when we re-process an image, to make tagging idempotent
 * FAM integration with guard
 * verify hire-fire (and integrate with guard daemon?)
 * get background processing working (assume there's a restart event thanks to monit/unicorn/passenger?)
-* https://github.com/maccman/juggernaut, and use resque instead?
+* https://github.com/maccman/juggernaut, and use resque instead? or use postgres queue?
 
 ## Frontend
 
@@ -15,6 +19,7 @@
 * decompose page ajax requests
 * http://boedesign.com/demos/gritter/ for growl notification of async stuff
 * add https://github.com/rails/jquery-ujs ?
+* UI to edit the settings table
 
 ## Features
 
