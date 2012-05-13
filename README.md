@@ -39,9 +39,9 @@ Chromotype shows you /shuffled/ views of your photos and
 images. Finding that one shot, that "needle in a haystack," is always
 only a couple clicks away even if you don't know where to look at first.
 
-You can hide photos you don't want to see, give the images you love a
+<!-- Coming "soon": You can hide photos you don't want to see, give the images you love a
 star, and use web services to get your photo printed with just a click
-or two.
+or two. -->
 
 ## Nerdy details
 
