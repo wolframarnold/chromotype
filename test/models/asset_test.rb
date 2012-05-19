@@ -7,7 +7,7 @@ describe Asset do
 
     @asset = Asset.new
     @path = "Gemfile".to_pathname.realpath
-    @asset.uri = @path
+    @asset.add_pathname @path
     @asset.save!
     @uri = @path.to_uri.to_s
   end
@@ -37,17 +37,17 @@ describe Asset do
   end
 
   it "should be a no-op on Asset.uri= with existing uri" do
-    @asset.uri = Pathname.new("Gemfile")
+    @asset.add_pathname Pathname.new("Gemfile")
     @asset.save!
     assert_path
-    @asset.uri = @path
+    @asset.add_uri @path
     @asset.save!
     assert_path
   end
 
   it "should add another #uri=" do
     u = "https://s3.amazonaws.com/test/test/Gemfile"
-    @asset.uri = u
+    @asset.add_uri u
     @asset.save!
     @asset.reload.asset_uris.collect{|ea|ea.uri}.must_equal [u, @uri]
     au = @asset.asset_uris.first
@@ -57,7 +57,7 @@ describe Asset do
 
   it "should fail to give the same URI to another asset" do
     a = Asset.create!
-    lambda { a.uri = Pathname.new("Gemfile") }.must_raise(ArgumentError)
+    lambda { a.add_pathname Pathname.new("Gemfile") }.must_raise(ArgumentError)
   end
 end
 

@@ -22,7 +22,7 @@ ActiveRecord::Schema.define(:version => 20120213071058) do
 
   create_table "asset_thumbprints", :force => true do |t|
     t.integer  "asset_id"
-    t.string   "type",       :limit => 20
+    t.string   "type",       :limit => 40
     t.string   "thumbprint", :limit => 512
     t.datetime "created_at",                :null => false
     t.datetime "updated_at",                :null => false
@@ -42,7 +42,7 @@ ActiveRecord::Schema.define(:version => 20120213071058) do
 
   create_table "assets", :force => true do |t|
     t.string   "type"
-    t.integer  "directory_id"
+    t.integer  "original_asset_id"
     t.string   "basename"
     t.datetime "taken_at"
     t.boolean  "favorite"
@@ -50,8 +50,9 @@ ActiveRecord::Schema.define(:version => 20120213071058) do
     t.string   "thumbprint"
     t.string   "caption"
     t.datetime "mtime"
-    t.datetime "created_at",   :null => false
-    t.datetime "updated_at",   :null => false
+    t.datetime "created_at",        :null => false
+    t.datetime "updated_at",        :null => false
+    t.datetime "lost_at"
     t.datetime "deleted_at"
   end
 

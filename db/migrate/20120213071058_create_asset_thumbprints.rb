@@ -2,7 +2,7 @@ class CreateAssetThumbprints < ActiveRecord::Migration
   def change
     create_table :asset_thumbprints do |t|
       t.integer :asset_id
-      t.string :type, :limit => 20
+      t.string :type, :limit => 40
       t.string :thumbprint, :limit => 512
       t.timestamps
     end

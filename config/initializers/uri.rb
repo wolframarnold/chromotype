@@ -7,8 +7,9 @@ class Pathname
       URI.escape(absolutepath.to_s), nil, nil, nil)
   end
 
+  # Will be nil unless uri.scheme is "file"
   def self.from_uri(uri)
-    new(URI.unescape(uri.path))
+    new(URI.unescape(uri.path)) if uri.scheme == "file"
   end
 end
 
@@ -21,6 +22,7 @@ end
 module URI
 
   class Generic
+    # Will be nil unless self.scheme is "file"
     def pathname
       Pathname.from_uri(self)
     end

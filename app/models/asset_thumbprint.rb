@@ -1,8 +1,7 @@
 class AssetThumbprint < ActiveRecord::Base
   belongs_to :asset
-
   validates_presence_of :thumbprint
-  attr_accessible :thumbprint
+  attr_accessible :thumbprint, :type
 
   def self.to_hash(thumbprint)
     if thumbprint.is_a?(AssetThumbprint)

@@ -1,9 +1,10 @@
 class Asset < ActiveRecord::Base
+  belongs_to :original_asset, :class_name => "Asset"
+  has_many :derivatives, :class_name => "Asset", :foreign_key => "original_asset_id"
   has_many :asset_tags
   has_many :tags, :through => :asset_tags
   has_many :asset_uris, :order => 'id desc', :dependent => :destroy
   has_many :asset_thumbprints, :order => 'id desc', :dependent => :destroy
-  has_many :duplicate_assets, :foreign_key => 'parent_dupe_id'
 
   attr_accessible :uri
 
@@ -32,7 +33,10 @@ class Asset < ActiveRecord::Base
   scope :not_deleted, where("#{table_name}.deleted_at IS NULL")
 
   def pathname
-    uri.pathname
+    @pathname ||= begin
+      au = asset_uris.detect { |ea| ea.exist? } || asset_uris.detect { |ea| ea.pathname }
+      au.pathname if au
+    end
   end
 
   def captured_at
@@ -43,7 +47,7 @@ class Asset < ActiveRecord::Base
     asset_uris.first.try(:to_uri)
   end
 
-  def uri=(uri)
+  def add_uri(uri)
     return unless asset_uris.with_uri(uri).empty?
     # Do I need to steal the uri from another asset?
     dupes = AssetUri.with_uri(uri)
@@ -53,23 +57,55 @@ class Asset < ActiveRecord::Base
     asset_uris.build(:uri => uri)
   end
 
+  def add_pathname(pathname)
+    add_uri(pathname.to_pathname.to_uri)
+  end
+
   def delete!
     update_attribute(:deleted_at, Time.now)
   end
 
   def deleted?
-    !self.deleted_at.nil?
+    !deleted_at.nil?
+  end
+
+  def exists?
+    pathname && pathname.exists?
+  end
+
+  def lost?
+    !lost_at.nil?
+  end
+
+  def sanity_check!
+    if exists?
+      self.lost_at = nil
+    else
+      self.lost_at ||= Time.now # <- only set if lost_at wasn't set already
+    end
+    save if changed?
   end
 
   def add_tag(tag)
     asset_tags.find_or_create_by_tag_id(tag.id)
   end
 
-  def self.add_thumbprint(asset_thumbprint)
+  def add_thumbprint(asset_thumbprint)
     asset_thumbprints.find_or_create_by_type_and_thumbprint(
       :type => asset_thumbprint.class,
-        :thumbprint => asset_thumbprint.thumbprint)
+      :thumbprint => asset_thumbprint.thumbprint)
   end
 
+  def move_to_originals
+    mv_to(Settings.originals_root)
+  end
 
+  def move_to_derivatives
+    mv_to(Settings.derivatives_root)
+  end
+
+  def mv_to(basedir)
+    dest = basedir + ymd_dirs + pathname.basename
+    FileUtils.mv(pathname, dest)
+  end
 end

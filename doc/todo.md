@@ -1,11 +1,18 @@
 ## Backend
 
-* move files into root/Originals/YYYY/mm/dd/ automatically
-  * exact dupes are deleted
-  * auto-rotate (if setting is set)
-  * TODO: if exact dupes are found, the non-IMG_NNN-name is taken, or added to a tag?
+* importing files:
+  * if the file sha matches an imported asset
+    * iff move_to_library is set
+    * and the duplicate file still exists in the library
+    * and the duplicate file matches the sha and sha2 of the imported asset
+  * if not a dupe, see if it's a derivative
+    * if the exif thumbprint matches an asset
+
+
   * close dupes (orig image - new image delta is small, or after rotations)
-    get moved into root/Duplicates/YYYY/mm/dd/hhmmss_#{orig_name}
+    get moved into root/Modified/YYYY/mm/dd/hhmmss_#{orig_name}
+  * auto-rotate (if setting is set)
+
 * cron job for processing? rufus-scheduler?
 * remove auto-built tags when we re-process an image, to make tagging idempotent
 * FAM integration with guard
@@ -15,6 +22,7 @@
 
 ## Frontend
 
+* use https://github.com/bartaz/impress.js (3-d presentations?)
 * http://warpspire.com/experiments/history-api/ to infinity!
 * decompose page ajax requests
 * http://boedesign.com/demos/gritter/ for growl notification of async stuff

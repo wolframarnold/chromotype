@@ -2,7 +2,7 @@ class CreateAssets < ActiveRecord::Migration
   def change
     create_table :assets do |t|
       t.string :type
-      t.references :directory
+      t.integer :original_asset_id
       t.string :basename
       t.timestamp :taken_at
       t.boolean :favorite
@@ -11,6 +11,7 @@ class CreateAssets < ActiveRecord::Migration
       t.string :caption
       t.datetime :mtime
       t.timestamps
+      t.datetime :lost_at
       t.datetime :deleted_at
     end
 

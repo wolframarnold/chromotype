@@ -9,6 +9,15 @@ class AssetUri < ActiveRecord::Base
     self.uri_sha = self.uri.sha
   end
 
+  # Will be nil unless the uri's scheme is "file"
+  def pathname
+    @pathname ||= to_uri.pathname
+  end
+
+  def exist?
+    pathname && pathname.exist?
+  end
+
   def self.sha_for_uri(uri)
     uri.to_uri.normalize.to_s.sha
   end
@@ -32,4 +41,5 @@ class AssetUri < ActiveRecord::Base
   def to_uri
     @uri ||= self.uri.to_uri
   end
+
 end

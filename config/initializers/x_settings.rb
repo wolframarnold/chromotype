@@ -42,20 +42,22 @@ ActiveSupport.migration_safe_on_load do
       (library_root + "Originals").ensure_directory
     end
 
-    def self.duplicates_root
-      (library_root + "Duplicates").ensure_directory
+    def self.derivatives_root
+      (library_root + "Derivatives").ensure_directory
     end
 
     def self.roots
       # If people edit files in the originals or duplicates roots, we should see it.
-      self[:roots] + [originals_root, duplicates_root]
+      self[:roots] + [originals_root, derivatives_root]
     end
 
     def self.keys
       defaults.keys + Settings.pluck(:var)
     end
 
+    # If set, assets found outside of the library root will be moved into originals or modified
     defaults[:move_to_library] = false
+
     defaults[:exclusion_patterns] = %w(cache caches previews secret temp thumbs tmp)
 
     # Normally use locally-spun delayed job daemons. Switch this to :no_op or :heroku to install on a server.
@@ -63,11 +65,6 @@ ActiveSupport.migration_safe_on_load do
     defaults[:hirefire_min_workers] = 1
     defaults[:hirefire_max_workers] = Parallel.processor_count
 
-    defaults[:duplicates_root] = Settings.library_root + "Duplicates"
-    defaults[:move_duplicates] = false # set to true to move duplicates into dupe purgatory
-
-    # TODO Settings.defaults[:library_originals] = File.join "Originals", "%Y", "%m", "%d"
-    # TODO Settings.defaults[:ignorable_patterns] = %w{Thumbs/ Previews/ tmp/}
     defaults[:minimum_image_pixels] = 1024*768
     defaults[:resizes] = %w{
     1920x1080

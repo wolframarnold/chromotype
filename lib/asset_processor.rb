@@ -40,10 +40,16 @@ class AssetProcessor
     if asset
       if Settings.move_to_library
         # Are we the only one?
-        dupes = pa.find_all_with_thumbprint.sort_by(:mtime)
-        winner = dupes.pop # most-recently-touched wins
+        others = pa.assets_with_any_thumbprint.sort_by(:mtime)
+        winner = others.pop # most-recently-touched wins
         winner.move_to_originals
-        dupes.each { |ea| ea.move_to_duplicates }
+        winner.original_asset = nil
+        winner.save!
+        others.each do |ea|
+          ea.move_to_derivatives
+          ea.original_asset = winner
+          ea.save!
+        end
       end
       asset.save!
       visit_asset(asset)

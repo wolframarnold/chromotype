@@ -40,17 +40,4 @@ class ExifAsset < Asset
   def cache_path_for_size(width, height, suffix = 'jpg')
     thumbnail_dir + "#{canonical_name}_#{width}x#{height}.#{suffix}"
   end
-
-  def move_to_originals
-    mv_to(Settings.originals_root)
-  end
-
-  def move_to_duplicates
-    mv_to(Settings.duplicates_root)
-  end
-
-  def mv_to(basedir)
-    dest = basedir + ymd_dirs + pathname.basename
-    FileUtils.mv(pathname, dest)
-  end
 end
