@@ -3,9 +3,7 @@ require 'geonames'
 class GeoTag < Tag
   def self.cache
     @@cache ||= begin
-      cache_dir = Rails.root + "cache"
-      cache_dir.mkpath
-      ActiveSupport::Cache.lookup_store(:file_store, cache_dir + "geo.cache")
+      ActiveSupport::Cache.lookup_store(:file_store, Settings.cache_root + "geo.cache")
     end
   end
 

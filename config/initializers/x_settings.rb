@@ -46,6 +46,10 @@ ActiveSupport.migration_safe_on_load do
       (library_root + "Derivatives").ensure_directory
     end
 
+    def self.cache_root
+      (library_root + "Cache").ensure_directory
+    end
+
     def self.roots
       # If people edit files in the originals or duplicates roots, we should see it.
       self[:roots] + [originals_root, derivatives_root]
