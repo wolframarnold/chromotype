@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails', '>= 3.2.3'
+gem 'rails', '>= 3.2.6'
 
 gem 'thin'
 
@@ -11,6 +11,9 @@ gem 'sqlite3'
 gem 'mysql2'
 gem 'pg'
 
+# TODO: look into: gem 'acts_as_archival'
+
+gem 'randumb', :git => 'git://github.com/spilliton/randumb.git'
 gem 'json'
 
 # Gems used only for assets and not required
@@ -26,6 +29,8 @@ group :assets do
   gem 'twitter-bootstrap-rails'
 end
 
+gem 'font-awesome-rails'
+gem 'simple_form'
 gem 'jquery-rails'
 
 # To use ActiveModel has_secure_password
@@ -49,19 +54,22 @@ gem 'rb-inotify', :require => false
 gem 'rb-fsevent', :require => false
 gem 'rb-fchange', :require => false
 
-# gem 'haml-rails'
-gem 'parallel' # just for Parallel.processor_count
+#gem 'haml-rails'
+#gem 'parallel' # just for Parallel.processor_count
 gem 'ruby-geonames', :git => 'git://github.com/mceachen/ruby-geonames.git'
 gem 'findler' #, :git => 'git://github.com/mceachen/findler.git'
 gem 'closure_tree' #, :git => 'git://github.com/mceachen/closure_tree.git'
 gem 'exiftoolr' #, :git => 'git://github.com/mceachen/exiftoolr.git'
 gem 'ledermann-rails-settings', :require => 'rails-settings', :git => 'git://github.com/ledermann/rails-settings.git'
-#gem 'spawn', :git => 'git://github.com/rfc2822/spawn'
 gem 'micro_magick'
 
-gem 'delayed_job_active_record'
+#gem 'spawn', :git => 'git://github.com/rfc2822/spawn'
+#gem 'delayed_job_active_record'
 #gem 'delayed_job', :git => 'git://github.com/mceachen/delayed_job.git' # <-- this has prerequisites support
-gem 'hirefire'
+#gem 'hirefire'
+gem 'sidekiq'
+gem 'foreman'
+
 gem 'nokogiri'
 
 #gem 'rufus-lru'
