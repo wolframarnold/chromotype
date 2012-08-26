@@ -10,29 +10,21 @@ An "asset" has a caption, a description, and tags.
 
 An asset URI[^1] is a path to an asset. An asset has one or more asset URIs.
 
-It can be a local file:// URI, or something non-local.
+It can be a local `file://` URI, or something non-local.
 
 If an asset is first found non-locally, the asset will be cached
-locally and will ALSO have a file:// Asset URI.
+locally and will ALSO have a `file://` Asset URI.
 
-An asset may have multiple file: Asset URIs if duplicate local files are found.
+If duplicate files are found, those `file://` URIs will point to the same asset.
 
-To support iPhoto's edited photos, where there is an "original" or "master" version,
-as well as a "modified" or "preview" version of a photo,
-(and the user would want to see only the modified version by default),
+If an iPhoto library is imported, for example, the "original" or "master" version,
+as well as a "modified" or "preview" version of a photo will point to the same asset.
 
 ## What's a "content fingerprint"?
 
-It's a hash of an aspect of a file -- a SHA of the asset's contents or the SHA
-of a select set of EXIF header contents are two content fingerprints.
-
-## What's a "derivative asset"?
-
-Any asset where a content fingerprint matches another asset's content fingerprint.
-
-To make displaying the "best" derivative assets efficient, a "primary derivative" asset id FK
-will be null for primary assets, and will point to the most recently modified version of an
-image.
+It's a hash of an aspect of a file, like:
+* the SHA of the asset's contents or
+* the SHA of a select set of EXIF header contents
 
 # Use cases
 
@@ -42,38 +34,16 @@ image.
 
 ## What happens when assets are modified in iPhoto?
 
-* Their SHA content fingerprint will not match. Two Assets will be created, and the least
-recently modified asset will set it's primary_derivative_asset_id to the most recently
-modified asset.
+* Their SHA content fingerprint will not match, but their EXIF content fingerprint will.
 
 ## What happens when a file is edited in place
-* The SHA content fingerprint will not match the previous value, which will require
-** thumbnails to be rebuilt
-** recalculation of the "primary derivative asset id"
 
-## How are derivative asset ids recalculated?
+If the SHA content fingerprint and the EXIF header don't match, we tombstone the Asset URI,
+and if that's the last Asset URI pointing to an Asset, we mark the asset as tombstoned.
 
-1. for a given asset, A
-2. there are N fingerprints: T.
-3. and there are 1 or more assets with matching fingerprints to T: M.
-4. the most recently modified asset that isn't in a path =~ /Masters|Originals?/ is the "primary": P
-5. collect all unique primary_derivative_asset_id in M that are not in M: O
-5. all assets in M set primary_derivative_asset_id to P.
-6. P.primary_derivative_asset_id is set to null.
-7. Recalculate all derivative asset IDs in O.
+## What if the user wants to see the original and the edited version as different assets?
 
-
-# TODO: REWRITE ABOVE
-
-## How to determine the "primary" asset URI?
-
-select content_sha, min(uri), min(mtime) as min_mtime from asset_uri
-where asset_id = ?
-order by min_mtime desc
-group by 1
-limit 1
-
-
+We set "only_exact_matches" on both assets to true.
 
 # Asset library
 
@@ -82,13 +52,19 @@ or `~/My Pictures/Chromotype` (on Windows).
 
 The Chromotype library holds
 
+## Assets
+
+When `Settings.move_to_library` is enabled, assets are moved into the following path:
+
+`#{library_directory}/Assets/YYYY/MM/DD/#{original filename}`
+
+If the same filename with the same taken-at date is found, the file will be moved to:
+
+`#{library_directory}/Assets/YYYY/MM/DD/#{content SHA}-#{original filename}`
+
 ## Resized images
-* `Resized/%Y/%m/%d/#{sha}-#{width}.jpg` which holds variously-size thumbnails
 
-When `Settings.move_to_library` is enabled, assets are moved into one of the following:
-
-* `Assets/YYYY/MM/dd/` (if the file was originally found in a …/Masters/… directory),
-* ```Modified``` (for )
+* `#{library_directory}/Resized/YYYY/MM/DD/#{sha}-#{width}.jpg` which holds variously-size thumbnails
 
 # WAT?
 
