@@ -6,6 +6,9 @@ An asset embodies an image (or later, a movie or other types of files).
 
 An "asset" has a caption, a description, and tags.
 
+If an image is edited, the new image will be associated to the same asset as the
+original, so it won't need to be re-tagged or re-described.
+
 ## What's an "asset URI"?
 
 An asset URI[^1] is a path to an asset. An asset has one or more asset URIs.
@@ -18,13 +21,15 @@ locally and will ALSO have a `file://` Asset URI.
 If duplicate files are found, those `file://` URIs will point to the same asset.
 
 If an iPhoto library is imported, for example, the "original" or "master" version,
-as well as a "modified" or "preview" version of a photo will point to the same asset.
+as well as a "modified" or "preview" version of a photo will point to the same asset. The modified asset will be shown by default. 
 
-## What's a "content fingerprint"?
+## What's a "fingerprint"?
 
-It's a hash of an aspect of a file, like:
+It's a short string representation of an aspect of a file, like:
+
 * the SHA of the asset's contents or
-* the SHA of a select set of EXIF header contents
+
+* the SHA of a select set of parsed EXIF header contents
 
 # Use cases
 
@@ -34,23 +39,22 @@ It's a hash of an aspect of a file, like:
 
 ## What happens when assets are modified in iPhoto?
 
-* Their SHA content fingerprint will not match, but their EXIF content fingerprint will.
+* Their EXIF content fingerprint will match, but not their content SHA fingerprint.
 
-## What happens when a file is edited in place
+## What happens when a file is edited in place?
 
-If the SHA content fingerprint and the EXIF header don't match, we tombstone the Asset URI,
+If the SHA content fingerprint and the EXIF header don't match the previous values for that asset
+URI, we mark the Asset URI as missing.
+
+## What happens on asset tombstone
 and if that's the last Asset URI pointing to an Asset, we mark the asset as tombstoned.
-
-## What if the user wants to see the original and the edited version as different assets?
-
-We set "only_exact_matches" on both assets to true.
 
 # Asset library
 
 Chromotype's library defaults to `~/Pictures/Chromotype` (on Mac and Linux)
 or `~/My Pictures/Chromotype` (on Windows).
 
-The Chromotype library holds
+The Chromotype library holds:
 
 ## Assets
 
@@ -81,4 +85,3 @@ We're using SHA-1 for file content comparisons, not for integrity.
 Although collisions have been found, it is extremely unlikely (1e-80) that different file contents
 will have the same SHA-1 value. A number of systems (including git) use SHA-1 as a unique description
 for a stream of bytes. If it's good enough for git, it's good enough for me.
-
