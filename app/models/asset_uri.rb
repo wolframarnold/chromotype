@@ -22,8 +22,8 @@ class AssetUri < ActiveRecord::Base
     uri.to_uri.normalize.to_s.sha
   end
 
-  scope :with_uri, lambda { |uri|
-    where(:uri_sha => sha_for_uri(uri))
+  scope :find_by_uri, lambda { |uri|
+    where(:uri_sha => sha_for_uri(uri)).first
   }
 
   def self.sha_for_filename(filename)
@@ -31,7 +31,7 @@ class AssetUri < ActiveRecord::Base
   end
 
   scope :with_filename, lambda { |filename|
-    where(:uri_sha => sha_for_filename(filename))
+    where(:uri_sha => sha_for_filename(filename)).first
   }
 
   scope :with_any_filename, lambda { |filenames|

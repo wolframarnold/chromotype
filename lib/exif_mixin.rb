@@ -12,8 +12,11 @@ module ExifMixin
     results = {}
     filenames = filenames.collect { |ea| ea.to_s }
     filenames.each { |ea| results[ea] = CACHE.read(ea) }
+    puts "results = #{results.to_yaml}"
+    puts "filenames = #{filenames.to_yaml}"
     results.delete_if { |k, v| v.nil? || v.errors? }
     missing = filenames - results.keys
+    puts "missing == #{missing.join(",")}"
     e = Exiftoolr.new(missing)
     missing.each do |ea|
       result = e.result_for(ea)

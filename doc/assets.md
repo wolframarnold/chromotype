@@ -2,44 +2,37 @@
 
 ## What's an "asset"?
 
-An asset embodies an image (or later, a movie or other types of files).
-
 An "asset" has a caption, a description, and tags.
 
+An asset embodies an image (or later, a movie or other types of files).
+
 If an image is edited, the new image will be associated to the same asset as the
-original, so it won't need to be re-tagged or re-described.
+original (but can be disassociated manually), so it won't need to be re-tagged or re-described.
 
-## What's an "asset URI"?
+## What's an "asset url"?
 
-An asset URI[^1] is a path to an asset. An asset has one or more asset URIs.
-
-It can be a local `file://` URI, or something non-local.
+An asset url is a path to an asset. An asset has one or more asset_url instances.
 
 If an asset is first found non-locally, the asset will be cached
-locally and will ALSO have a `file://` Asset URI.
+locally and will _also_ have a `file://` asset location.
 
-If duplicate files are found, those `file://` URIs will point to the same asset.
+If duplicate files are found, those `file://` URLs will point to the same asset.
 
 If an iPhoto library is imported, for example, the "original" or "master" version,
-as well as a "modified" or "preview" version of a photo will point to the same asset. The modified asset will be shown by default. 
-
-## What's a "fingerprint"?
-
-It's a short string representation of an aspect of a file, like:
-
-* the SHA of the asset's contents or
-
-* the SHA of a select set of parsed EXIF header contents
+including the RAW/CR2 version, as well as a "modified" or "preview" .JPG version
+of a photo will point to the same asset. The modified asset will be shown by default,
+because the last_modified value of the file will be the most recent.
 
 # Use cases
 
 ## What happens when assets with the same byte contents are found in two different directories?
 
-* Their SHA content fingerprint will match, and both Asset URIs will point to the same Asset.
+* Their SHA content fingerprint will match, and both Asset urls will point to the same Asset.
 
 ## What happens when assets are modified in iPhoto?
 
-* Their EXIF content fingerprint will match, but not their content SHA fingerprint.
+* Their EXIF content fingerprint will match, so the asset_uri.asset_id but not their content SHA fingerprint, so new
+thumbnails will be created.
 
 ## What happens when a file is edited in place?
 
@@ -68,15 +61,7 @@ If the same filename with the same taken-at date is found, the file will be move
 
 ## Resized images
 
-* `#{library_directory}/Resized/YYYY/MM/DD/#{sha}-#{width}.jpg` which holds variously-size thumbnails
-
-# WAT?
-
-## [^1]: URI? Why not URL?
-
-Yeah, you know I googled "URI versus URL".
-
-No, I won't store URNs.
+* `#{library_directory}/Resized/#{sha[0]}/#{sha[1]}/#{sha}-#{width}.jpg` which holds variously-size thumbnails
 
 ## SHA-1 versus SHA-256 or SHA-512?
 

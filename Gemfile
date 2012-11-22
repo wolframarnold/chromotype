@@ -91,6 +91,7 @@ gem 'nokogiri'
 
 group :development do
 # TODO: seemed cool:  gem "rails-erd"
+  gem 'debugger'
 end
 
 group :test do

@@ -2,20 +2,17 @@ class CreateAssets < ActiveRecord::Migration
   def change
     create_table :assets do |t|
       t.string :type
-      t.integer :original_asset_id
-      t.string :basename
-      t.timestamp :taken_at
       t.boolean :favorite
       t.boolean :hidden
-      t.string :thumbprint
+      t.string :basename
       t.string :caption
-      t.datetime :mtime
-      t.timestamps
+      t.string :description
+      t.timestamp :taken_at
       t.datetime :lost_at
-      t.datetime :deleted_at
+      t.timestamps
     end
 
     add_index :assets, [:thumbprint], :name => 'assets_thumbprint_udx', :unique => true
-
+    # TODO: we may want an index to show not-lost assets, and not-lost, favorite assets
   end
 end

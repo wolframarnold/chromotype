@@ -1,4 +1,20 @@
+User stories:
+
+* on startup, local disk is searched for images.
+* when images are found in "Pictures" directories, and the image has EXIF headers and is large enough, import.
+
+* on import, look the asset by pathname and mtime, then by sha.
+  # set the sha to the current value of the file.
+  # if there are
+* if the image file sha matches,
+
 ## Backend
+
+* simplest thing that could possibly work:
+  * if the sha matches, make sure the original file still exists,
+    then move the new file into the trash
+
+* on startup, process all the root directories
 
 * importing files:
   * if the file sha matches an imported asset
@@ -22,12 +38,17 @@
 
 ## Frontend
 
+* hook up TwBS: http://appscrolls.org/
 * use https://github.com/bartaz/impress.js (3-d presentations?)
 * http://warpspire.com/experiments/history-api/ to infinity!
 * decompose page ajax requests
 * http://boedesign.com/demos/gritter/ for growl notification of async stuff
 * add https://github.com/rails/jquery-ujs ?
 * UI to edit the settings table
+
+## Installation
+* http://pow.cx/
+* rails vm? auto upgrades?
 
 ## Features
 
@@ -57,6 +78,9 @@ libsvm/SVR, random forests, lin regression of very simple features(time of day, 
   http://www.padrinorb.com/
   https://github.com/bbwharris/examples/tree/master/sinatra/test/
   http://carlosgabaldon.com/articles/singing-with-sinatra/
+
+
+https://github.com/rsms/cocui
 
 ## Done
 

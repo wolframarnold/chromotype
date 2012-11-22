@@ -14,8 +14,8 @@ class Asset < ActiveRecord::Base
 
   scope :with_tag_or_descendents, lambda { |tag|
     joins(:asset_tags).
-      joins("join #{Tag.hierarchy_table_name} on asset_tags.tag_id = #{Tag.hierarchy_table_name}.descendant_id").
-      where("#{Tag.hierarchy_table_name}.ancestor_id = ?", tag.id)
+    joins("join #{Tag.hierarchy_table_name} on asset_tags.tag_id = #{Tag.hierarchy_table_name}.descendant_id").
+    where("#{Tag.hierarchy_table_name}.ancestor_id = ?", tag.id)
   }
 
   #scope :with_tag_or_descendants, lambda { |tag| includes(:tags => [:ancestors]).where("ancestors_tags.id = ? or tags.id = ?", tag.id, tag.id) }
@@ -24,10 +24,18 @@ class Asset < ActiveRecord::Base
     joins(:asset_uris).merge AssetUri.with_uri(uri)
   }
 
+  def self.without(instance)
+    scope.where(["#{quoted_table_name}.#{self.class.primary_key} != ?", instance.id])
+  end
+
   scope :with_filename, lambda { |filename| joins(:asset_uris).merge(AssetUri.with_filename(filename)).readonly(false) }
   scope :with_any_filename, lambda { |filenames| joins(:asset_uris).merge(AssetUri.with_any_filename(filenames)).readonly(false) }
   scope :with_thumbprint, lambda { |thumbprint| joins(:asset_thumbprints).merge(AssetThumbprint.with_thumbprint(thumbprint)).readonly(false) }
   scope :with_any_thumbprint, lambda { |thumbprints| joins(:asset_thumbprints).merge(AssetThumbprint.with_any_thumbprint(thumbprints)).readonly(false) }
+
+  def with_same_thumbprints
+    scoped.with_any_thumbprint(asset_thumbprints).without(self)
+  end
 
   scope :deleted, where("#{table_name}.deleted_at IS NOT NULL")
   scope :not_deleted, where("#{table_name}.deleted_at IS NULL")
@@ -37,6 +45,10 @@ class Asset < ActiveRecord::Base
       au = asset_uris.detect { |ea| ea.exist? } || asset_uris.detect { |ea| ea.pathname }
       au.pathname if au
     end
+  end
+
+  def contents_sha
+    @sha1 ||= pathname.sha
   end
 
   def captured_at
@@ -96,12 +108,43 @@ class Asset < ActiveRecord::Base
       :thumbprint => asset_thumbprint.thumbprint)
   end
 
+  def move_to_library
+    return unless Settings.move_to_library
+
+    # If one already is in the originals directory, it wins.
+    with_same_thumbprints.select do |ea|
+      ea.pathname.child_of? Settings.library_root
+    end.each do |ea|
+      if contents_match?(ea) &&
+        Settings.move_dupes_to_trash
+        Rails.logger.warn("Moving dupe file #{pathname} into the trash. It's the same as #{ea.pathname}.")
+        pathname.mv_to_trash
+        return
+      end
+    end
+
+    move_to_originals
+    winner.original_asset = nil
+    winner.save!
+    others.each do |ea|
+      ea.move_to_derivatives
+      ea.original_asset = winner
+      ea.save!
+    end
+    end
+
+    def
+
   def move_to_originals
     mv_to(Settings.originals_root)
   end
 
   def move_to_derivatives
     mv_to(Settings.derivatives_root)
+  end
+
+  def move_to_trash
+    pathname.mv_to_trash
   end
 
   def mv_to(basedir)

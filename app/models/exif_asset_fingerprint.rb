@@ -1,6 +1,6 @@
 require 'exiftoolr'
 
-class ExifAssetThumbprint < AssetThumbprint
+class ExifAssetFingerprint < AssetThumbprint
   class ExifTarget
     attr_accessor :pathname
     include ExifMixin

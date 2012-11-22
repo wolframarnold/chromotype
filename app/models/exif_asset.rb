@@ -17,11 +17,11 @@ class ExifAsset < Asset
   def sha
     # We can't/shouldn't use the exif thumbprint, because
     # if they change how the image looks, the image caches should be rebuilt.
-    @sha ||= pathname.sha
+    pathname.content_sha
   end
 
   def short_sha
-    @short_sha ||= sha.first(8)
+    sha.first(8)
   end
 
   def canonical_name

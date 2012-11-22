@@ -1,10 +1,10 @@
 require "minitest_helper"
 
 def exifa(path)
-  ExifAssetThumbprint.exif_thumbprint_array("test/images/#{path}")
+  ExifAssetFingerprint.exif_thumbprint_array("test/images/#{path}")
 end
 
-describe ExifAssetThumbprint do
+describe ExifAssetFingerprint do
   it "should find a resized asset from Preview.app as equivalent" do
     exifa("Canon 20D.jpg").must_equal(exifa("Canon 20D-small.jpg"))
   end
