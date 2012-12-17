@@ -3,7 +3,7 @@ class CreateTags < ActiveRecord::Migration
     create_table :tags do |t|
       t.string :type
       t.integer :parent_id
-      t.string :name, :null => false
+      t.string :name, :required => true
       t.string :description
       t.timestamps
     end
@@ -12,9 +12,9 @@ class CreateTags < ActiveRecord::Migration
     add_index :tags, [:type, :name, :parent_id], :unique => true
 
     create_table :tag_hierarchies, :id => false do |t|
-      t.integer :ancestor_id, :null => false
-      t.integer :descendant_id, :null => false
-      t.integer :generations, :null => false
+      t.integer :ancestor_id, :required => true
+      t.integer :descendant_id, :required => true
+      t.integer :generations, :required => true
     end
 
     # For "all progeny of..." selects:

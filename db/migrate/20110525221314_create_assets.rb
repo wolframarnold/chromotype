@@ -12,7 +12,6 @@ class CreateAssets < ActiveRecord::Migration
       t.timestamps
     end
 
-    add_index :assets, [:thumbprint], :name => 'assets_thumbprint_udx', :unique => true
     # TODO: we may want an index to show not-lost assets, and not-lost, favorite assets
   end
 end

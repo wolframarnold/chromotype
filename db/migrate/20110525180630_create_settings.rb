@@ -1,10 +1,10 @@
 class CreateSettings < ActiveRecord::Migration
   def change
     create_table :settings, :force => true do |t|
-      t.string :var, :null => false
-      t.text   :value, :null => true
-      t.integer :target_id, :null => true
-      t.string :target_type, :limit => 30, :null => true
+      t.string :var, :required => true
+      t.text   :value, :required => true
+      t.integer :target_id
+      t.string :target_type, :limit => 30
       t.timestamps
     end
 
