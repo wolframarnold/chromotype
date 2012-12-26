@@ -1,46 +1,30 @@
 ENV["RAILS_ENV"] = "test"
-require File.expand_path("../../config/environment", __FILE__)
+require File.expand_path('../../config/environment', __FILE__)
 
-require 'minitest/autorun'
-require 'minitest/reporters'
-require 'active_support/testing/setup_and_teardown'
-require 'miniskirt'
-require 'factories'
-require 'mocha'
+require "minitest/autorun"
+require "minitest/rails"
 
-=begin
-require "capybara/rails"
+# Uncomment if you want Capybara in accceptance/integration tests
+# require "minitest/rails/capybara"
 
-class IntegrationTest < MiniTest::Spec
-  include Rails.application.routes.url_helpers
-  include Capybara::DSL
-  register_spec_type(/integration$/, self)
+# Uncomment if you want awesome colorful output
+#require "minitest/pride"
+
+# Just say no to fixtures.
+#class MiniTest::Rails::ActiveSupport::TestCase
+#  # Setup all fixtures in test/fixtures/*.(yml|csv) for all tests in alphabetical order.
+#  fixtures :all
+#
+#  # Add more helper methods to be used by all tests here...
+#end
+
+def img_path(basename)
+  File.expand_path("../images/#{basename}", __FILE__).to_pathname
 end
 
-class HelperTest < MiniTest::Spec
-  include ActiveSupport::Testing::SetupAndTeardown
-  include ActionView::TestCase::Behavior
-  register_spec_type(/Helper$/, self)
-end
+# Do you want all existing Rails tests to use MiniTest::Rails?
+# Comment out the following and either:
+# A) Change the require on the existing tests to `require "minitest_helper"`
+# B) Require this file's code in test_helper.rb
 
-Turn.config.format = :outline
-=end
-
-
-MiniTest::Unit.runner = MiniTest::SuiteRunner.new
-if ENV["RM_INFO"] || ENV["TEAMCITY_VERSION"]
-  MiniTest::Unit.runner.reporters << MiniTest::Reporters::RubyMineReporter.new
-elsif ENV['TM_PID']
-  MiniTest::Unit.runner.reporters << MiniTest::Reporters::RubyMateReporter.new
-else
-  MiniTest::Unit.runner.reporters << MiniTest::Reporters::ProgressReporter.new
-end
-
-def with_tmp_dir(&block)
-  cwd = Dir.pwd
-  Dir.mktmpdir do |dir|
-    Dir.chdir(dir)
-    yield(dir)
-  end
-  Dir.chdir(cwd)
-end
+MiniTest::Rails.override_testunit!

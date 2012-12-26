@@ -1,11 +1,6 @@
 require 'geonames'
 
 class GeoTag < Tag
-  def self.cache
-    @@cache ||= begin
-      ActiveSupport::Cache.lookup_store(:file_store, Settings.cache_root + "geo.cache")
-    end
-  end
 
   def self.root_name
     "where"

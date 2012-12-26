@@ -14,7 +14,7 @@ rvm:
 
 env:
   - DB=sqlite
-  - DB=mysql
+#  - DB=mysql
   - DB=postgresql
 
 script:

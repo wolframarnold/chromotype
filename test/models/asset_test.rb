@@ -3,21 +3,21 @@ require "minitest_helper"
 describe Asset do
   before :each do
     Asset.delete_all
-    AssetUri.delete_all
+    AssetUrl.delete_all
 
     @asset = Asset.new
     @path = "Gemfile".to_pathname.realpath
     @asset.add_pathname @path
     @asset.save!
-    @uri = @path.to_uri.to_s
+    @url = @path.to_url.to_s
   end
 
   def assert_path
-    @asset.uri.must_equal(@path.to_uri)
-    @asset.asset_uris.collect{|ea|ea.uri}.must_equal [@uri]
+    @asset.url.must_equal(@path.to_url)
+    @asset.asset_uris.collect{|ea|ea.url}.must_equal [@url]
     au = @asset.asset_uris.first
-    au.to_uri.must_equal(@path.to_uri)
-    au.uri.must_equal(@path.to_uri.to_s)
+    au.to_url.must_equal(@path.to_url)
+    au.url.must_equal(@path.to_url.to_s)
   end
 
   it "should work on insert" do
@@ -29,7 +29,7 @@ describe Asset do
   end
 
   it "should find with_uri(pathname)" do
-    Asset.with_uri(@path.to_uri).to_a.must_equal([@asset])
+    Asset.with_uri(@path.to_url).to_a.must_equal([@asset])
   end
 
   it "should find with_filename(to_s)" do
@@ -49,10 +49,10 @@ describe Asset do
     u = "https://s3.amazonaws.com/test/test/Gemfile"
     @asset.add_uri u
     @asset.save!
-    @asset.reload.asset_uris.collect{|ea|ea.uri}.must_equal [u, @uri]
+    @asset.reload.asset_uris.collect{|ea|ea.url}.must_equal [u, @url]
     au = @asset.asset_uris.first
-    au.uri.must_equal(u)
-    @asset.asset_uris.second.uri.must_equal(@uri)
+    au.url.must_equal(u)
+    @asset.asset_uris.second.url.must_equal(@url)
   end
 
   it "should fail to give the same URI to another asset" do

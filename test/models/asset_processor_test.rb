@@ -15,11 +15,11 @@ describe "asset processing without image resizing" do
 
   it "should work on insert" do
     asset, path = process_img_2452
-    asset.uri.must_equal(path.to_uri)
+    asset.url.must_equal(path.to_uri)
     asset.asset_uris.size.must_equal 1
     au = asset.asset_uris.first
     au.to_uri.must_equal(path.to_uri)
-    au.uri.must_equal(path.to_uri.to_s)
+    au.url.must_equal(path.to_uri.to_s)
   end
 
   it "should find the prior asset" do

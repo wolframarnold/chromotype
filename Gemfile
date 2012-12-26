@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails', '>= 3.2.6'
+gem 'rails', '>= 3.2'
 
 gem 'thin'
 
@@ -19,14 +19,14 @@ gem 'json'
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
-  gem 'sass-rails'
-  gem 'coffee-rails'
+  #gem 'sass-rails'
+  #gem 'coffee-rails'
 
   # See https://github.com/sstephenson/execjs#readme for more supported runtimes
   # gem 'therubyracer', :platform => :ruby
 
   gem 'uglifier'
-  gem 'twitter-bootstrap-rails'
+  #gem 'twitter-bootstrap-rails'
 end
 
 gem 'font-awesome-rails'
@@ -96,6 +96,7 @@ end
 
 group :test do
   gem 'minitest'
+  gem 'minitest-rails'
   gem 'minitest-reporters'
   gem 'miniskirt'
   gem 'mocha'

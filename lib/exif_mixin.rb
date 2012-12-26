@@ -2,8 +2,11 @@ require 'exiftoolr'
 
 # Assumes the mixin consumer has a "pathname" method
 module ExifMixin
+  extend CacheSupport
 
-  CACHE = ActiveSupport::Cache.lookup_store(:memory_store)
+  def self.cache
+    Chromotype::SHORT_TTL_CACHE
+  end
 
   # Returns hash of filename => Exiftoolr::Results for
   # all the files that have valid EXIF headers. Results
@@ -11,17 +14,16 @@ module ExifMixin
   def self.exif_results *filenames
     results = {}
     filenames = filenames.collect { |ea| ea.to_s }
-    filenames.each { |ea| results[ea] = CACHE.read(ea) }
-    puts "results = #{results.to_yaml}"
-    puts "filenames = #{filenames.to_yaml}"
+    filenames.each { |ea| results[ea] = cache.read(ea) }
     results.delete_if { |k, v| v.nil? || v.errors? }
     missing = filenames - results.keys
-    puts "missing == #{missing.join(",")}"
     e = Exiftoolr.new(missing)
-    missing.each do |ea|
-      result = e.result_for(ea)
-      CACHE.write(ea, result)
-      results[ea] = result unless result.errors?
+    unless e.errors?
+      missing.each do |ea|
+        result = e.result_for(ea)
+        cache.write(ea, result)
+        results[ea] = result
+      end
     end
     results
   end

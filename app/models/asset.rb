@@ -3,10 +3,8 @@ class Asset < ActiveRecord::Base
   has_many :derivatives, :class_name => "Asset", :foreign_key => "original_asset_id"
   has_many :asset_tags
   has_many :tags, :through => :asset_tags
-  has_many :asset_uris, :order => 'id desc', :dependent => :destroy
+  has_many :asset_urls, :order => 'id desc', :dependent => :destroy
   has_many :asset_thumbprints, :order => 'id desc', :dependent => :destroy
-
-  attr_accessible :uri
 
   scope :with_tag, lambda { |tag|
     joins(:asset_tags).merge(AssetTag.find_by_tag_id(tag.id))
@@ -14,24 +12,43 @@ class Asset < ActiveRecord::Base
 
   scope :with_tag_or_descendents, lambda { |tag|
     joins(:asset_tags).
-    joins("join #{Tag.hierarchy_table_name} on asset_tags.tag_id = #{Tag.hierarchy_table_name}.descendant_id").
-    where("#{Tag.hierarchy_table_name}.ancestor_id = ?", tag.id)
+      joins("join #{Tag.hierarchy_table_name} on asset_tags.tag_id = #{Tag.hierarchy_table_name}.descendant_id").
+      where("#{Tag.hierarchy_table_name}.ancestor_id = ?", tag.id)
   }
 
   #scope :with_tag_or_descendants, lambda { |tag| includes(:tags => [:ancestors]).where("ancestors_tags.id = ? or tags.id = ?", tag.id, tag.id) }
 
-  scope :with_uri, lambda { |uri|
-    joins(:asset_uris).merge AssetUri.with_uri(uri)
+  scope :with_url, lambda { |uri|
+    joins(:asset_urls).merge AssetUrl.with_uri(uri)
   }
 
   def self.without(instance)
     scope.where(["#{quoted_table_name}.#{self.class.primary_key} != ?", instance.id])
   end
 
-  scope :with_filename, lambda { |filename| joins(:asset_uris).merge(AssetUri.with_filename(filename)).readonly(false) }
-  scope :with_any_filename, lambda { |filenames| joins(:asset_uris).merge(AssetUri.with_any_filename(filenames)).readonly(false) }
-  scope :with_thumbprint, lambda { |thumbprint| joins(:asset_thumbprints).merge(AssetThumbprint.with_thumbprint(thumbprint)).readonly(false) }
-  scope :with_any_thumbprint, lambda { |thumbprints| joins(:asset_thumbprints).merge(AssetThumbprint.with_any_thumbprint(thumbprints)).readonly(false) }
+  scope :with_filename, lambda { |filename|
+    joins(:asset_urls).
+      merge(AssetUrl.with_filename(filename)).
+      readonly(false)
+  }
+
+  scope :with_any_filename, lambda { |filenames|
+    joins(:asset_urls).
+      merge(AssetUrl.with_any_filename(filenames)).
+      readonly(false)
+  }
+
+  scope :with_urn, lambda { |urn|
+    joins(:asset_urls => :urns).
+      merge(Urn.with_urn(urn)).
+      readonly(false)
+  }
+
+  scope :with_any_urn, lambda { |urn|
+    joins(:asset_urls => :urns).
+      merge(Urn.with_any_urn(urns)).
+      readonly(false)
+  }
 
   def with_same_thumbprints
     scoped.with_any_thumbprint(asset_thumbprints).without(self)
@@ -42,35 +59,31 @@ class Asset < ActiveRecord::Base
 
   def pathname
     @pathname ||= begin
-      au = asset_uris.detect { |ea| ea.exist? } || asset_uris.detect { |ea| ea.pathname }
+      au = asset_urls.detect { |ea| ea.exist? } || asset_urls.detect { |ea| ea.pathname }
       au.pathname if au
     end
-  end
-
-  def contents_sha
-    @sha1 ||= pathname.sha
   end
 
   def captured_at
     pathname.ctime
   end
 
-  def uri
-    asset_uris.first.try(:to_uri)
+  def url
+    asset_urls.first.try(:to_url)
   end
 
   def add_uri(uri)
-    return unless asset_uris.with_uri(uri).empty?
+    return unless asset_urls.with_uri(uri).empty?
     # Do I need to steal the uri from another asset?
-    dupes = AssetUri.with_uri(uri)
+    dupes = AssetUrl.with_uri(uri)
     unless dupes.empty?
       raise ArgumentError, "Asset #{dupes.first.asset.id} already points to #{uri}"
     end
-    asset_uris.build(:uri => uri)
+    asset_urls.build(:url => uri)
   end
 
   def add_pathname(pathname)
-    add_uri(pathname.to_pathname.to_uri)
+    add_uri(pathname.to_pathname.to_url)
   end
 
   def delete!
@@ -95,7 +108,7 @@ class Asset < ActiveRecord::Base
     else
       self.lost_at ||= Time.now # <- only set if lost_at wasn't set already
     end
-    save if changed?
+    save
   end
 
   def add_tag(tag)
@@ -131,9 +144,9 @@ class Asset < ActiveRecord::Base
       ea.original_asset = winner
       ea.save!
     end
-    end
+  end
 
-    def
+  def
 
   def move_to_originals
     mv_to(Settings.originals_root)

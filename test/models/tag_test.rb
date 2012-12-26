@@ -4,7 +4,7 @@ describe Tag do
 
   before :each do
     Asset.delete_all
-    AssetUri.delete_all
+    AssetUrl.delete_all
     Tag.delete_all
     @assets = 3.times.collect { Asset.create! }
     @tag3 = Tag.find_or_create_by_path %w{parent child grandchild}

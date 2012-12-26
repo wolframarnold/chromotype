@@ -1,17 +1,15 @@
 require 'uri/generic'
 require 'pathname'
+require 'open-uri'
 
 class Pathname
   def to_uri
-    URI::Generic.new("file", nil, nil, nil, nil,
-      URI.escape(absolutepath.to_s), nil, nil, nil)
-  end
-
-  # Will be nil unless uri.scheme is "file"
-  def self.from_uri(uri)
-    new(URI.unescape(uri.path)) if uri.scheme == "file"
+    URI::File.for_file(absolutepath.to_s)
   end
 end
+
+# load the new URL::File class:
+URI::File
 
 class String
   def to_uri
@@ -20,11 +18,9 @@ class String
 end
 
 module URI
-
   class Generic
-    # Will be nil unless self.scheme is "file"
-    def pathname
-      Pathname.from_uri(self)
+    def to_pathname
+      nil
     end
 
     def to_uri
@@ -33,7 +29,7 @@ module URI
   end
 
   def self.from_file pathname
-    pathname.to_pathname.to_uri
+    pathname.to_pathname.to_url
   end
 
   # Returns an array of URIs

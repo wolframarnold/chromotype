@@ -10,10 +10,6 @@ class Pathname
     self
   end
 
-  def content_sha
-    @sha ||= Digest::SHA1.file(to_s).hexdigest
-  end
-
   def child_of?(directory, resolve_absolute_paths = false)
     child, parent =
       if resolve_absolute_paths
@@ -70,20 +66,23 @@ class Pathname
   # Adds support for relative symlink pointers
   def readlink_to_pathname
     rl = readlink
-    rl = parent + rl if rl.relative?
-    rl
+    rl.relative? ? parent + rl : rl
   end
 
   def linkpath(visited_paths = [])
-    path = self.cleanpath
-    return visited_paths if visited_paths.include? path # no circles
-    visited_paths << path
+    p = self.cleanpath
+    return visited_paths if visited_paths.include? p # no circles
+    visited_paths << p
 
     if symlink?
       readlink_to_pathname.linkpath(visited_paths)
     else
       visited_paths
     end
+  end
+
+  def sha1
+    Digest::SHA1.file(self.to_s).hexdigest
   end
 end
 

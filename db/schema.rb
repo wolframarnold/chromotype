@@ -11,71 +11,47 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120213071058) do
+ActiveRecord::Schema.define(:version => 20121128021233) do
 
   create_table "asset_tags", :id => false, :force => true do |t|
-    t.integer "asset_id", :null => false
-    t.integer "tag_id",   :null => false
+    t.integer "asset_id"
+    t.integer "tag_id"
   end
 
   add_index "asset_tags", ["tag_id", "asset_id"], :name => "index_asset_tags_on_tag_id_and_asset_id"
 
-  create_table "asset_thumbprints", :force => true do |t|
-    t.integer  "asset_id"
-    t.string   "type",       :limit => 40
-    t.string   "thumbprint", :limit => 512
-    t.datetime "created_at",                :null => false
-    t.datetime "updated_at",                :null => false
+  create_table "asset_url_urn", :force => true do |t|
+    t.integer "asset_url_id"
+    t.integer "urn_id"
   end
 
-  add_index "asset_thumbprints", ["asset_id"], :name => "index_asset_thumbprints_on_asset_id"
-  add_index "asset_thumbprints", ["thumbprint"], :name => "index_asset_thumbprints_on_thumbprint"
+  add_index "asset_url_urn", ["urn_id", "asset_url_id"], :name => "asset_url_urn_udx", :unique => true
 
-  create_table "asset_uris", :force => true do |t|
+  create_table "asset_urls", :force => true do |t|
     t.integer  "asset_id"
-    t.string   "uri",        :limit => 2000
-    t.string   "uri_sha",    :limit => 40
-    t.datetime "created_at"
+    t.string   "url",        :limit => 2000
+    t.string   "url_sha",    :limit => 40
+    t.datetime "created_at",                 :null => false
+    t.datetime "updated_at",                 :null => false
   end
 
-  add_index "asset_uris", ["uri_sha"], :name => "uri_sha_udx", :unique => true
+  add_index "asset_urls", ["url_sha"], :name => "asset_url_sha_udx", :unique => true
 
   create_table "assets", :force => true do |t|
     t.string   "type"
-    t.integer  "original_asset_id"
-    t.string   "basename"
-    t.datetime "taken_at"
     t.boolean  "favorite"
     t.boolean  "hidden"
-    t.string   "thumbprint"
+    t.string   "basename"
     t.string   "caption"
-    t.datetime "mtime"
-    t.datetime "created_at",        :null => false
-    t.datetime "updated_at",        :null => false
+    t.string   "description"
+    t.datetime "taken_at"
     t.datetime "lost_at"
-    t.datetime "deleted_at"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
   end
-
-  add_index "assets", ["thumbprint"], :name => "assets_thumbprint_udx", :unique => true
-
-  create_table "delayed_jobs", :force => true do |t|
-    t.integer  "priority",   :default => 0
-    t.integer  "attempts",   :default => 0
-    t.text     "handler"
-    t.text     "last_error"
-    t.datetime "run_at"
-    t.datetime "locked_at"
-    t.datetime "failed_at"
-    t.string   "locked_by"
-    t.string   "queue"
-    t.datetime "created_at",                :null => false
-    t.datetime "updated_at",                :null => false
-  end
-
-  add_index "delayed_jobs", ["priority", "run_at"], :name => "delayed_jobs_priority"
 
   create_table "settings", :force => true do |t|
-    t.string   "var",                       :null => false
+    t.string   "var"
     t.text     "value"
     t.integer  "target_id"
     t.string   "target_type", :limit => 30
@@ -86,9 +62,9 @@ ActiveRecord::Schema.define(:version => 20120213071058) do
   add_index "settings", ["target_type", "target_id", "var"], :name => "index_settings_on_target_type_and_target_id_and_var", :unique => true
 
   create_table "tag_hierarchies", :id => false, :force => true do |t|
-    t.integer "ancestor_id",   :null => false
-    t.integer "descendant_id", :null => false
-    t.integer "generations",   :null => false
+    t.integer "ancestor_id"
+    t.integer "descendant_id"
+    t.integer "generations"
   end
 
   add_index "tag_hierarchies", ["ancestor_id", "descendant_id"], :name => "index_tag_hierarchies_on_ancestor_id_and_descendant_id", :unique => true
@@ -97,7 +73,7 @@ ActiveRecord::Schema.define(:version => 20120213071058) do
   create_table "tags", :force => true do |t|
     t.string   "type"
     t.integer  "parent_id"
-    t.string   "name",        :null => false
+    t.string   "name"
     t.string   "description"
     t.datetime "created_at",  :null => false
     t.datetime "updated_at",  :null => false
@@ -105,5 +81,11 @@ ActiveRecord::Schema.define(:version => 20120213071058) do
 
   add_index "tags", ["name", "parent_id"], :name => "index_tags_on_name_and_parent_id", :unique => true
   add_index "tags", ["type", "name", "parent_id"], :name => "index_tags_on_type_and_name_and_parent_id", :unique => true
+
+  create_table "urns", :force => true do |t|
+    t.string "urn", :limit => 64
+  end
+
+  add_index "urns", ["urn"], :name => "urn_udx", :unique => true
 
 end
