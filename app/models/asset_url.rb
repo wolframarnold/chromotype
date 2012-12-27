@@ -8,11 +8,11 @@ class AssetUrl < ActiveRecord::Base
   before_create :normalize_url_and_sha
 
   scope :with_filename, lambda { |filename|
-    where(:url, filename.to_pathname.to_uri)
+    where(:url => filename.to_pathname.to_uri.to_s)
   }
 
   scope :with_any_filename, lambda { |filenames|
-    where(:url, filenames.map { |ea| ea.to_pathname.to_uri })
+    where(:url => filenames.map { |ea| ea.to_pathname.to_uri.to_s })
   }
 
   # Will be nil unless the uri's scheme is "file"

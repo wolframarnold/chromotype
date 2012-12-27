@@ -4,6 +4,7 @@ class Asset < ActiveRecord::Base
   has_many :asset_tags
   has_many :tags, :through => :asset_tags
   has_many :asset_urls, :order => 'id desc', :dependent => :destroy
+  has_many :asset_urns, :through => :asset_urls
   has_many :asset_thumbprints, :order => 'id desc', :dependent => :destroy
 
   scope :with_tag, lambda { |tag|
@@ -73,7 +74,7 @@ class Asset < ActiveRecord::Base
   end
 
   def add_pathname(pathname)
-    asset_urls.find_or_create_by_url(pathname.to_pathname.to_url)
+    asset_urls.find_or_create_by_url(pathname.to_pathname.to_uri)
   end
 
   def delete!

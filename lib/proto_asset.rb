@@ -63,12 +63,22 @@ class ProtoAsset
     @asset ||= begin
       return nil if pathname.nil?
 
-      # Find the first asset that matches a URN (they're in order of expense)
-      asset = @urners.each do |urner|
+      asset = Asset.with_filename(pathname)
+
+      # Short-circuit if the urn and pathname match.
+      # This assumes that the first URN changes if the contents for a pathname change.
+      if asset
+        current_first_urn = @urners.first.urn_for_pathname(pathname)
+        return asset if asset.asset_urns.find_by_urn(current_first_urn).exists?
+      end
+
+      # Find the first asset that matches a URN (they're in order of expense of URN generation)
+      @urners.each do |urner|
         urn = urner.urn_for_pathname(pathname)
         assets = Asset.find_by_urn(urn)
         rails.logger.warn ("multiple assets match #{urn}") if assets.size > 1
-        break assets.first unless assets.empty?
+        asset = assets.first
+        break if asset
       end
       asset ||= Asset.create(:basename => pathname.basename)
       asset_url = asset.asset_urls.find_or_create_by_url(url)
