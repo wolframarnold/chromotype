@@ -9,15 +9,15 @@ describe Asset do
     @path = "Gemfile".to_pathname.realpath
     @asset.add_pathname @path
     @asset.save!
-    @url = @path.to_url.to_s
+    @url = @path.to_uri.to_s
   end
 
   def assert_path
-    @asset.url.must_equal(@path.to_url)
+    @asset.url.must_equal(@path.to_uri)
     @asset.asset_uris.collect{|ea|ea.url}.must_equal [@url]
     au = @asset.asset_uris.first
-    au.to_url.must_equal(@path.to_url)
-    au.url.must_equal(@path.to_url.to_s)
+    au.to_uri.must_equal(@path.to_uri)
+    au.url.must_equal(@path.to_uri.to_s)
   end
 
   it "should work on insert" do

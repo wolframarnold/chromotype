@@ -72,7 +72,7 @@ class Asset < ActiveRecord::Base
   end
 
   def url
-    asset_urls.first.try(:to_url)
+    asset_urls.first.try(:to_uri)
   end
 
   def add_pathname(pathname)
