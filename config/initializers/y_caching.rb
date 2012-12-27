@@ -5,7 +5,8 @@ ActiveSupport.migration_safe_on_load do
       :max_prune_time => 60.seconds # <- long enough to prevent re-exiftool and URNing?
     )
     LONG_TTL_CACHE = ActiveSupport::Cache::FileStore.new(
-      Settings.cache_root
+      Settings.cache_root,
+      :max_prune_time => 1.month
     )
   end
 end

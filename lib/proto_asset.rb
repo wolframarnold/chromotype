@@ -86,7 +86,7 @@ class ProtoAsset
         break if asset
       end
       asset ||= Asset.create(:basename => pathname.basename)
-      asset_url = asset.asset_urls.find_or_create_by_url(url.to_s)
+      asset_url = asset.add_pathname(pathname)
       asset_url.asset_urns.delete_all # Prior URNs lose.
       @urners.each do |urner|
         urn = urner.urn_for_pathname(pathname)

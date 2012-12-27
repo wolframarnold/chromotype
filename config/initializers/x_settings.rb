@@ -25,6 +25,10 @@ ActiveSupport.migration_safe_on_load do
       self[:library_root].to_pathname.ensure_directory
     end
 
+    def self.cache_root
+      (library_root + "Caches").ensure_directory
+    end
+
     # The "roots" are directories that are scanned for assets to import.
 
     def self.default_roots(home = ENV["HOME"])

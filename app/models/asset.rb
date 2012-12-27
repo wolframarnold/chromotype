@@ -1,4 +1,6 @@
 class Asset < ActiveRecord::Base
+  include ExifMixin
+
   belongs_to :original_asset, :class_name => "Asset"
   has_many :derivatives, :class_name => "Asset", :foreign_key => "original_asset_id"
   has_many :asset_tags
@@ -74,7 +76,7 @@ class Asset < ActiveRecord::Base
   end
 
   def add_pathname(pathname)
-    asset_urls.find_or_create_by_url(pathname.to_pathname.to_uri)
+    asset_urls.find_or_create_by_url(pathname.to_pathname.to_uri.to_s)
   end
 
   def delete!
@@ -136,8 +138,6 @@ class Asset < ActiveRecord::Base
       ea.save!
     end
   end
-
-  def
 
   def move_to_originals
     mv_to(Settings.originals_root)

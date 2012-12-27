@@ -16,7 +16,7 @@ class AssetUrl < ActiveRecord::Base
 
   # Will be nil unless the uri's scheme is "file"
   def pathname
-    @pathname ||= to_url.pathname
+    @pathname ||= to_uri.to_pathname
   end
 
   def exist?
@@ -24,7 +24,7 @@ class AssetUrl < ActiveRecord::Base
   end
 
   def to_uri
-    @url ||= self.url.to_uri
+    @uri ||= self.url.to_uri
   end
 
   private

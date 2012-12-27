@@ -1,6 +1,7 @@
 require 'geonames'
 
 class GeoTag < Tag
+  extend CacheSupport # only used in class methods
 
   def self.root_name
     "where"
@@ -16,7 +17,7 @@ class GeoTag < Tag
 
   def self.tag_for_lat_lon(lat, lon)
     return nil if lat.nil? || lon.nil?
-    place_path = cache.fetch("%.6f:%.6f" % [lat, lon], {:expires_in => 1.month}) do
+    place_path = cached_with_long_ttl("%.6f:%.6f" % [lat, lon]) do
       places_nearby = Geonames::WebService.find_nearby_place_name(lat, lon) || []
       nearest = places_nearby.first
       return nil if nearest.nil? || nearest.geoname_id.to_i == 0
