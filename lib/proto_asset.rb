@@ -31,6 +31,10 @@ class ProtoAsset
     @pathname ||= self.paths && self.paths.last
   end
 
+  def url
+    pathname.to_uri
+  end
+
   def paths
     @paths ||= begin
       pathname = @url.to_pathname
@@ -63,25 +67,26 @@ class ProtoAsset
     @asset ||= begin
       return nil if pathname.nil?
 
-      asset = Asset.with_filename(pathname)
+      # TODO: what if there are > 1?
+      asset = Asset.with_filename(pathname).first
 
       # Short-circuit if the urn and pathname match.
       # This assumes that the first URN changes if the contents for a pathname change.
       if asset
         current_first_urn = @urners.first.urn_for_pathname(pathname)
-        return asset if asset.asset_urns.find_by_urn(current_first_urn).exists?
+        return asset unless asset.asset_urns.find_by_urn(current_first_urn).nil?
       end
 
       # Find the first asset that matches a URN (they're in order of expense of URN generation)
       @urners.each do |urner|
         urn = urner.urn_for_pathname(pathname)
         assets = Asset.find_by_urn(urn)
-        rails.logger.warn ("multiple assets match #{urn}") if assets.size > 1
+        Rails.logger.warn("multiple assets match #{urn}") if assets.size > 1
         asset = assets.first
         break if asset
       end
       asset ||= Asset.create(:basename => pathname.basename)
-      asset_url = asset.asset_urls.find_or_create_by_url(url)
+      asset_url = asset.asset_urls.find_or_create_by_url(url.to_s)
       asset_url.asset_urns.delete_all # Prior URNs lose.
       @urners.each do |urner|
         urn = urner.urn_for_pathname(pathname)

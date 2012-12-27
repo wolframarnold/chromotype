@@ -4,6 +4,8 @@ gem 'rails', '>= 3.2'
 
 gem 'thin'
 
+gem 'strong_parameters'
+
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 

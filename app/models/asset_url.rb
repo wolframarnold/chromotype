@@ -1,6 +1,5 @@
 class AssetUrl < ActiveRecord::Base
   belongs_to :asset
-  attr_accessible :url
   has_many :asset_urns
 
   validates_presence_of :url
