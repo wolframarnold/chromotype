@@ -40,7 +40,7 @@ class Asset < ActiveRecord::Base
 
   scope :find_by_urn, lambda { |urn|
     joins(:asset_urls => :asset_urns).
-      merge(AssetUrn.find_by_urn(urn)).
+      merge(AssetUrn.with_urn(urn)).
       readonly(false)
   }
 

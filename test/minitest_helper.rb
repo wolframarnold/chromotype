@@ -1,10 +1,12 @@
-ENV["RAILS_ENV"] = "test"
+ENV["RAILS_ENV"] ||= "test"
 require File.expand_path('../../config/environment', __FILE__)
 
 require "minitest/autorun"
 require "minitest/rails"
+require 'minitest/reporters'
+MiniTest::Reporters.use!
 
-# Uncomment if you want Capybara in accceptance/integration tests
+# Uncomment if you want Capybara in acceptance/integration tests
 # require "minitest/rails/capybara"
 
 # Uncomment if you want awesome colorful output
@@ -27,6 +29,6 @@ end
 # A) Change the require on the existing tests to `require "minitest_helper"`
 # B) Require this file's code in test_helper.rb
 
-MiniTest::Rails.override_testunit!
+# MiniTest::Rails.override_testunit! # <- TODO: is this necessary?
 
 require "mocha/setup"

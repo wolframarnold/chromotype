@@ -52,6 +52,14 @@ class Pathname
     absolutepath.linkpath
   end
 
+  def normalize
+    if self.exist?
+      follow_redirects.last
+    else
+      self
+    end
+  end
+
   # Like #realpath, but doesn't resolve symlinks.
   def absolutepath
     if absolute?

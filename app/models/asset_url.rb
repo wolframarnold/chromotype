@@ -1,14 +1,19 @@
 class AssetUrl < ActiveRecord::Base
   belongs_to :asset
-  has_and_belongs_to_many :asset_urns
+  attr_accessible :url
+  has_many :asset_urns
 
   validates_presence_of :url
+  validate :immutable_url
   before_create :normalize_url_and_sha
 
-  def normalize_url_and_sha
-    self.url = to_uri.normalize.to_s
-    self.url_sha = self.url.to_s.sha1
-  end
+  scope :with_filename, lambda { |filename|
+    where(:url, filename.to_pathname.to_uri)
+  }
+
+  scope :with_any_filename, lambda { |filenames|
+    where(:url, filenames.map { |ea| ea.to_pathname.to_uri })
+  }
 
   # Will be nil unless the uri's scheme is "file"
   def pathname
@@ -23,4 +28,16 @@ class AssetUrl < ActiveRecord::Base
     @url ||= self.url.to_uri
   end
 
+  private
+
+  def normalize_url_and_sha
+    self.url = to_uri.normalize.to_s
+    self.url_sha = self.url.to_s.sha1
+  end
+
+  def immutable_url
+    if !new_record? && changed_attributes.include?(:url)
+      errors.add(:url, "immutable")
+    end
+  end
 end

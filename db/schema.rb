@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121128021233) do
+ActiveRecord::Schema.define(:version => 20121128020835) do
 
   create_table "asset_tags", :id => false, :force => true do |t|
     t.integer "asset_id"
@@ -19,13 +19,6 @@ ActiveRecord::Schema.define(:version => 20121128021233) do
   end
 
   add_index "asset_tags", ["tag_id", "asset_id"], :name => "index_asset_tags_on_tag_id_and_asset_id"
-
-  create_table "asset_url_urn", :force => true do |t|
-    t.integer "asset_url_id"
-    t.integer "urn_id"
-  end
-
-  add_index "asset_url_urn", ["urn_id", "asset_url_id"], :name => "asset_url_urn_udx", :unique => true
 
   create_table "asset_urls", :force => true do |t|
     t.integer  "asset_id"
@@ -38,10 +31,12 @@ ActiveRecord::Schema.define(:version => 20121128021233) do
   add_index "asset_urls", ["url_sha"], :name => "asset_url_sha_udx", :unique => true
 
   create_table "asset_urns", :force => true do |t|
-    t.string "urn", :limit => 256
+    t.integer "asset_url_id"
+    t.string  "asset_urn",    :limit => 256
   end
 
-  add_index "asset_urns", ["urn"], :name => "urn_udx", :unique => true
+  add_index "asset_urns", ["asset_url_id", "asset_urn"], :name => "asset_url_urn_udx", :unique => true
+  add_index "asset_urns", ["asset_urn"], :name => "asset_urn_udx", :unique => true
 
   create_table "assets", :force => true do |t|
     t.string   "type"

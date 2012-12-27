@@ -100,7 +100,7 @@ group :test do
   gem 'minitest-rails'
   gem 'minitest-reporters'
   gem 'miniskirt'
-  gem "mocha", :require => false
+  gem 'mocha', :require => false
 
   #gem 'mini_backtrace' # Use Rails.backtrace_cleaner with MiniTest.
   # gem 'capybara'
