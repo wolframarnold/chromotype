@@ -32,11 +32,11 @@ ActiveRecord::Schema.define(:version => 20121128020835) do
 
   create_table "asset_urns", :force => true do |t|
     t.integer "asset_url_id"
-    t.string  "asset_urn",    :limit => 256
+    t.string  "urn",          :limit => 256
   end
 
-  add_index "asset_urns", ["asset_url_id", "asset_urn"], :name => "asset_url_urn_udx", :unique => true
-  add_index "asset_urns", ["asset_urn"], :name => "asset_urn_udx", :unique => true
+  add_index "asset_urns", ["asset_url_id", "urn"], :name => "asset_url_urn_udx", :unique => true
+  add_index "asset_urns", ["urn"], :name => "asset_urn_udx", :unique => true
 
   create_table "assets", :force => true do |t|
     t.string   "type"

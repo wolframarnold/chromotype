@@ -84,7 +84,7 @@ describe "asset processing with image resizing" do
     dir = "/var/tmp/testing123"
     Settings.cache_dir = dir.to_pathname
     ap = AssetProcessor.new
-    ap.process("test/images/Canon 20D.jpg")
+    ap.perform("test/images/Canon 20D.jpg")
 
     widths, heights = [], []
     Settings.resizes.each do |ea|
