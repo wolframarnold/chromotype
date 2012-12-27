@@ -1,10 +1,7 @@
 class AssetProcessor
-
-
   include Sidekiq::Worker
-
-  def perform(uri)
-    ProtoAsset.new(uri.to_url).process
+  def perform(url)
+    ProtoAsset.new(url).process
   end
 end
 

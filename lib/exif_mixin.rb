@@ -14,14 +14,14 @@ module ExifMixin
   def self.exif_results *filenames
     results = {}
     filenames = filenames.collect { |ea| ea.to_s }
-    filenames.each { |ea| results[ea] = cache.read(ea) }
+    filenames.each { |ea| results[ea] = cache.read(cache_key(ea)) }
     results.delete_if { |k, v| v.nil? || v.errors? }
     missing = filenames - results.keys
     e = Exiftoolr.new(missing)
     unless e.errors?
       missing.each do |ea|
         result = e.result_for(ea)
-        cache.write(ea, result)
+        cache.write(cache_key(ea), result)
         results[ea] = result
       end
     end
@@ -30,11 +30,14 @@ module ExifMixin
 
   def self.exif_result filename
     f = filename.to_s
-    exif_results(f)[f]
+    cache.fetch(cache_key(f)) do
+      e = Exiftoolr.new(f)
+      e.result_for(f) unless e.errors?
+    end
   end
 
   def exif_result
-    @exif_result ||= ExifMixin.exif_result(pathname)
+    ExifMixin.exif_result(self.pathname)
   end
 
   def exif?

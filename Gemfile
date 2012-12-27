@@ -60,7 +60,8 @@ gem 'ruby-geonames', :git => 'git://github.com/mceachen/ruby-geonames.git'
 gem 'findler' #, :git => 'git://github.com/mceachen/findler.git'
 gem 'closure_tree' #, :git => 'git://github.com/mceachen/closure_tree.git'
 gem 'exiftoolr' #, :git => 'git://github.com/mceachen/exiftoolr.git'
-gem 'ledermann-rails-settings', :require => 'rails-settings', :git => 'git://github.com/ledermann/rails-settings.git'
+#gem 'ledermann-rails-settings', :require => 'rails-settings', :git => 'git://github.com/ledermann/rails-settings.git'
+gem 'ledermann-rails-settings', :require => 'rails-settings'
 gem 'micro_magick'
 
 #gem 'spawn', :git => 'git://github.com/rfc2822/spawn'
@@ -99,7 +100,7 @@ group :test do
   gem 'minitest-rails'
   gem 'minitest-reporters'
   gem 'miniskirt'
-  gem 'mocha'
+  gem "mocha", :require => false
 
   #gem 'mini_backtrace' # Use Rails.backtrace_cleaner with MiniTest.
   # gem 'capybara'

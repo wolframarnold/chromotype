@@ -38,15 +38,15 @@ class Asset < ActiveRecord::Base
       readonly(false)
   }
 
-  scope :with_urn, lambda { |urn|
-    joins(:asset_urls => :urns).
-      merge(Urn.with_urn(urn)).
+  scope :find_by_urn, lambda { |urn|
+    joins(:asset_urls => :asset_urns).
+      merge(AssetUrn.find_by_urn(urn)).
       readonly(false)
   }
 
   scope :with_any_urn, lambda { |urn|
-    joins(:asset_urls => :urns).
-      merge(Urn.with_any_urn(urns)).
+    joins(:asset_urls => :asset_urns).
+      merge(AssetUrn.with_any_urn(urns)).
       readonly(false)
   }
 
@@ -72,18 +72,8 @@ class Asset < ActiveRecord::Base
     asset_urls.first.try(:to_url)
   end
 
-  def add_uri(uri)
-    return unless asset_urls.with_uri(uri).empty?
-    # Do I need to steal the uri from another asset?
-    dupes = AssetUrl.with_uri(uri)
-    unless dupes.empty?
-      raise ArgumentError, "Asset #{dupes.first.asset.id} already points to #{uri}"
-    end
-    asset_urls.build(:url => uri)
-  end
-
   def add_pathname(pathname)
-    add_uri(pathname.to_pathname.to_url)
+    asset_urls.find_or_create_by_url(pathname.to_pathname.to_url)
   end
 
   def delete!

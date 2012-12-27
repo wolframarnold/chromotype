@@ -31,8 +31,7 @@ because the last_modified value of the file will be the most recent.
 
 ## What happens when assets are modified in iPhoto?
 
-* Their EXIF content fingerprint will match, so the asset_uri.asset_id but not their content SHA fingerprint, so new
-thumbnails will be created.
+* ProtoAsset will find the prior asset because the URN::Exif will match the previous version of the image.
 
 ## What happens when a file is edited in place?
 

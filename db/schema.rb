@@ -37,6 +37,12 @@ ActiveRecord::Schema.define(:version => 20121128021233) do
 
   add_index "asset_urls", ["url_sha"], :name => "asset_url_sha_udx", :unique => true
 
+  create_table "asset_urns", :force => true do |t|
+    t.string "urn", :limit => 256
+  end
+
+  add_index "asset_urns", ["urn"], :name => "urn_udx", :unique => true
+
   create_table "assets", :force => true do |t|
     t.string   "type"
     t.boolean  "favorite"
@@ -81,11 +87,5 @@ ActiveRecord::Schema.define(:version => 20121128021233) do
 
   add_index "tags", ["name", "parent_id"], :name => "index_tags_on_name_and_parent_id", :unique => true
   add_index "tags", ["type", "name", "parent_id"], :name => "index_tags_on_type_and_name_and_parent_id", :unique => true
-
-  create_table "urns", :force => true do |t|
-    t.string "urn", :limit => 64
-  end
-
-  add_index "urns", ["urn"], :name => "urn_udx", :unique => true
 
 end

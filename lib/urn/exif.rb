@@ -1,15 +1,15 @@
 module URN
-  class ExifSha
+  class Exif
     extend CacheSupport
 
     def self.urn_prefix
-      "urn:exif-sha:"
+      "urn:exif:"
     end
 
     def self.urn_for_pathname(pathname)
       cached_with_short_ttl(pathname) {
         a = urn_array(pathname)
-        urn_prefix + a.join(":").sha1 if a
+        (urn_prefix + a.join(":")) if a
       }
     end
 

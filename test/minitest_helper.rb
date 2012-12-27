@@ -28,3 +28,5 @@ end
 # B) Require this file's code in test_helper.rb
 
 MiniTest::Rails.override_testunit!
+
+require "mocha/setup"

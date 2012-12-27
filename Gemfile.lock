@@ -1,11 +1,4 @@
 GIT
-  remote: git://github.com/ledermann/rails-settings.git
-  revision: b987f2bc91fdb0733440ccaf3924777a7d6da6a7
-  specs:
-    ledermann-rails-settings (1.2.0)
-      activerecord (>= 2.3)
-
-GIT
   remote: git://github.com/mceachen/ruby-geonames.git
   revision: 6ec73d0a92efaac91cb7302f1659958aa237516d
   specs:
@@ -99,6 +92,8 @@ GEM
       railties (>= 3.0, < 5.0)
       thor (>= 0.14, < 2.0)
     json (1.7.5)
+    ledermann-rails-settings (1.2.0)
+      activerecord (>= 2.3)
     listen (0.6.0)
     lumberjack (1.0.2)
     mail (2.4.4)
@@ -211,7 +206,7 @@ DEPENDENCIES
   guard
   jquery-rails
   json
-  ledermann-rails-settings!
+  ledermann-rails-settings
   micro_magick
   miniskirt
   minitest

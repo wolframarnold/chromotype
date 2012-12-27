@@ -7,9 +7,9 @@ module URN
     end
 
     def self.urn_for_pathname(pathname)
-      cached_with_short_ttl(pathname) {
-        urn_prefix + pathname.mtime.to_i + ":" + pathname.size
-      }
+      cached_with_short_ttl(pathname) do
+        "#{urn_prefix}#{pathname.mtime.to_i}:#{pathname.size}"
+      end
     end
   end
 end

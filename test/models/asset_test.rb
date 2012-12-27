@@ -40,19 +40,19 @@ describe Asset do
     @asset.add_pathname Pathname.new("Gemfile")
     @asset.save!
     assert_path
-    @asset.add_uri @path
+    asset_urls.find_or_create_by_url(@path)
     @asset.save!
     assert_path
   end
 
   it "should add another #uri=" do
     u = "https://s3.amazonaws.com/test/test/Gemfile"
-    @asset.add_uri u
+    asset_urls.find_or_create_by_url(u)
     @asset.save!
-    @asset.reload.asset_uris.collect{|ea|ea.url}.must_equal [u, @url]
-    au = @asset.asset_uris.first
+    @asset.reload.asset_urls.collect{|ea|ea.url}.must_equal [u, @url]
+    au = @asset.asset_urls.first
     au.url.must_equal(u)
-    @asset.asset_uris.second.url.must_equal(@url)
+    @asset.asset_urls.second.url.must_equal(@url)
   end
 
   it "should fail to give the same URI to another asset" do

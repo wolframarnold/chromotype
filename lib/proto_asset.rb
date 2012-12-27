@@ -5,7 +5,7 @@ class ProtoAsset
 
   # "URNers" take a URL and extract a URN
   # which can be used to match the asset with a duplicate file.
-  DEFAULT_URNERS = [URN::FsAttrs, URN::Sha1, URN::ExifSha] # in order of expense
+  DEFAULT_URNERS = [URN::FsAttrs, URN::Sha1, URN::Exif] # in order of expense
 
   # "Visitors" are sent #visit_asset when assets are imported.
   DEFAULT_VISITORS = [CameraTag, DateTag, DirTag, FaceTag, GeoTag, SeasonTag, ImageResizer]
@@ -72,6 +72,7 @@ class ProtoAsset
       end
       asset ||= Asset.create(:basename => pathname.basename)
       asset_url = asset.asset_urls.find_or_create_by_url(url)
+      asset_url.asset_urns.delete_all # Prior URNs lose.
       @urners.each do |urner|
         urn = urner.urn_for_pathname(pathname)
         asset_url.asset_urns.find_or_create_by_urn(urn)

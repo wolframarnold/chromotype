@@ -14,6 +14,7 @@ class IpLocation
   end
 
   def self.latitude
+
     latitude_maxmind
   rescue StandardError
     begin
