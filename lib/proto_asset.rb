@@ -1,6 +1,5 @@
 # This class tries to find the best matching asset,
 # or create a new one if this asset hasn't been imported yet
-
 class ProtoAsset
 
   # "URNers" take a URL and extract a URN
@@ -11,8 +10,11 @@ class ProtoAsset
   DEFAULT_VISITORS = [CameraTag, DateTag, DirTag, FaceTag, GeoTag, SeasonTag, ImageResizer]
 
   include ExifMixin
-  extend DeferredAttribute
-  deferred_attribute :pathname, :paths, :urns, :asset
+  include DeferredAttribute
+
+  deferred_attribute :paths
+  deferred_attribute :urns
+  deferred_attribute :asset
 
   def initialize(url, urners = DEFAULT_URNERS, visitors = DEFAULT_VISITORS)
     @url = url
@@ -30,7 +32,7 @@ class ProtoAsset
     pathname.to_uri
   end
 
-  def get_pathname
+  def pathname
     paths.try(:last)
   end
 

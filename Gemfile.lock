@@ -66,6 +66,7 @@ GEM
     debugger-linecache (1.1.2)
       debugger-ruby_core_source (>= 1.1.1)
     debugger-ruby_core_source (1.1.6)
+    deferred_attribute (0.0.1)
     dimensions (1.2.0)
     erubis (2.7.0)
     eventmachine (1.0.0)
@@ -96,7 +97,7 @@ GEM
     json (1.7.5)
     ledermann-rails-settings (1.2.0)
       activerecord (>= 2.3)
-    listen (0.6.0)
+    listen (0.7.0)
     lumberjack (1.0.2)
     mail (2.4.4)
       i18n (>= 0.4.0)
@@ -206,6 +207,7 @@ DEPENDENCIES
   closure_tree
   database_cleaner
   debugger
+  deferred_attribute
   dimensions
   exiftoolr
   findler

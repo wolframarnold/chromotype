@@ -66,6 +66,7 @@ gem 'exiftoolr' #, :git => 'git://github.com/mceachen/exiftoolr.git'
 gem 'ledermann-rails-settings', :require => 'rails-settings'
 gem 'micro_magick'
 gem 'dimensions'
+gem 'deferred_attribute'
 
 #gem 'spawn', :git => 'git://github.com/rfc2822/spawn'
 #gem 'delayed_job_active_record'
