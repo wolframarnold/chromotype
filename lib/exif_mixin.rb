@@ -11,7 +11,7 @@ module ExifMixin
   # Returns hash of filename => Exiftoolr::Results for
   # all the files that have valid EXIF headers. Results
   # may be from cache.
-  def self.exif_results *filenames
+  def self.exif_results(*filenames)
     results = {}
     filenames = filenames.collect { |ea| ea.to_s }
     filenames.each { |ea| results[ea] = cache.read(cache_key(ea)) }
@@ -28,7 +28,7 @@ module ExifMixin
     results
   end
 
-  def self.exif_result filename
+  def self.exif_result(filename)
     f = filename.to_s
     cache.fetch(cache_key(f)) do
       e = Exiftoolr.new(f)

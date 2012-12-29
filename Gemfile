@@ -65,6 +65,7 @@ gem 'exiftoolr' #, :git => 'git://github.com/mceachen/exiftoolr.git'
 #gem 'ledermann-rails-settings', :require => 'rails-settings', :git => 'git://github.com/ledermann/rails-settings.git'
 gem 'ledermann-rails-settings', :require => 'rails-settings'
 gem 'micro_magick'
+gem 'dimensions'
 
 #gem 'spawn', :git => 'git://github.com/rfc2822/spawn'
 #gem 'delayed_job_active_record'
@@ -102,6 +103,7 @@ group :test do
   gem 'minitest-rails'
   gem 'minitest-reporters'
   gem 'miniskirt'
+  gem 'database_cleaner'
   gem 'mocha', :require => false
 
   #gem 'mini_backtrace' # Use Rails.backtrace_cleaner with MiniTest.

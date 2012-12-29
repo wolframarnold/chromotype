@@ -15,6 +15,16 @@ MiniTest::Reporters.use!
 # Load support files
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |ea| require ea }
 
+DatabaseCleaner.strategy = :transaction
+class MiniTest::Spec
+  before :each do
+    DatabaseCleaner.start
+  end
+  after :each do
+    DatabaseCleaner.clean
+  end
+end
+
 def img_path(basename)
   "#{File.dirname(__FILE__)}/images/#{basename}".to_pathname
 end

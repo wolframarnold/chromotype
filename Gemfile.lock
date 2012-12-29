@@ -58,6 +58,7 @@ GEM
     columnize (0.3.6)
     connection_pool (0.9.3)
     daemons (1.1.9)
+    database_cleaner (0.9.1)
     debugger (1.2.3)
       columnize (>= 0.3.1)
       debugger-linecache (~> 1.1.1)
@@ -65,6 +66,7 @@ GEM
     debugger-linecache (1.1.2)
       debugger-ruby_core_source (>= 1.1.1)
     debugger-ruby_core_source (1.1.6)
+    dimensions (1.2.0)
     erubis (2.7.0)
     eventmachine (1.0.0)
     execjs (1.4.0)
@@ -202,7 +204,9 @@ PLATFORMS
 
 DEPENDENCIES
   closure_tree
+  database_cleaner
   debugger
+  dimensions
   exiftoolr
   findler
   font-awesome-rails

@@ -69,7 +69,7 @@ ActiveSupport.migration_safe_on_load do
 
     defaults[:exclusion_patterns] = %w(cache caches previews secret temp thumbs tmp)
 
-    defaults[:minimum_image_pixels] = 1024*768
+    defaults[:minimum_image_pixels] = 1024*768 # minimum .7mp image
     defaults[:resizes] = %w{
       1920x1080
       1280x720

@@ -14,7 +14,7 @@ describe "asset processing without image resizing" do
 
   it "should work on insert" do
     asset, path = process_img_2452
-    asset.asset_urls.collect { |ea| ea.url }.must_equal(path.to_uri.to_s)
+    asset.asset_urls.collect { |ea| ea.url }.must_equal [path.to_uri.to_s]
   end
 
   it "should find the prior asset" do
@@ -24,11 +24,11 @@ describe "asset processing without image resizing" do
   end
 
   it "should return nil for non-exif-encoded assets" do
-    @ap.perform("test/images/simple.png").must_be_nil
+    @ap.perform("test/images/simple.png").must_be_false
   end
 
   it "should return nil for JPG assets without EXIF headers" do
-    @ap.perform("test/images/simple.jpg").must_be_nil
+    @ap.perform("test/images/simple.jpg").must_be_false
   end
 
   it "should skip processing URIs that don't exist'" do
@@ -37,7 +37,7 @@ describe "asset processing without image resizing" do
 
   it "should process JPG assets with EXIF headers" do
     ea = @ap.perform("test/images/Canon 20D.jpg")
-    ea.wont_be_nil
+    ea.wont_be_false
     ea.reload.tags.collect { |t| t.ancestry_path.join("/") }.must_equal_contents [
       "when/2004/9/19",
       "when/seasons/autumn",
@@ -60,7 +60,7 @@ describe "asset processing without image resizing" do
 
   it "should extract face tags from picasa" do
     ea = @ap.perform("test/images/faces.jpg")
-    ea.reload.tags.collect { |t| t.ancestry_path.join("/") }.must_equal_contents [
+    ea.reload.tags.collect { |t| t.ancestry_path.join("/") }.must_contain_all [
       "when/2005/11/26",
       "with/Canon/Canon EOS 20D",
       "when/seasons/autumn",

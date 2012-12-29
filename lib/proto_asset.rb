@@ -20,8 +20,7 @@ class ProtoAsset
 
   def process
     # TODO: support non-file URLs:
-    raise NotImplementedError if pathname.nil? # not a file URL
-
+    raise NotImplementedError if pathname.nil?
     @visitors.collect { |v| v.visit_asset(asset) } if asset
   end
 
@@ -63,10 +62,13 @@ class ProtoAsset
 
   def asset
     @asset ||= begin
-      return nil if pathname.nil?
+      return false if pathname.nil?
+
+      d = Dimensions.dimensions(pathname.to_s)
+      return false if d.nil? || (d.first * d.last) < Settings[:minimum_image_pixels]
 
       # TODO: what if there are > 1?
-      asset = Asset.with_filename(pathname).first
+      asset = Asset.with_filename(pathname.to_s).first
 
       # Short-circuit if the urn and pathname match.
       # This assumes that the first URN changes if the contents for a pathname change.
@@ -83,7 +85,7 @@ class ProtoAsset
         asset = assets.first
         break if asset
       end
-      asset ||= ExifAsset.create(:basename => pathname.basename)
+      asset ||= ExifAsset.create(:basename => pathname.basename.to_s)
       asset_url = asset.add_pathname(pathname)
       asset_url.asset_urns.delete_all # Prior URNs lose.
       @urners.each do |urner|

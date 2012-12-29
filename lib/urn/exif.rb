@@ -15,7 +15,7 @@ module URN
 
     def self.urn_array(pathname)
       exif_result = ExifMixin.exif_result(pathname)
-      return nil if exif_result.nil? || exif_result.errors?
+      return nil if exif_result.nil? || exif_result.errors? || exif_result[:create_date].nil?
 
       # These fields seem to be durable even when edited:
       # Can't use :serial_number or :image_number because Preview.app deletes that tag.
