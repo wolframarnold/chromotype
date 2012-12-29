@@ -38,29 +38,29 @@ describe "asset processing without image resizing" do
   it "should process JPG assets with EXIF headers" do
     ea = @ap.perform("test/images/Canon 20D.jpg")
     ea.wont_be_nil
-    ea.reload.tags.collect { |t| t.ancestry_path.join("/") }.sort.must_equal [
+    ea.reload.tags.collect { |t| t.ancestry_path.join("/") }.must_equal_contents [
       "when/2004/9/19",
       "when/seasons/autumn",
       "with/Canon/Canon EOS 20D",
       "file" + (Rails.root + "test/images").to_s
-    ].sort
+    ]
 
   end
 
   it "should process GPS-tagged asset" do
     ea = @ap.perform("test/images/iPhone 4S.jpg")
-    ea.reload.tags.collect { |t| t.ancestry_path.join("/") }.sort.must_equal [
+    ea.reload.tags.collect { |t| t.ancestry_path.join("/") }.must_equal_contents [
       "when/2011/11/23",
       "when/seasons/autumn",
       "with/Apple/iPhone 4S",
       "where/Earth/North America/United States/California/San Mateo County/El Granada",
       "file" + (Rails.root + "test/images").to_s
-    ].sort
+    ]
   end
 
   it "should extract face tags from picasa" do
     ea = @ap.perform("test/images/faces.jpg")
-    ea.reload.tags.collect { |t| t.ancestry_path.join("/") }.sort.must_equal [
+    ea.reload.tags.collect { |t| t.ancestry_path.join("/") }.must_equal_contents [
       "when/2005/11/26",
       "with/Canon/Canon EOS 20D",
       "when/seasons/autumn",
@@ -70,7 +70,7 @@ describe "asset processing without image resizing" do
       "who/McEachen/Matthew",
       "who/McEachen/Ruth",
       "file" + (Rails.root + "test/images").to_s
-    ].sort
+    ]
   end
 end
 

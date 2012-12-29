@@ -12,16 +12,11 @@ MiniTest::Reporters.use!
 # Uncomment if you want awesome colorful output
 #require "minitest/pride"
 
-# Just say no to fixtures.
-#class MiniTest::Rails::ActiveSupport::TestCase
-#  # Setup all fixtures in test/fixtures/*.(yml|csv) for all tests in alphabetical order.
-#  fixtures :all
-#
-#  # Add more helper methods to be used by all tests here...
-#end
+# Load support files
+Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |ea| require ea }
 
 def img_path(basename)
-  File.expand_path("../images/#{basename}", __FILE__).to_pathname
+  "#{File.dirname(__FILE__)}/images/#{basename}".to_pathname
 end
 
 # Do you want all existing Rails tests to use MiniTest::Rails?
