@@ -18,8 +18,8 @@ class Asset < ActiveRecord::Base
 
   #scope :with_tag_or_descendants, lambda { |tag| includes(:tags => [:ancestors]).where("ancestors_tags.id = ? or tags.id = ?", tag.id, tag.id) }
 
-  scope :with_url, lambda { |uri|
-    joins(:asset_urls).merge AssetUrl.with_uri(uri)
+  scope :with_url, lambda { |url|
+    joins(:asset_urls).merge(AssetUrl.find_all_by_url(url.to_s))
   }
 
   def self.without(instance)
@@ -70,6 +70,10 @@ class Asset < ActiveRecord::Base
 
   def add_pathname(pathname)
     asset_urls.find_or_create_by_url(pathname.to_pathname.to_uri.to_s)
+  end
+
+  def add_url(url)
+    asset_urls.find_or_create_by_url(url.to_uri.to_s)
   end
 
   def delete!

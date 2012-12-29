@@ -2,20 +2,15 @@ require "minitest_helper"
 
 describe Asset do
   before :each do
-    Asset.delete_all
-    AssetUrl.delete_all
-
-    @asset = Asset.new
+    @asset = Asset.create!
     @path = "Gemfile".to_pathname.realpath
     @asset.add_pathname @path
-    @asset.save!
     @url = @path.to_uri.to_s
   end
 
   def assert_path
-    @asset.url.must_equal(@path.to_uri)
-    @asset.asset_uris.collect{|ea|ea.url}.must_equal [@url]
-    au = @asset.asset_uris.first
+    @asset.asset_urls.collect { |ea| ea.url }.must_equal [@url]
+    au = @asset.asset_urls.first
     au.to_uri.must_equal(@path.to_uri)
     au.url.must_equal(@path.to_uri.to_s)
   end
@@ -24,12 +19,16 @@ describe Asset do
     assert_path
   end
 
+  it "should set basename properly" do
+    @asset.reload.basename.must_equal("Gemfile")
+  end
+
   it "should find with_filename(pathname)" do
     Asset.with_any_filename([@path]).to_a.must_equal([@asset])
   end
 
-  it "should find with_uri(pathname)" do
-    Asset.with_uri(@path.to_uri).to_a.must_equal([@asset])
+  it "should find with_url(pathname)" do
+    Asset.with_url(@path.to_uri).to_a.must_equal([@asset])
   end
 
   it "should find with_filename(to_s)" do
@@ -47,9 +46,8 @@ describe Asset do
 
   it "should add another #uri=" do
     u = "https://s3.amazonaws.com/test/test/Gemfile"
-    asset_urls.find_or_create_by_url(u)
-    @asset.save!
-    @asset.reload.asset_urls.collect{|ea|ea.url}.must_equal [u, @url]
+    @asset.add_url(u)
+    @asset.reload.asset_urls.collect { |ea| ea.url }.must_equal [u, @url]
     au = @asset.asset_urls.first
     au.url.must_equal(u)
     @asset.asset_urls.second.url.must_equal(@url)
