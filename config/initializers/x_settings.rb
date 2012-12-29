@@ -29,6 +29,10 @@ ActiveSupport.migration_safe_on_load do
       (library_root + "Caches").ensure_directory
     end
 
+    def self.thumbnail_root
+      (library_root + "Thumbnails").ensure_directory
+    end
+
     # The "roots" are directories that are scanned for assets to import.
 
     def self.default_roots(home = ENV["HOME"])
@@ -46,13 +50,13 @@ ActiveSupport.migration_safe_on_load do
       (library_root + "Resized").ensure_directory
     end
 
-    def self.assets_root
-      (library_root + "Assets").ensure_directory
+    def self.masters_root
+      (library_root + "Masters").ensure_directory
     end
 
     def self.roots
       # If people edit files in the originals or duplicates roots, we should see it.
-      (self[:roots] + [assets_root]).uniq
+      (self[:roots] + [masters_root]).uniq
     end
 
     def self.keys
@@ -67,12 +71,12 @@ ActiveSupport.migration_safe_on_load do
 
     defaults[:minimum_image_pixels] = 1024*768
     defaults[:resizes] = %w{
-    1920x1080
-    1280x720
-    640x360
-    320x180
-    160x90
-  }
+      1920x1080
+      1280x720
+      640x360
+      320x180
+      160x90
+    }
 
     # iPhoto uses 640x480 and 360x270 (?)
 
@@ -86,13 +90,15 @@ ActiveSupport.migration_safe_on_load do
     defaults[:reverse_face_paths] = true
 
     # Common screen resolutions:
-    # 1280 x 720   (720p)
-    # 1366 x 768   (11" MBA)
+    # 1280 x 720  (720p)
+    # 1366 x 768  (11" MBA)
+    # 1280 x 800  (Nexus 7)
     # 1440 x 900  (13" MBA)
     # 1920 x 1080 (1080p, 21" iMac)
     # 1920 x 1200 (17" MBP)
     # 2560 x 1440 (27" iMac)
-
+    # 2048 x 1536 (iPad 3)
+    # 2560 x 1600 (Nexus 10)
     # 2560 x 1600 (30" LCD) -- but by adding this resolution, we double the time
     # it takes to process an image.
 

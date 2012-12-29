@@ -22,17 +22,15 @@ class ProtoAsset
     # TODO: support non-file URLs:
     raise NotImplementedError if pathname.nil? # not a file URL
 
-    find_or_create_asset.tap do |asset|
-      @visitors.each { |v| v.visit_asset(asset) } if asset
-    end
-  end
-
-  def pathname
-    @pathname ||= self.paths && self.paths.last
+    @visitors.collect { |v| v.visit_asset(asset) } if asset
   end
 
   def url
     pathname.to_uri
+  end
+
+  def pathname
+    @pathname ||= paths.try(:last)
   end
 
   def paths
@@ -63,7 +61,7 @@ class ProtoAsset
     paths.collect { |ea| ea.to_s }.join(", ")
   end
 
-  def find_or_create_asset
+  def asset
     @asset ||= begin
       return nil if pathname.nil?
 
@@ -80,12 +78,12 @@ class ProtoAsset
       # Find the first asset that matches a URN (they're in order of expense of URN generation)
       @urners.each do |urner|
         urn = urner.urn_for_pathname(pathname)
-        assets = Asset.find_by_urn(urn)
+        assets = Asset.with_urn(urn)
         Rails.logger.warn("multiple assets match #{urn}") if assets.size > 1
         asset = assets.first
         break if asset
       end
-      asset ||= Asset.create(:basename => pathname.basename)
+      asset ||= ExifAsset.create(:basename => pathname.basename)
       asset_url = asset.add_pathname(pathname)
       asset_url.asset_urns.delete_all # Prior URNs lose.
       @urners.each do |urner|

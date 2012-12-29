@@ -29,7 +29,7 @@ describe Asset do
   end
 
   it "should find with_uri(pathname)" do
-    Asset.with_uri(@path.to_url).to_a.must_equal([@asset])
+    Asset.with_uri(@path.to_uri).to_a.must_equal([@asset])
   end
 
   it "should find with_filename(to_s)" do

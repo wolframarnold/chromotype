@@ -28,8 +28,8 @@ module URI
     end
   end
 
-  def self.from_file pathname
-    pathname.to_pathname.to_url
+  def self.from_file(pathname)
+    pathname.to_pathname.to_uri
   end
 
   # Returns an array of URIs

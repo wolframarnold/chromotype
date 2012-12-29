@@ -1,19 +1,16 @@
 class Asset < ActiveRecord::Base
-  include ExifMixin
 
-  belongs_to :original_asset, :class_name => "Asset"
-  has_many :derivatives, :class_name => "Asset", :foreign_key => "original_asset_id"
-  has_many :asset_tags
-  has_many :tags, :through => :asset_tags
   has_many :asset_urls, :order => 'id desc', :dependent => :destroy
   has_many :asset_urns, :through => :asset_urls
-  has_many :asset_thumbprints, :order => 'id desc', :dependent => :destroy
+
+  has_many :asset_tags
+  has_many :tags, :through => :asset_tags
 
   scope :with_tag, lambda { |tag|
     joins(:asset_tags).merge(AssetTag.find_by_tag_id(tag.id))
   }
 
-  scope :with_tag_or_descendents, lambda { |tag|
+  scope :with_tag_or_descendants, lambda { |tag|
     joins(:asset_tags).
       joins("join #{Tag.hierarchy_table_name} on asset_tags.tag_id = #{Tag.hierarchy_table_name}.descendant_id").
       where("#{Tag.hierarchy_table_name}.ancestor_id = ?", tag.id)
@@ -41,13 +38,13 @@ class Asset < ActiveRecord::Base
       readonly(false)
   }
 
-  scope :find_by_urn, lambda { |urn|
+  scope :with_urn, lambda { |urn|
     joins(:asset_urls => :asset_urns).
       merge(AssetUrn.with_urn(urn)).
       readonly(false)
   }
 
-  scope :with_any_urn, lambda { |urn|
+  scope :with_any_urn, lambda { |urns|
     joins(:asset_urls => :asset_urns).
       merge(AssetUrn.with_any_urn(urns)).
       readonly(false)
@@ -69,10 +66,6 @@ class Asset < ActiveRecord::Base
 
   def captured_at
     pathname.ctime
-  end
-
-  def url
-    asset_urls.first.try(:to_uri)
   end
 
   def add_pathname(pathname)
@@ -108,17 +101,11 @@ class Asset < ActiveRecord::Base
     asset_tags.find_or_create_by_tag_id(tag.id)
   end
 
-  def add_thumbprint(asset_thumbprint)
-    asset_thumbprints.find_or_create_by_type_and_thumbprint(
-      :type => asset_thumbprint.class,
-      :thumbprint => asset_thumbprint.thumbprint)
-  end
-
   def move_to_library
     return unless Settings.move_to_library
 
     # If one already is in the originals directory, it wins.
-    with_same_thumbprints.select do |ea|
+    with_same_urns.select do |ea|
       ea.pathname.child_of? Settings.library_root
     end.each do |ea|
       if contents_match?(ea) &&

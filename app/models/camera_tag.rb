@@ -8,8 +8,8 @@ class CameraTag < Tag
     # todo: short-circuit if we already have camera tags
     exif = exif_asset.exif
     return if exif.nil?
-    a = [exif[:make], exif[:model]].compact
+    a = [exif[:make], exif[:model]].compact # Not all photos have either
     return if a.empty?
-    exif_asset.add_tag named_root.find_or_create_by_path(a)
+    exif_asset.add_tag(named_root.find_or_create_by_path(a))
   end
 end

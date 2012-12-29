@@ -7,19 +7,14 @@ describe "asset processing without image resizing" do
   end
 
   def process_img_2452
-    p = Pathname.new("test/images/IMG_2452.jpg")
+    p = img_path("IMG_2452.jpg")
     asset = @ap.perform(p)
-    asset.save!
     return asset, p.realpath
   end
 
   it "should work on insert" do
     asset, path = process_img_2452
-    asset.url.must_equal(path.to_uri)
-    asset.asset_uris.size.must_equal 1
-    au = asset.asset_uris.first
-    au.to_uri.must_equal(path.to_uri)
-    au.url.must_equal(path.to_uri.to_s)
+    asset.asset_urls.collect { |ea| ea.url }.must_equal(path.to_uri.to_s)
   end
 
   it "should find the prior asset" do
@@ -28,16 +23,16 @@ describe "asset processing without image resizing" do
     a2.must_equal(asset)
   end
 
-  it "should return false for non-exif-encoded assets" do
+  it "should return nil for non-exif-encoded assets" do
     @ap.perform("test/images/simple.png").must_be_nil
   end
 
-  it "should skip processing JPG assets without EXIF headers" do
+  it "should return nil for JPG assets without EXIF headers" do
     @ap.perform("test/images/simple.jpg").must_be_nil
   end
 
   it "should skip processing URIs that don't exist'" do
-    @ap.perform("test/images/zzz.jpg").must_be_nil
+    lambda { @ap.perform("test/images/does not exist.jpg") }.must_raise(NotImplementedError)
   end
 
   it "should process JPG assets with EXIF headers" do
@@ -45,9 +40,9 @@ describe "asset processing without image resizing" do
     ea.wont_be_nil
     ea.reload.tags.collect { |t| t.ancestry_path.join("/") }.sort.must_equal [
       "when/2004/9/19",
-        "when/seasons/autumn",
-        "with/Canon/Canon EOS 20D",
-        "file" + (Rails.root + "test/images").to_s
+      "when/seasons/autumn",
+      "with/Canon/Canon EOS 20D",
+      "file" + (Rails.root + "test/images").to_s
     ].sort
 
   end
@@ -56,10 +51,10 @@ describe "asset processing without image resizing" do
     ea = @ap.perform("test/images/iPhone 4S.jpg")
     ea.reload.tags.collect { |t| t.ancestry_path.join("/") }.sort.must_equal [
       "when/2011/11/23",
-        "when/seasons/autumn",
-        "with/Apple/iPhone 4S",
-        "where/Earth/North America/United States/California/San Mateo County/El Granada",
-        "file" + (Rails.root + "test/images").to_s
+      "when/seasons/autumn",
+      "with/Apple/iPhone 4S",
+      "where/Earth/North America/United States/California/San Mateo County/El Granada",
+      "file" + (Rails.root + "test/images").to_s
     ].sort
   end
 
@@ -67,14 +62,14 @@ describe "asset processing without image resizing" do
     ea = @ap.perform("test/images/faces.jpg")
     ea.reload.tags.collect { |t| t.ancestry_path.join("/") }.sort.must_equal [
       "when/2005/11/26",
-        "with/Canon/Canon EOS 20D",
-        "when/seasons/autumn",
-        "who/McEachen/James",
-        "who/McEachen/Jamie",
-        "who/McEachen/Karen",
-        "who/McEachen/Matthew",
-        "who/McEachen/Ruth",
-        "file" + (Rails.root + "test/images").to_s
+      "with/Canon/Canon EOS 20D",
+      "when/seasons/autumn",
+      "who/McEachen/James",
+      "who/McEachen/Jamie",
+      "who/McEachen/Karen",
+      "who/McEachen/Matthew",
+      "who/McEachen/Ruth",
+      "file" + (Rails.root + "test/images").to_s
     ].sort
   end
 end

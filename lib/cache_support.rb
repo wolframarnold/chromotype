@@ -7,7 +7,12 @@ module CacheSupport
     Chromotype::LONG_TTL_CACHE.fetch(cache_key(key)) { yield }
   end
 
+  # Works whether include'd or extend'ed:
+  def class_name
+   self.class == Class ? self.name : self.class.name
+  end
+
   def cache_key(key)
-    "#{self.is_a? Class ? self : self.class}:#{key}"
+    "#{class_name}:#{key}"
   end
 end
