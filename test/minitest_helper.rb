@@ -29,10 +29,16 @@ def img_path(basename)
   "#{File.dirname(__FILE__)}/images/#{basename}".to_pathname
 end
 
-# Do you want all existing Rails tests to use MiniTest::Rails?
-# Comment out the following and either:
-# A) Change the require on the existing tests to `require "minitest_helper"`
-# B) Require this file's code in test_helper.rb
+def with_tmp_dir(&block)
+  cwd = Dir.pwd
+  Dir.mktmpdir do |dir|
+    Dir.chdir(dir)
+    yield(Pathname.new dir)
+    Dir.chdir(cwd) # jruby needs us to cd out of the tmpdir so it can remove it
+  end
+ensure
+  Dir.chdir(cwd)
+end
 
 # MiniTest::Rails.override_testunit! # <- TODO: is this necessary?
 

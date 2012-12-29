@@ -1,6 +1,5 @@
 require "minitest_helper"
 
-
 describe Pathname do
 
   describe "path_array" do
@@ -11,7 +10,7 @@ describe Pathname do
 
   it "computes sha correctly" do
     p = Rails.root + "test/images/faces.jpg"
-    p.sha.must_equal("d6711de05a5ad9baac82a7e8957a0633f6b471ae")
+    p.sha1.must_equal("d6711de05a5ad9baac82a7e8957a0633f6b471ae")
   end
 
   describe "follow_redirects" do

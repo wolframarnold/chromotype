@@ -57,7 +57,7 @@ describe Asset do
 
   it "should fail to give the same URI to another asset" do
     a = Asset.create!
-    lambda { a.add_pathname Pathname.new("Gemfile") }.must_raise(ArgumentError)
+    lambda { a.add_pathname Pathname.new("Gemfile") }.must_raise(ActiveRecord::RecordNotUnique)
   end
 end
 
