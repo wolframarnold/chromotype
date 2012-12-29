@@ -24,23 +24,24 @@ describe Asset do
   end
 
   it "should find with_filename(pathname)" do
+    Asset.with_filename(@path).to_a.must_equal([@asset])
+  end
+
+  it "should find with_any_filename(pathname)" do
     Asset.with_any_filename([@path]).to_a.must_equal([@asset])
   end
 
   it "should find with_url(pathname)" do
-    Asset.with_url(@path.to_uri).to_a.must_equal([@asset])
+    with_url = Asset.with_url(@path.to_uri).to_a
+    with_url.must_equal([@asset])
   end
 
   it "should find with_filename(to_s)" do
     Asset.with_any_filename([@path.to_s]).to_a.must_equal([@asset])
   end
 
-  it "should be a no-op on Asset.uri= with existing uri" do
-    @asset.add_pathname Pathname.new("Gemfile")
-    @asset.save!
-    assert_path
-    asset_urls.find_or_create_by_url(@path)
-    @asset.save!
+  it "should be a no-op on Asset.add_pathname for existing path" do
+    @asset.add_pathname @path
     assert_path
   end
 

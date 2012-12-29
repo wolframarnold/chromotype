@@ -52,7 +52,7 @@ GEM
     celluloid (0.12.4)
       facter (>= 1.6.12)
       timers (>= 1.0.0)
-    closure_tree (3.6.7)
+    closure_tree (3.6.8)
       activerecord (>= 3.0.0)
     coderay (1.0.8)
     columnize (0.3.6)

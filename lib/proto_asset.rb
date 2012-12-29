@@ -11,6 +11,8 @@ class ProtoAsset
   DEFAULT_VISITORS = [CameraTag, DateTag, DirTag, FaceTag, GeoTag, SeasonTag, ImageResizer]
 
   include ExifMixin
+  extend DeferredAttribute
+  deferred_attribute :pathname, :paths, :urns, :asset
 
   def initialize(url, urners = DEFAULT_URNERS, visitors = DEFAULT_VISITORS)
     @url = url
@@ -28,31 +30,27 @@ class ProtoAsset
     pathname.to_uri
   end
 
-  def pathname
-    @pathname ||= paths.try(:last)
+  def get_pathname
+    paths.try(:last)
   end
 
-  def paths
-    @paths ||= begin
-      pathname = @url.to_pathname
-      paths = pathname.follow_redirects
-      if paths.nil?
-        # the file has been deleted, so mark the assets accordingly
-        Asset.with_filename(pathname.to_s).each { |ea| ea.sanity_check! }
-        nil
-      else
-        paths
-      end
+  def get_paths
+    pathname = @url.to_pathname
+    paths = pathname.follow_redirects
+    if paths.nil?
+      # the file has been deleted, so mark the assets accordingly
+      Asset.with_filename(pathname.to_s).each { |ea| ea.sanity_check! }
+      nil
+    else
+      paths
     end
   end
 
-  def urns
-    @urns ||= begin
-      return nil if paths.nil?
-      @urners.collect_hash(ActiveSupport::OrderedHash.new) do |klass|
-        t = klass.urn(pathname, exif_result)
-        {klass => t} if t
-      end
+  def get_urns
+    return nil if paths.nil?
+    @urners.collect_hash(ActiveSupport::OrderedHash.new) do |klass|
+      t = klass.urn(pathname, exif_result)
+      {klass => t} if t
     end
   end
 
@@ -60,40 +58,38 @@ class ProtoAsset
     paths.collect { |ea| ea.to_s }.join(", ")
   end
 
-  def asset
-    @asset ||= begin
-      return false if pathname.nil?
+  def get_asset
+    return if pathname.nil?
 
-      d = Dimensions.dimensions(pathname.to_s)
-      return false if d.nil? || (d.first * d.last) < Settings[:minimum_image_pixels]
+    d = Dimensions.dimensions(pathname.to_s)
+    return if d.nil? || (d.first * d.last) < Settings[:minimum_image_pixels]
 
-      # TODO: what if there are > 1?
-      asset = Asset.with_filename(pathname.to_s).first
+    # TODO: what if there are > 1?
+    asset = Asset.with_filename(pathname.to_s).first
 
-      # Short-circuit if the urn and pathname match.
-      # This assumes that the first URN changes if the contents for a pathname change.
-      if asset
-        current_first_urn = @urners.first.urn_for_pathname(pathname)
-        return asset unless asset.asset_urns.find_by_urn(current_first_urn).nil?
-      end
-
-      # Find the first asset that matches a URN (they're in order of expense of URN generation)
-      @urners.each do |urner|
-        urn = urner.urn_for_pathname(pathname)
-        assets = Asset.with_urn(urn)
-        Rails.logger.warn("multiple assets match #{urn}") if assets.size > 1
-        asset = assets.first
-        break if asset
-      end
-      asset ||= ExifAsset.create(:basename => pathname.basename.to_s)
-      asset_url = asset.add_pathname(pathname)
-      asset_url.asset_urns.delete_all # Prior URNs lose.
-      @urners.each do |urner|
-        urn = urner.urn_for_pathname(pathname)
-        asset_url.asset_urns.find_or_create_by_urn(urn)
-      end
-      asset
+    # Short-circuit if the urn and pathname match.
+    # This assumes that the first URN changes if the contents for a pathname change.
+    if asset
+      current_first_urn = @urners.first.urn_for_pathname(pathname)
+      return asset unless asset.asset_urns.find_by_urn(current_first_urn).nil?
     end
+
+    # Find the first asset that matches a URN (they're in order of expense of URN generation)
+    @urners.each do |urner|
+      urn = urner.urn_for_pathname(pathname)
+      assets = Asset.with_urn(urn)
+      Rails.logger.warn("multiple assets match #{urn}") if assets.size > 1
+      asset = assets.first
+      break if asset
+    end
+    asset ||= ExifAsset.create(:basename => pathname.basename.to_s)
+    asset_url = asset.add_pathname(pathname)
+    asset_url.asset_urns.delete_all # Prior URNs lose.
+    @urners.each do |urner|
+      urn = urner.urn_for_pathname(pathname)
+      asset_url.asset_urns.find_or_create_by_urn(urn)
+    end
+    asset
   end
 end
 

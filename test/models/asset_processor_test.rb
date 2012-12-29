@@ -24,11 +24,11 @@ describe "asset processing without image resizing" do
   end
 
   it "should return nil for non-exif-encoded assets" do
-    @ap.perform("test/images/simple.png").must_be_false
+    @ap.perform("test/images/simple.png").must_be_nil
   end
 
   it "should return nil for JPG assets without EXIF headers" do
-    @ap.perform("test/images/simple.jpg").must_be_false
+    @ap.perform("test/images/simple.jpg").must_be_nil
   end
 
   it "should skip processing URIs that don't exist'" do
@@ -71,6 +71,9 @@ describe "asset processing without image resizing" do
       "file" + (Rails.root + "test/images").to_s
     ]
   end
+
+  it "finds prior-imported assets with the same URN"
+  it "doesn't adopt prior-imported assets with different URNs"
 end
 
 describe "asset processing with image resizing" do
