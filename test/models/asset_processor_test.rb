@@ -37,14 +37,13 @@ describe "asset processing without image resizing" do
 
   it "should process JPG assets with EXIF headers" do
     ea = @ap.perform("test/images/Canon 20D.jpg")
-    ea.wont_be_false
+    ea.wont_be_falsy
     ea.reload.tags.collect { |t| t.ancestry_path.join("/") }.must_equal_contents [
       "when/2004/9/19",
       "when/seasons/autumn",
       "with/Canon/Canon EOS 20D",
       "file" + (Rails.root + "test/images").to_s
     ]
-
   end
 
   it "should process GPS-tagged asset" do

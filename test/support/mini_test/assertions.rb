@@ -28,4 +28,33 @@ module MiniTest::Assertions
     end
   end
 
+  def assert_true(obj, msg = nil)
+    msg = message(msg) { "Expected #{mu_pp(obj)} to be true" }
+    assert obj == true, msg
+  end
+
+  def assert_truthy(obj, msg = nil)
+    msg = message(msg) { "Expected #{mu_pp(obj)} to be truthy" }
+    assert !!obj, msg
+  end
+
+  def assert_false(obj, msg = nil)
+    msg = message(msg) { "Expected #{mu_pp(obj)} to be false" }
+    assert obj == false, msg
+  end
+
+  def assert_falsy(obj, msg = nil)
+    msg = message(msg) { "Expected #{mu_pp(obj)} to be falsy" }
+    assert !obj, msg
+  end
+
+  def refute_truthy obj, msg = nil
+    msg = message(msg) { "Expected #{mu_pp(obj)} to not be truthy" }
+    refute !obj, msg
+  end
+
+  def refute_falsy obj, msg = nil
+    msg = message(msg) { "Expected #{mu_pp(obj)} to not be falsy" }
+    refute !!obj, msg
+  end
 end
