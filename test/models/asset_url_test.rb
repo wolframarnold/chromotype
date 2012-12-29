@@ -1,10 +1,6 @@
 require "minitest_helper"
 
 describe AssetUrl do
-  before :each do
-    AssetUrl.delete_all
-  end
-
   it "should normalize file URIs properly" do
     url = "file:///a/b/c"
     au = AssetUrl.create!(:url => url)
