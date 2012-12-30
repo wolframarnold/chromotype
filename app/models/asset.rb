@@ -11,48 +11,33 @@ class Asset < ActiveRecord::Base
   }
 
   scope :with_tag_or_descendants, lambda { |tag|
-    joins(:asset_tags).
-      joins("join #{Tag.hierarchy_table_name} on asset_tags.tag_id = #{Tag.hierarchy_table_name}.descendant_id").
+    joins(:tags => :self_and_descendants).
       where("#{Tag.hierarchy_table_name}.ancestor_id = ?", tag.id)
   }
-
-  #scope :with_tag_or_descendants, lambda { |tag| includes(:tags => [:ancestors]).where("ancestors_tags.id = ? or tags.id = ?", tag.id, tag.id) }
 
   scope :with_url, lambda { |url|
     joins(:asset_urls).merge(AssetUrl.find_all_by_url(url.to_s))
   }
 
   def self.without(instance)
-    scope.where(["#{quoted_table_name}.#{self.class.primary_key} != ?", instance.id])
+    scoped.where(["#{quoted_table_name}.#{self.class.primary_key} != ?", instance.id])
   end
 
   scope :with_filename, lambda { |filename|
-    joins(:asset_urls).
-      merge(AssetUrl.with_filename(filename)).
-      readonly(false)
+    joins(:asset_urls).merge(AssetUrl.with_filename(filename))
   }
 
   scope :with_any_filename, lambda { |filenames|
-    joins(:asset_urls).
-      merge(AssetUrl.with_any_filename(filenames)).
-      readonly(false)
+    joins(:asset_urls).merge(AssetUrl.with_any_filename(filenames))
   }
 
   scope :with_urn, lambda { |urn|
-    joins(:asset_urls => :asset_urns).
-      merge(AssetUrn.with_urn(urn)).
-      readonly(false)
+    joins(:asset_urls => :asset_urns).merge(AssetUrn.with_urn(urn))
   }
 
   scope :with_any_urn, lambda { |urns|
-    joins(:asset_urls => :asset_urns).
-      merge(AssetUrn.with_any_urn(urns)).
-      readonly(false)
+    joins(:asset_urls => :asset_urns).merge(AssetUrn.with_any_urn(urns))
   }
-
-  def with_same_thumbprints
-    scoped.with_any_thumbprint(asset_thumbprints).without(self)
-  end
 
   scope :deleted, where("#{table_name}.deleted_at IS NOT NULL")
   scope :not_deleted, where("#{table_name}.deleted_at IS NULL")

@@ -13,9 +13,9 @@ describe Tag do
   end
 
   it "should find descendant associations" do
-    Asset.with_tag_or_descendents(@tag1).must_equal(@assets)
-    Asset.with_tag_or_descendents(@tag2).must_equal(@assets.last(2))
-    Asset.with_tag_or_descendents(@tag3).must_equal(@assets.last(1))
+    Asset.with_tag_or_descendants(@tag1).must_equal(@assets)
+    Asset.with_tag_or_descendants(@tag2).must_equal(@assets.last(2))
+    Asset.with_tag_or_descendants(@tag3).must_equal(@assets.last(1))
   end
 
   # I don't know if/when I'd need this... :\
