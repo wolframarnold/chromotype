@@ -62,6 +62,7 @@ gem 'ledermann-rails-settings', :require => 'rails-settings'
 gem 'micro_magick'
 gem 'dimensions'
 gem 'deferred_attribute'
+gem 'memcache-client'
 
 gem 'sidekiq'
 gem 'foreman'

@@ -103,6 +103,7 @@ GEM
       i18n (>= 0.4.0)
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
+    memcache-client (1.8.5)
     metaclass (0.0.1)
     method_source (0.8.1)
     micro_magick (0.0.5)
@@ -218,6 +219,7 @@ DEPENDENCIES
   jquery-rails
   json
   ledermann-rails-settings
+  memcache-client
   micro_magick
   miniskirt
   minitest

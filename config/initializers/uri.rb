@@ -2,14 +2,14 @@ require 'uri/generic'
 require 'pathname'
 require 'open-uri'
 
+# load the new URL::File class:
+URI::File
+
 class Pathname
   def to_uri
     URI::File.for_file(absolutepath.to_s)
   end
 end
-
-# load the new URL::File class:
-URI::File
 
 class String
   def to_uri

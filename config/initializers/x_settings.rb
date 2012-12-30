@@ -143,7 +143,7 @@ ActiveSupport.migration_safe_on_load do
 
     # How much parallelism do we allow for sidekiq? Should not exceed number of CPUs.
     if self[:concurrency].to_i == 0
-      defaults[:concurrency] = [Parallel.processor_count - 1, 1].max # at least 1
+      self[:concurrency] = [Parallel.processor_count - 1, 1].max # at least 1
     end
 
   end

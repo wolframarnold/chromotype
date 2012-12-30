@@ -21,8 +21,7 @@ class NextFileProcessor
     (1..256).each do # the 256 could be any value > 1, but bigger numbers mean the iterator has to be serialized fewer times.
       next_file = iterator.next_file
       break if next_file.nil? # no more files in the directory!
-      puts "!!!! AssetProcessor.perform_async(#{next_file})"
-      AssetProcessor.perform_async(next_file)
+      AssetProcessor.perform_async(next_file.to_s)
     end
     self.class.perform_async(iterator) if next_file
   end
