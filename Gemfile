@@ -53,7 +53,7 @@ gem 'rb-fsevent', :require => false
 gem 'rb-fchange', :require => false
 
 #gem 'haml-rails'
-#gem 'parallel' # just for Parallel.processor_count
+gem 'parallel' # just for Parallel.processor_count
 gem 'ruby-geonames', :git => 'git://github.com/mceachen/ruby-geonames.git'
 gem 'findler' #, :git => 'git://github.com/mceachen/findler.git'
 gem 'closure_tree' #, :git => 'git://github.com/mceachen/closure_tree.git'
@@ -82,6 +82,6 @@ group :test do
   gem 'mocha', :require => false
 
   #gem 'mini_backtrace' # Use Rails.backtrace_cleaner with MiniTest.
-  # gem 'capybara'
+  #gem 'capybara'
   #gem 'turn'
 end

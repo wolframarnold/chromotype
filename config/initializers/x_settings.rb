@@ -4,8 +4,8 @@ ActiveSupport.migration_safe_on_load do
   # persistently in the database.
 
   class Settings
-    self.cache = ActiveSupport::Cache::MemoryStore.new
-    self.cache_options = {:expires_in => 5.minutes}
+    self.cache = ActiveSupport::Cache::MemCacheStore.new # <- memcache so sidekiq workers can share
+    self.cache_options = {:expires_in => 10.minutes} # <- long enough to process a directory
 
     def self.windows?
       RbConfig::CONFIG['host_os'] =~ /mswin|mingw/
@@ -55,7 +55,7 @@ ActiveSupport.migration_safe_on_load do
 
     def self.roots
       # If people edit files in the originals or duplicates roots, we should see it.
-      (self[:roots] + [masters_root]).uniq
+      (self[:roots] + [masters_root.to_s]).uniq
     end
 
     def self.keys
@@ -126,7 +126,7 @@ ActiveSupport.migration_safe_on_load do
 
     def self.magick_engine=(engine)
       if setup_micromagick(engine)
-        Settings["magick_engine"] = engine
+        Settings[:magick_engine] = engine
       end
     end
 
@@ -140,5 +140,11 @@ ActiveSupport.migration_safe_on_load do
     end
 
     self.setup_micromagick
+
+    # How much parallelism do we allow for sidekiq? Should not exceed number of CPUs.
+    if self[:concurrency].to_i == 0
+      defaults[:concurrency] = [Parallel.processor_count - 1, 1].max # at least 1
+    end
+
   end
 end

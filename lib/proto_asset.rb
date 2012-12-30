@@ -61,10 +61,8 @@ class ProtoAsset
   end
 
   def get_asset
+    # Shouldn't happen, because of the findler filters set up in the NextFileProcessor
     return if pathname.nil?
-
-    d = Dimensions.dimensions(pathname.to_s)
-    return if d.nil? || (d.first * d.last) < Settings[:minimum_image_pixels]
 
     # TODO: what if there are > 1?
     asset = Asset.with_filename(pathname.to_s).first
