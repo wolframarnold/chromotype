@@ -8,6 +8,14 @@ class AssetUrl < ActiveRecord::Base
   before_create :normalize_url_and_sha
   after_save :update_asset_basename
 
+  scope :with_url, lambda { |url|
+    where(:url => url.to_uri.to_s)
+  }
+
+  scope :with_any_url, lambda { |urls|
+    where(:url => urls.map { |ea| ea.to_uri.to_s })
+  }
+
   scope :with_filename, lambda { |filename|
     where(:url => filename.to_pathname.to_uri.to_s)
   }

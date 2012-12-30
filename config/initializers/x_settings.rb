@@ -4,7 +4,6 @@ ActiveSupport.migration_safe_on_load do
   # persistently in the database.
 
   class Settings
-
     self.cache = ActiveSupport::Cache::MemoryStore.new
     self.cache_options = {:expires_in => 5.minutes}
 
@@ -70,6 +69,7 @@ ActiveSupport.migration_safe_on_load do
     defaults[:exclusion_patterns] = %w(cache caches previews secret temp thumbs tmp)
 
     defaults[:minimum_image_pixels] = 1024*768 # minimum .7mp image
+
     defaults[:resizes] = %w{
       1920x1080
       1280x720

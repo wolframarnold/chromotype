@@ -1,9 +1,10 @@
 class ImageResizer
   def self.visit_asset(exif_asset)
-    out = [exif_asset.pathname.to_s]
+    p = exif_asset.pathname.to_s
+    out = [p, p] # so [-2] works
     Settings.resizes.each do |size|
       # Use the second-to-last as the resize source to prevent aliasing:
-      m = MicroMagick::Convert.new(out.last(2).first)
+      m = MicroMagick::Convert.new(out[-2])
       m.strip # remove exif headers
       m.resize(size + ">") # The '>' prevents enlargements.
       w, h = size.split("x")
@@ -15,8 +16,7 @@ class ImageResizer
     # For the cropped square, load the crop source (to handle panoramas properly)
     biggest_square = Settings.square_crop_sizes.first
     src = out.reverse.find do |f|
-      g = MicroMagick::Geometry.new(f)
-      [g.width, g.height].min > biggest_square
+      Dimensions.dimensions(f).min > biggest_square
     end
     src ||= out.first
     m = MicroMagick::Convert.new(src)

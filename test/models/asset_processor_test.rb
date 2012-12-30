@@ -24,19 +24,19 @@ describe "asset processing without image resizing" do
   end
 
   it "should return nil for non-exif-encoded assets" do
-    @ap.perform("test/images/simple.png").must_be_nil
+    @ap.perform(img_path("simple.png")).must_be_nil
   end
 
   it "should return nil for JPG assets without EXIF headers" do
-    @ap.perform("test/images/simple.jpg").must_be_nil
+    @ap.perform(img_path("simple.jpg")).must_be_nil
   end
 
   it "should skip processing URIs that don't exist'" do
-    lambda { @ap.perform("test/images/does not exist.jpg") }.must_raise(NotImplementedError)
+    lambda { @ap.perform(img_path("does not exist.jpg")) }.must_raise(NotImplementedError)
   end
 
   it "should process JPG assets with EXIF headers" do
-    ea = @ap.perform("test/images/Canon 20D.jpg")
+    ea = @ap.perform(img_path("Canon 20D.jpg"))
     ea.wont_be_falsy
     ea.reload.tags.collect { |t| t.ancestry_path.join("/") }.must_equal_contents [
       "when/2004/9/19",
@@ -47,7 +47,7 @@ describe "asset processing without image resizing" do
   end
 
   it "should process GPS-tagged asset" do
-    ea = @ap.perform("test/images/iPhone 4S.jpg")
+    ea = @ap.perform(img_path("iPhone 4S.jpg"))
     ea.reload.tags.collect { |t| t.ancestry_path.join("/") }.must_equal_contents [
       "when/2011/11/23",
       "when/seasons/autumn",
@@ -58,7 +58,7 @@ describe "asset processing without image resizing" do
   end
 
   it "should extract face tags from picasa" do
-    ea = @ap.perform("test/images/faces.jpg")
+    ea = @ap.perform(img_path("faces.jpg"))
     ea.reload.tags.collect { |t| t.ancestry_path.join("/") }.must_contain_all [
       "when/2005/11/26",
       "with/Canon/Canon EOS 20D",
@@ -78,28 +78,29 @@ end
 
 describe "asset processing with image resizing" do
   it "creates resized image assets" do
-    dir = "/var/tmp/testing123"
-    Settings.cache_dir = dir.to_pathname
-    ap = AssetProcessor.new
-    ap.perform("test/images/Canon 20D.jpg")
+    with_tmp_dir do |dir|
+      Settings.library_root = dir
+      thumbnail_root = Settings.thumbnail_root.to_s
+      # Make sure the thumbnail root is where we think it should be:
+      thumbnail_root.must_match /^#{dir.to_s}/
 
-    widths, heights = [], []
-    Settings.resizes.each do |ea|
-      w, h = ea.split("x").to_i
-      widths << w
-      heights << h
-    end
-    widths += Settings.square_crop_sizes
-    heights += Settings.square_crop_sizes
+      widths, heights = [], []
+      Settings.resizes.each do |ea|
+        w, h = ea.split("x").to_i
+        widths << w
+        heights << h
+      end
+      widths += Settings.square_crop_sizes
+      heights += Settings.square_crop_sizes
 
-    thumbnail_root = Settings.thumbnail_root
-    thumbnail_root.wont_be_nil
-    Dir["#{thumbnail_root}/**/*.jpg"].each do |f|
-      r = ExifMixin.exif_result(f)
-      w = r[:image_width].to_i
-      h = r[:image_height].to_i
-      if !widths.include?(w) && !heights.include?(h)
-        flunk "weird sized cache file: #{f} (#{w}x#{h})"
+      ap = AssetProcessor.new
+      ap.perform(img_path("Canon 20D.jpg"))
+
+      Dir["#{thumbnail_root}/**/*.jpg"].each do |f|
+        w, h = Dimensions.dimensions(f)
+        if !widths.include?(w) && !heights.include?(h)
+          flunk "weird sized cache file: #{f} (#{w}x#{h})"
+        end
       end
     end
   end

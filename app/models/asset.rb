@@ -18,7 +18,11 @@ class Asset < ActiveRecord::Base
   }
 
   scope :with_url, lambda { |url|
-    joins(:asset_urls).merge(AssetUrl.find_all_by_url(url.to_s))
+    joins(:asset_urls).merge(AssetUrl.with_url(url))
+  }
+
+  scope :with_any_url, lambda { |urls|
+    joins(:asset_urls).merge(AssetUrl.with_any_url(urls))
   }
 
   def self.without(instance)
