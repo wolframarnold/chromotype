@@ -11,8 +11,10 @@ class Asset < ActiveRecord::Base
   }
 
   scope :with_tag_or_descendants, lambda { |tag|
-    joins(:tags => :self_and_descendants).
-      where("#{Tag.hierarchy_table_name}.ancestor_id = ?", tag.id)
+    htn = Tag.quoted_hierarchy_table_name
+    joins(:asset_tags).
+      joins("INNER JOIN #{htn} ON asset_tags.tag_id = #{htn}.descendant_id").
+      where("#{htn}.ancestor_id" => tag.id)
   }
 
   scope :with_url, lambda { |url|
