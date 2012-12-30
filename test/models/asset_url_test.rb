@@ -2,14 +2,15 @@ require "minitest_helper"
 
 describe AssetUrl do
   it "should normalize file URIs properly" do
-    url = "file:///a/b/c"
-    au = AssetUrl.create!(:url => url)
-    au.reload.url.must_equal(url)
+    a = Asset.create!
+    au = a.add_pathname("/a/b/c")
+    au.reload.url.must_equal("file:///a/b/c")
   end
 
   it "should find by filename" do
-    au1 = AssetUrl.create!(:url => "file:///a/b/c")
-    au2 = AssetUrl.create!(:url => "file:///d/e/f")
+    a = Asset.create!
+    au1 = a.asset_urls.create!(:url => "file:///a/b/c")
+    au2 = a.asset_urls.create!(:url => "file:///d/e/f")
     AssetUrl.with_filename("/a/b/c").to_a.must_equal([au1])
     AssetUrl.with_filename("/d/e/f").to_a.must_equal([au2])
     AssetUrl.with_any_filename(["/d/e/f", "/g/h/i"]).to_a.must_equal([au2])
