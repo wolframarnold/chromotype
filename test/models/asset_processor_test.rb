@@ -98,9 +98,8 @@ describe "asset processing with image resizing" do
 
       Dir["#{thumbnail_root}/**/*.jpg"].each do |f|
         w, h = Dimensions.dimensions(f)
-        if !widths.include?(w) && !heights.include?(h)
-          flunk "weird sized cache file: #{f} (#{w}x#{h})"
-        end
+        assert(widths.include?(w) || heights.include?(h),
+          "neither dimension of #{w}x#{h} was expected for #{f}")
       end
     end
   end
