@@ -18,6 +18,7 @@ class ImageResizer
     src = out.reverse.find do |f|
       Dimensions.dimensions(f).min > biggest_square
     end
+
     src ||= out.first
     m = MicroMagick::Convert.new(src)
     Settings.square_crop_sizes.each do |w|
