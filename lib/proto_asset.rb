@@ -10,11 +10,9 @@ class ProtoAsset
   DEFAULT_VISITORS = [CameraTag, DateTag, DirTag, FaceTag, GeoTag, SeasonTag, ImageResizer]
 
   include ExifMixin
-  include DeferredAttribute
+  include AttrMemoizer
 
-  deferred_attribute :paths
-  deferred_attribute :urns
-  deferred_attribute :asset
+  attr_memoizer :url, :pathname, :paths, :urns, :asset
 
   def initialize(url, urners = DEFAULT_URNERS, visitors = DEFAULT_VISITORS)
     @url = url
@@ -36,7 +34,7 @@ class ProtoAsset
     paths.try(:last)
   end
 
-  def get_paths
+  def paths
     pathname = @url.to_pathname
     paths = pathname.follow_redirects
     if paths.nil?
@@ -48,7 +46,7 @@ class ProtoAsset
     end
   end
 
-  def get_urns
+  def urns
     return nil if paths.nil?
     @urners.collect_hash(ActiveSupport::OrderedHash.new) do |klass|
       t = klass.urn(pathname, exif_result)
@@ -60,7 +58,7 @@ class ProtoAsset
     paths.collect { |ea| ea.to_s }.join(", ")
   end
 
-  def get_asset
+  def asset
     # Shouldn't happen, because of the findler filters set up in the NextFileProcessor
     return if pathname.nil?
 
@@ -82,6 +80,7 @@ class ProtoAsset
       asset = assets.first
       break if asset
     end
+
     asset ||= ExifAsset.create(:basename => pathname.basename.to_s)
     asset_url = asset.add_pathname(pathname)
     asset_url.asset_urns.delete_all # Prior URNs lose.

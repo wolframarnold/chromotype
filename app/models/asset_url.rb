@@ -2,6 +2,7 @@ class AssetUrl < ActiveRecord::Base
   belongs_to :asset
   has_many :asset_urns
 
+  validates_associated :asset
   validates_presence_of :url
   validates :asset, :presence => true
   validate :immutable_url

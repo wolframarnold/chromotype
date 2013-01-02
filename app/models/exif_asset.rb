@@ -1,7 +1,6 @@
 require 'fileutils'
 
 class ExifAsset < Asset
-
   include ExifMixin
 
   FILE_EXTENSIONS = %w{jpeg jpg 3fr ari arw bay cap cr2 crw dcr dcs dng drf eip erf fff iiq k25 kdc mef mos mrw nef nrw orf pef ptx pxn r3d raf raw rw2 rwl rwz sr2 srf srw x3f}

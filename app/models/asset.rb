@@ -1,5 +1,8 @@
 class Asset < ActiveRecord::Base
 
+  include AttrMemoizer
+  attr_memoizer :pathname
+
   has_many :asset_urls, :order => 'id desc', :dependent => :destroy
   has_many :asset_urns, :through => :asset_urls
 
@@ -49,10 +52,8 @@ class Asset < ActiveRecord::Base
   scope :not_deleted, where("#{table_name}.deleted_at IS NULL")
 
   def pathname
-    @pathname ||= begin
-      au = asset_urls.detect { |ea| ea.exist? } || asset_urls.detect { |ea| ea.pathname }
-      au.pathname if au
-    end
+    au = asset_urls.detect { |ea| ea.exist? } || asset_urls.detect { |ea| ea.pathname }
+    au.pathname if au
   end
 
   def captured_at

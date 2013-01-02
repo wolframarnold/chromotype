@@ -61,7 +61,7 @@ gem 'exiftoolr' #, :git => 'git://github.com/mceachen/exiftoolr.git'
 gem 'ledermann-rails-settings', :require => 'rails-settings'
 gem 'micro_magick'
 gem 'dimensions'
-gem 'deferred_attribute'
+gem 'attr_memoizer'
 gem 'memcache-client'
 
 gem 'sidekiq'
@@ -78,6 +78,7 @@ group :test do
   gem 'minitest'
   gem 'minitest-rails'
   gem 'minitest-reporters'
+  gem 'minitest-great_expectations'
   gem 'miniskirt'
   gem 'database_cleaner'
   gem 'mocha', :require => false

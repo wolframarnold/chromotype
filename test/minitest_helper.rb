@@ -1,16 +1,18 @@
 ENV["RAILS_ENV"] ||= "test"
 require File.expand_path('../../config/environment', __FILE__)
 
+require "minitest/great_expectations"
 require "minitest/autorun"
 require "minitest/rails"
 require 'minitest/reporters'
 MiniTest::Reporters.use!
+require 'sidekiq/testing'
 
 # Uncomment if you want Capybara in acceptance/integration tests
 # require "minitest/rails/capybara"
 
 # Uncomment if you want awesome colorful output
-#require "minitest/pride"
+# require "minitest/pride"
 
 # Load support files
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |ea| require ea }

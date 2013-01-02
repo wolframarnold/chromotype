@@ -23,21 +23,9 @@ describe "asset processing without image resizing" do
     a2.must_equal(asset)
   end
 
-  it "should return nil for non-exif-encoded assets" do
-    @ap.perform(img_path("simple.png")).must_be_nil
-  end
-
-  it "should return nil for JPG assets without EXIF headers" do
-    @ap.perform(img_path("simple.jpg")).must_be_nil
-  end
-
-  it "should skip processing URIs that don't exist'" do
-    lambda { @ap.perform(img_path("does not exist.jpg")) }.must_raise(NotImplementedError)
-  end
-
   it "should process JPG assets with EXIF headers" do
     ea = @ap.perform(img_path("Canon 20D.jpg"))
-    ea.wont_be_falsy
+    ea.wont_be_nil
     ea.reload.tags.collect { |t| t.ancestry_path.join("/") }.must_equal_contents [
       "when/2004/9/19",
       "when/seasons/autumn",
@@ -59,7 +47,7 @@ describe "asset processing without image resizing" do
 
   it "should extract face tags from picasa" do
     ea = @ap.perform(img_path("faces.jpg"))
-    ea.reload.tags.collect { |t| t.ancestry_path.join("/") }.must_contain_all [
+    ea.reload.tags.collect { |t| t.ancestry_path.join("/") }.must_include_all [
       "when/2005/11/26",
       "with/Canon/Canon EOS 20D",
       "when/seasons/autumn",
