@@ -60,8 +60,34 @@ describe "asset processing without image resizing" do
     ]
   end
 
-  it "finds prior-imported assets with the same URN"
-  it "doesn't adopt prior-imported assets with different URNs"
+  it "finds prior-imported assets with the same URN" do
+    img = img_path("iPhone 4S.jpg")
+    with_tmp_dir do |dir|
+      Settings.library_root = dir + "library"
+      FileUtils.mkdir "imgs"
+      FileUtils.cp img, img1 = "imgs/tmp1.jpg"
+      FileUtils.cp img, img2 = "imgs/tmp2.jpg"
+      a1 = @ap.perform(img1)
+      urns = a1.asset_urns.collect { |ea| ea.urn }
+      a2 = @ap.perform(img2)
+      a1.must_equal(a2)
+      a2.asset_urns.collect { |ea| ea.urn }.must_equal_contents urns
+    end
+  end
+
+  it "doesn't adopt prior-imported assets with different URNs" do
+    img1 = img_path("iPhone 4S.jpg")
+    img2 = img_path("Droid X.jpg")
+    with_tmp_dir do |dir|
+      Settings.library_root = dir + "library"
+      a1 = @ap.perform(img1)
+      urns1 = a1.asset_urns.collect { |ea| ea.urn }
+      a2 = @ap.perform(img2)
+      a1.wont_equal(a2)
+      urns2 = a2.asset_urns.collect { |ea| ea.urn }
+      urns1.wont_include_any urns2
+    end
+  end
 end
 
 describe "asset processing with image resizing" do
