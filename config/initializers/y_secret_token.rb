@@ -4,4 +4,6 @@
 # If you change this key, all old signed cookies will become invalid!
 # Make sure the secret is at least 30 characters and all random,
 # no regular words or you'll be exposed to dictionary attacks.
-Chromotype::Application.config.secret_token = Settings.secret_token
+ActiveSupport.migration_safe_on_load do
+  Chromotype::Application.config.secret_token = Settings.secret_token
+end
