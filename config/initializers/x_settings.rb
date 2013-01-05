@@ -146,5 +146,11 @@ ActiveSupport.migration_safe_on_load do
       self[:concurrency] = [Parallel.processor_count - 1, 1].max # at least 1
     end
 
+    def self.secret_token
+      self[:secret_token] ||= begin
+        require 'securerandom'
+        SecureRandom.urlsafe_base64(60)
+      end
+    end
   end
 end
