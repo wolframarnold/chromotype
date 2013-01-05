@@ -21,8 +21,6 @@ defaults: &defaults
   host: localhost
   <<: *<%= ENV['DB'] || "postgresql" %>
 
-# TODO: would it be cleaner to just monkeypatch rails' database.yml reader?
-
 development:
   <<: *defaults
 
