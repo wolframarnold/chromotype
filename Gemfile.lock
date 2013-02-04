@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/mceachen/ruby-geonames.git
-  revision: cc12000003e3a739d94e9f684ab8e5d5d84d06f9
+  revision: 46bcd8269d4828a942df79c0765a208dbf1ca83f
   specs:
     ruby-geonames (0.3.3)
 
