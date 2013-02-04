@@ -60,7 +60,7 @@ describe "asset processing without image resizing" do
     ]
   end
 
-  it "finds prior-imported assets with the same URN" do
+  it "finds the same prior-imported assets" do
     img = img_path("iPhone 4S.jpg")
     with_tmp_dir do |dir|
       Settings.library_root = dir + "library"
@@ -72,6 +72,24 @@ describe "asset processing without image resizing" do
       a2 = @ap.perform(img2)
       a1.must_equal(a2)
       a2.asset_urns.collect { |ea| ea.urn }.must_equal_contents urns
+    end
+  end
+
+  it "combines original and edited assets" do
+    img1 = img_path("IMG_2452.jpg")
+    img2 = img_path("IMG_2452_picasa.jpg")
+    with_tmp_dir do |dir|
+      Settings.library_root = dir
+      a1 = @ap.perform(img1)
+      urns1 = a1.asset_urns.collect { |ea| ea.urn }
+      a2 = @ap.perform(img2)
+      a1.must_equal(a2)
+      urns2 = a2.asset_urns.collect { |ea| ea.urn }
+
+      # Only the EXIF urn should match:
+      exif_urn1 = urns1.find { |ea| ea.starts_with? URN::Exif.urn_prefix }
+      exif_urn2 = urns2.find { |ea| ea.starts_with? URN::Exif.urn_prefix }
+      exif_urn1.must_equal exif_urn2
     end
   end
 

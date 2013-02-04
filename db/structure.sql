@@ -78,7 +78,7 @@ ALTER SEQUENCE asset_urls_id_seq OWNED BY asset_urls.id;
 CREATE TABLE asset_urns (
     id integer NOT NULL,
     asset_url_id integer,
-    urn character varying(256)
+    urn character varying(200)
 );
 
 
