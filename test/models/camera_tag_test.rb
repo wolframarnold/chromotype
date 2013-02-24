@@ -81,12 +81,13 @@ describe CameraTag do
 
   it 'cleans EXIF models' do
     expected = [
+      ['Canon', 'Canon DIGITAL IXUS 85 IS', 'DIGITAL IXUS 85 IS'],
+      ['Hewlett-Packard', 'HP PhotoSmart R725  (V01.00)d', 'PhotoSmart R725'],
+      ['Kodak', 'DC200      (V02.10)', 'DC200'],
       ['KODAK', 'KODAK C310 DIGITAL CAMERA', 'C310'],
       ['MOTOROLA', 'DROID2 4efa0021ffd800000a3a513a13025025', 'DROID2'],
       ['MOTOROLA', 'DROID2 GLOBAL 2f140001ffd800000a3a9c5303026017', 'DROID2 GLOBAL'],
-      ['Kodak', 'DC200      (V02.10)', 'DC200'],
-      ['Canon', 'Canon DIGITAL IXUS 85 IS', 'DIGITAL IXUS 85 IS'],
-      ['Hewlett-Packard', 'HP PhotoSmart R725  (V01.00)d', 'PhotoSmart R725']
+      ['Pentax', 'PENTAX Optio S4i', 'Optio S4i']
     ]
     expected.each do |clean_make, raw_model, expected_model|
       CameraTag.clean_model(clean_make, raw_model).must_equal expected_model

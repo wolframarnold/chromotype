@@ -39,7 +39,7 @@ class CameraTag < Tag
   def self.clean_model(clean_make, model)
     return nil if model.nil?
     model = normalize(model, IGNORABLE_MODEL_PATTERNS)
-    if model.start_with? "#{clean_make} "
+    if model.downcase.start_with? "#{clean_make} ".downcase
       model = model[(clean_make.size + 1)..-1]
     end
     if clean_make =~ /\Ahewlett.packard\z/i && model =~ /\Ahp /i
