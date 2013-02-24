@@ -9,7 +9,7 @@ class CameraTag < Tag
     exif = exif_asset.exif
     return if exif.nil?
     make = clean_make(exif[:make])
-    model = clean_model(make, exif[:make])
+    model = clean_model(make, exif[:model])
     path = [make, model].compact # Not all photos have either
     return if path.empty?
     exif_asset.add_tag(named_root.find_or_create_by_path(path))

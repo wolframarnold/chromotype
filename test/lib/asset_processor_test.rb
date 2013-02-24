@@ -29,7 +29,7 @@ describe "asset processing without image resizing" do
     ea.reload.tags.collect { |t| t.ancestry_path.join("/") }.must_equal_contents [
       "when/2004/9/19",
       "when/seasons/autumn",
-      "with/Canon/Canon EOS 20D",
+      "with/Canon/EOS 20D",
       "file" + (Rails.root + "test/images").to_s
     ]
   end
@@ -49,7 +49,7 @@ describe "asset processing without image resizing" do
     ea = @ap.perform(img_path("faces.jpg"))
     ea.reload.tags.collect { |t| t.ancestry_path.join("/") }.must_include_all [
       "when/2005/11/26",
-      "with/Canon/Canon EOS 20D",
+      "with/Canon/EOS 20D",
       "when/seasons/autumn",
       "who/McEachen/James",
       "who/McEachen/Jamie",
