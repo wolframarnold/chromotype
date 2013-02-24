@@ -18,10 +18,9 @@ amounts to the visual record of your life?
 ### Why not iPhoto/Picasa/…?
 
 If you've been taking photos regularly for a couple years, you'll have
-tens to hundreds of /gigabytes/ of photos already. It would take weeks
-or months to upload all of your photos and movies to the
-cloud. Desktop applications like iPhoto and Picasa just don't scale to
-libraries with that many assets.
+several hundred *gigabytes* of photos already. Desktop applications like
+iPhoto and Picasa don't currently scale up to holding hundreds of thousands
+of photos.
 
 ## What's the solution?
 
@@ -29,9 +28,9 @@ libraries with that many assets.
 share your photos directly -- but *you* are the cloud.
 
 Chromotype imports the photos you have on your computer, even in
-your iPhoto and Picasa libraries. It also can import the photos and
+your iPhoto and Picasa libraries. <!-- Coming "soon": It also can import the photos and
 movies you previously uploaded in the cloud (like Flickr, Picasa, and
-Facebook), and archive those on your computer as well.
+Facebook), and archive those on your computer as well. -->
 
 ### Randomness makes you fast
  
