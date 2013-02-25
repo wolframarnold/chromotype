@@ -19,8 +19,9 @@ describe "asset processing without image resizing" do
 
   it "should find the prior asset" do
     asset, path = process_img_2452
-    a2 = @ap.perform(path)
-    a2.must_equal(asset)
+    pa = ProtoAsset.new(path)
+    pa.asset.must_equal(asset)
+    pa.asset_state.must_equal :old
   end
 
   it "should process JPG assets with EXIF headers" do
@@ -75,6 +76,11 @@ describe "asset processing without image resizing" do
       a2 = @ap.perform(img2)
       a1.must_equal(a2)
       a2.asset_urns.collect { |ea| ea.urn }.must_equal_contents urns
+
+      FileUtils.cp img, img3 = "imgs/tmp3.jpg"
+      pa = ProtoAsset.new(img3)
+      pa.asset.must_equal(a1)
+      pa.asset_state.must_equal :adopted
     end
   end
 
