@@ -11,7 +11,7 @@ class GeoTag < Tag
     # todo: short-circuit if we already have geo tags
     e = exif_asset.exif
     if tag = tag_for_lat_lon(e[:gps_latitude], e[:gps_longitude])
-      exif_asset.add_tag tag
+      exif_asset.add_tag(tag, self)
     end
   end
 

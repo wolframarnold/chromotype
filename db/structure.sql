@@ -34,7 +34,8 @@ SET default_with_oids = false;
 
 CREATE TABLE asset_tags (
     asset_id integer,
-    tag_id integer
+    tag_id integer,
+    visitor character varying(255)
 );
 
 

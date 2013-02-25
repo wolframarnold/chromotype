@@ -16,7 +16,7 @@ class SeasonTag < Tag
 
   def self.visit_asset(asset)
     date = asset.captured_at.to_date
-    asset.add_tag(for_date(date))
+    asset.add_tag(for_date(date), self)
   end
 
 end

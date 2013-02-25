@@ -12,7 +12,7 @@ class CameraTag < Tag
     model = clean_model(make, exif[:model])
     path = [make, model].compact # Not all photos have either
     return if path.empty?
-    exif_asset.add_tag(named_root.find_or_create_by_path(path))
+    exif_asset.add_tag(named_root.find_or_create_by_path(path), self)
   end
 
   # "AMAZEBALLS Optical Co.Ltd." or "Amazeballs corp." should just be "Amazeballs".

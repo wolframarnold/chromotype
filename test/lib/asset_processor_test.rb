@@ -25,43 +25,42 @@ describe "asset processing without image resizing" do
   end
 
   it "should process JPG assets with EXIF headers" do
-    ea = @ap.perform(img_path("Canon 20D.jpg"))
-    ea.wont_be_nil
-    ea.reload.tags.collect { |t| t.ancestry_path.join("/") }.must_equal_contents [
-      "when/2004/9/19",
-      "when/seasons/autumn",
-      "with/Canon/EOS 20D",
-      "file" + (Rails.root + "test/images").to_s
-    ]
+    asset = @ap.perform(img_path("Canon 20D.jpg"))
+    asset_must_include_all_tags(asset,
+      "when/2004/9/19" => "DateTag",
+      "when/seasons/autumn" => "SeasonTag",
+      "with/Canon/EOS 20D" => "CameraTag",
+      "file" + (Rails.root + "test/images").to_s => "DirTag"
+    )
   end
 
   it "should process GPS-tagged asset" do
-    ea = @ap.perform(img_path("iPhone 4S.jpg"))
-    expected_tags = [
-      "when/2011/11/23",
-      "when/seasons/autumn",
-      "with/Apple/iPhone 4S",
-      "file" + (Rails.root + "test/images").to_s
-    ]
+    asset = @ap.perform(img_path("iPhone 4S.jpg"))
+    expected = {
+      "when/2011/11/23" => "DateTag",
+      "when/seasons/autumn" => "SeasonTag",
+      "with/Apple/iPhone 4S" => "CameraTag",
+      "file" + (Rails.root + "test/images").to_s => "DirTag"
+    }
     unless ENV['TRAVIS']
-      expected_tags << "where/Earth/North America/United States/California/San Mateo County/El Granada"
+      expected["where/Earth/North America/United States/California/San Mateo County/El Granada"] = "GeoTag"
     end
-    ea.reload.tags.collect { |t| t.ancestry_path.join("/") }.must_equal_contents expected_tags
+    asset_must_include_all_tags(asset, expected)
   end
 
   it "should extract face tags from picasa" do
-    ea = @ap.perform(img_path("faces.jpg"))
-    ea.reload.tags.collect { |t| t.ancestry_path.join("/") }.must_include_all [
-      "when/2005/11/26",
-      "with/Canon/EOS 20D",
-      "when/seasons/autumn",
-      "who/McEachen/James",
-      "who/McEachen/Jamie",
-      "who/McEachen/Karen",
-      "who/McEachen/Matthew",
-      "who/McEachen/Ruth",
-      "file" + (Rails.root + "test/images").to_s
-    ]
+    asset = @ap.perform(img_path("faces.jpg"))
+    asset_must_include_all_tags(asset,
+      "when/2005/11/26" => "DateTag",
+      "with/Canon/EOS 20D" => "CameraTag",
+      "when/seasons/autumn" => "SeasonTag",
+      "who/McEachen/James" => "FaceTag",
+      "who/McEachen/Jamie" => "FaceTag",
+      "who/McEachen/Karen" => "FaceTag",
+      "who/McEachen/Matthew" => "FaceTag",
+      "who/McEachen/Ruth" => "FaceTag",
+      "file" + (Rails.root + "test/images").to_s => "DirTag"
+    )
   end
 
   it "finds the same prior-imported assets" do

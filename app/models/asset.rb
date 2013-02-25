@@ -93,8 +93,10 @@ class Asset < ActiveRecord::Base
     save
   end
 
-  def add_tag(tag)
-    asset_tags.find_or_create_by_tag_id(tag.id)
+  def add_tag(tag, visitor = nil)
+    asset_tags.find_or_create_by_tag_id(tag.id) do |ea|
+      ea.visitor = visitor.to_s
+    end
   end
 
   def move_to_library

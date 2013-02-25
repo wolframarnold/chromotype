@@ -42,6 +42,15 @@ ensure
   Dir.chdir(cwd)
 end
 
+def asset_must_include_all_tags(asset, tags_to_visitor)
+  paths = asset.reload.tags.collect { |t| t.ancestry_path.join("/") }
+  paths.must_include_all tags_to_visitor.keys
+  asset.asset_tags.each do |ea|
+    path = ea.tag.ancestry_path.join("/")
+    ea.visitor.must_equal(tags_to_visitor[path]) if tags_to_visitor.has_key? path
+  end
+end
+
 # MiniTest::Rails.override_testunit! # <- TODO: is this necessary?
 
 require "mocha/setup"

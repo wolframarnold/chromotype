@@ -14,7 +14,7 @@ class FaceTag < Tag
     faces.each do |face|
       face_path = Settings.split_face_names ? face.split : [face]
       face_path.reverse! if Settings.reverse_face_paths
-      exif_asset.add_tag(named_root.find_or_create_by_path(face_path))
+      exif_asset.add_tag(named_root.find_or_create_by_path(face_path), self)
     end
   end
 end
