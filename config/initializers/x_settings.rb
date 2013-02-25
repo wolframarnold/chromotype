@@ -74,12 +74,12 @@ ActiveSupport.migration_safe_on_load do
       defaults[:minimum_image_pixels] = 1024*768 # minimum .7mp image
 
       defaults[:resizes] = %w{
-      1920x1080
-      1280x720
-      640x360
-      320x180
-      160x90
-    }
+        1920x1080
+        1280x720
+        640x360
+        320x180
+        160x90
+      }
 
       # iPhoto uses 640x480 and 360x270 (?)
 
@@ -103,6 +103,7 @@ ActiveSupport.migration_safe_on_load do
       # 2048 x 1536 (iPad 3)
       # 2560 x 1600 (Nexus 10)
       # 2560 x 1600 (30" LCD) -- but by adding this resolution, we double the time
+      # 2560 x 1700 (Google Chromebook Pixel)
       # it takes to process an image.
 
       defaults[:square_crop_sizes] = [320, 64]
