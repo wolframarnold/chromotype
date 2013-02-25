@@ -9,6 +9,7 @@ class CreateAssets < ActiveRecord::Migration
       t.string :description
       t.timestamp :taken_at
       t.datetime :lost_at
+      t.integer :visited_by_version
       t.timestamps
     end
 

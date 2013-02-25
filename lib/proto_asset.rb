@@ -24,7 +24,10 @@ class ProtoAsset
   def process
     # TODO: support non-file URLs:
     raise NotImplementedError if pathname.nil?
-    @visitors.collect { |v| v.visit_asset(asset) } if asset
+    if asset && asset.visited_by_version.to_i != Chromotype::ASSET_VISITORS_VERSION
+      @visitors.collect { |v| v.visit_asset(asset) }
+      asset.update_attribute(:visited_by_version, Chromotype::ASSET_VISITORS_VERSION)
+    end
   end
 
   def url

@@ -116,6 +116,7 @@ CREATE TABLE assets (
     description character varying(255),
     taken_at timestamp without time zone,
     lost_at timestamp without time zone,
+    visited_by_version integer,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL
 );
