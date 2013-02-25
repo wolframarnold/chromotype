@@ -37,6 +37,7 @@ class Pathname
   end
 
   def mv_to_trash(trash = home + ".Trash")
+    trash = trash.to_pathname
     trash.ensure_directory
     raise "#{trash.to_s} isn't a directory" unless trash.directory?
     name = self.basename

@@ -44,7 +44,7 @@ GEM
     celluloid (0.12.4)
       facter (>= 1.6.12)
       timers (>= 1.0.0)
-    closure_tree (3.8.0)
+    closure_tree (3.8.1)
       activerecord (>= 3.0.0)
       with_advisory_lock (>= 0.0.6)
     coderay (1.0.9)
