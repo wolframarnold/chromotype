@@ -1,3 +1,21 @@
+fix bug and add test:
+
+NextFileProcessor.perform_async("/Users/mrm/code/chromotype/test/images")
+…
+23:17:20 worker.1   | 2013-02-25T07:17:20Z 72580 TID-oug84gw4g WARN: undefined method `include?' for nil:NilClass
+23:17:20 worker.1   | 2013-02-25T07:17:20Z 72580 TID-oug84gw4g WARN: /Users/mrm/Dropbox/code/chromotype/config/initializers/findler_filters.rb:4:in `block in skip_exclusion_patterns'
+23:17:20 worker.1   | /Users/mrm/Dropbox/code/chromotype/config/initializers/findler_filters.rb:3:in `select'
+23:17:20 worker.1   | /Users/mrm/Dropbox/code/chromotype/config/initializers/findler_filters.rb:3:in `skip_exclusion_patterns'
+23:17:20 worker.1   | /Users/mrm/.rbenv/versions/1.9.3-p327/lib/ruby/gems/1.9.1/gems/findler-0.0.6/lib/findler/iterator.rb:96:in `filter'
+23:17:20 worker.1   | /Users/mrm/.rbenv/versions/1.9.3-p327/lib/ruby/gems/1.9.1/gems/findler-0.0.6/lib/findler/iterator.rb:73:in `block in next_file'
+23:17:20 worker.1   | /Users/mrm/.rbenv/versions/1.9.3-p327/lib/ruby/gems/1.9.1/gems/findler-0.0.6/lib/findler/iterator.rb:73:in `each'
+23:17:20 worker.1   | /Users/mrm/.rbenv/versions/1.9.3-p327/lib/ruby/gems/1.9.1/gems/findler-0.0.6/lib/findler/iterator.rb:73:in `inject'
+23:17:20 worker.1   | /Users/mrm/.rbenv/versions/1.9.3-p327/lib/ruby/gems/1.9.1/gems/findler-0.0.6/lib/findler/iterator.rb:73:in `next_file'
+23:17:20 worker.1   | /Users/mrm/Dropbox/code/chromotype/app/workers/next_file_processor.rb:22:in `block in perform'
+23:17:20 worker.1   | /Users/mrm/Dropbox/code/chromotype/app/workers/next_file_processor.rb:21:in `each'
+
+
+
 User stories:
 
 * on startup, local disk is searched for images.
