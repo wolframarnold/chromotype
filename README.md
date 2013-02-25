@@ -28,7 +28,9 @@ of photos.
 share your photos directly -- but *you* are the cloud.
 
 Chromotype imports the photos you have on your computer, even in
-your iPhoto and Picasa libraries. <!-- Coming "soon": It also can import the photos and
+your iPhoto and Picasa libraries.
+
+<!-- Coming "soon": It also can import the photos and
 movies you previously uploaded in the cloud (like Flickr, Picasa, and
 Facebook), and archive those on your computer as well. -->
 
