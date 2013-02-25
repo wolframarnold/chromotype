@@ -12,6 +12,7 @@ class ProtoAsset
   include ExifMixin
   include AttrMemoizer
 
+  attr_reader :asset_state # :new, :adopted, :old
   attr_memoizer :url, :pathname, :paths, :urns, :asset
 
   def initialize(url, urners = DEFAULT_URNERS, visitors = DEFAULT_VISITORS)
@@ -69,7 +70,10 @@ class ProtoAsset
     # This assumes that the first URN changes if the contents for a pathname change.
     if asset
       current_first_urn = @urners.first.urn_for_pathname(pathname)
-      return asset unless asset.asset_urns.find_by_urn(current_first_urn).nil?
+      unless asset.asset_urns.find_by_urn(current_first_urn).nil?
+        @asset_state = :old
+        return asset
+      end
     end
 
     # Find the first asset that matches a URN (they're in order of expense of URN generation)
@@ -80,6 +84,8 @@ class ProtoAsset
       asset = assets.first
       break if asset
     end
+
+    @asset_state = asset.nil? ? :new : :adopted
 
     asset ||= ExifAsset.create(:basename => pathname.basename.to_s)
     asset_url = asset.add_pathname(pathname)
