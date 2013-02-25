@@ -42,7 +42,7 @@ describe "asset processing without image resizing" do
       "with/Apple/iPhone 4S",
       "file" + (Rails.root + "test/images").to_s
     ]
-    unless ENV['travis']
+    unless ENV['TRAVIS']
       expected_tags << "where/Earth/North America/United States/California/San Mateo County/El Granada"
     end
     ea.reload.tags.collect { |t| t.ancestry_path.join("/") }.must_equal_contents expected_tags
