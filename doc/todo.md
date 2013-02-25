@@ -3,11 +3,6 @@ User stories:
 * on startup, local disk is searched for images.
 * when images are found in "Pictures" directories, and the image has EXIF headers and is large enough, import.
 
-* on import, look the asset by pathname and mtime, then by sha.
-  # set the sha to the current value of the file.
-  # if there are
-* if the image file sha matches,
-
 ## Backend
 
 * simplest thing that could possibly work:
@@ -17,14 +12,6 @@ User stories:
 * on startup, process all the root directories
 
 * importing files:
-  * if the file sha matches an imported asset
-    * iff move_to_library is set
-    * and the duplicate file still exists in the library
-    * and the duplicate file matches the sha and sha2 of the imported asset
-  * if not a dupe, see if it's a derivative
-    * if the exif thumbprint matches an asset
-
-
   * close dupes (orig image - new image delta is small, or after rotations)
     get moved into root/Modified/YYYY/mm/dd/hhmmss_#{orig_name}
   * auto-rotate (if setting is set)
@@ -32,9 +19,6 @@ User stories:
 * cron job for processing? rufus-scheduler?
 * remove auto-built tags when we re-process an image, to make tagging idempotent
 * FAM integration with guard
-* verify hire-fire (and integrate with guard daemon?)
-* get background processing working (assume there's a restart event thanks to monit/unicorn/passenger?)
-* https://github.com/maccman/juggernaut, and use resque instead? or use postgres queue?
 
 ## Frontend
 
@@ -58,7 +42,7 @@ User stories:
 * GPS location interpolation (if you have gps from recent photo stream, let the dSLR adopt that location)
 * event grouping
   (look for temporal gaps in images that are statistically relevant or geotagged in different places)
-* piling (similar images taken within seconds of eachother, only show largest one, let user choose the "best")
+* piling (similar images taken within seconds of each other, only show largest one, let user choose the "best")
 * similar images to current
 * find images that are similar to your starred images
 * try to auto-panorama if photos are taken within 10 seconds of each other
@@ -84,6 +68,9 @@ https://github.com/rsms/cocui
 
 ## Done
 
+* no dupe settings
+* clean EXIF make/model
+* sidekiq for background processing
 * small, medium, large images are created
 * Use Procfile/foreman to manage multiple processes on start?
 * use STI for tags, so we can have DateTag, FileTag, UrlTag, ...?
