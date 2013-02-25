@@ -36,13 +36,16 @@ describe "asset processing without image resizing" do
 
   it "should process GPS-tagged asset" do
     ea = @ap.perform(img_path("iPhone 4S.jpg"))
-    ea.reload.tags.collect { |t| t.ancestry_path.join("/") }.must_equal_contents [
+    expected_tags = [
       "when/2011/11/23",
       "when/seasons/autumn",
       "with/Apple/iPhone 4S",
-      "where/Earth/North America/United States/California/San Mateo County/El Granada",
       "file" + (Rails.root + "test/images").to_s
     ]
+    unless ENV['travis']
+      expected_tags << "where/Earth/North America/United States/California/San Mateo County/El Granada"
+    end
+    ea.reload.tags.collect { |t| t.ancestry_path.join("/") }.must_equal_contents expected_tags
   end
 
   it "should extract face tags from picasa" do
