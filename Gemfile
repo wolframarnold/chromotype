@@ -1,11 +1,7 @@
 source 'https://rubygems.org'
 
-gem 'rails', '>= 3.2'
-gem 'thin'
-gem 'strong_parameters'
-
-# Bundle edge Rails instead:
-# gem 'rails', :git => 'git://github.com/rails/rails.git'
+# Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
+gem 'rails', '~> 4.0.0'
 
 gem 'sqlite3'
 gem 'mysql2'
@@ -14,28 +10,35 @@ gem 'pg'
 gem 'randumb' #, :git => 'git://github.com/spilliton/randumb.git'
 gem 'json'
 
-# Gems used only for assets and not required
-# in production environments by default.
-group :assets do
-  #gem 'sass-rails'
-  #gem 'coffee-rails'
+# Use SCSS for stylesheets
+gem 'sass-rails'
 
-  # See https://github.com/sstephenson/execjs#readme for more supported runtimes
-  # gem 'therubyracer', :platform => :ruby
+# Use CoffeeScript for .js.coffee assets and views
+gem 'coffee-rails'
 
-  gem 'uglifier'
-  #gem 'twitter-bootstrap-rails'
-end
+# See https://github.com/sstephenson/execjs#readme for more supported runtimes
+# gem 'therubyracer', :platform => :ruby
+
+gem 'uglifier'
+#gem 'twitter-bootstrap-rails'
 
 gem 'font-awesome-rails'
-gem 'simple_form'
+#gem 'simple_form'
 gem 'jquery-rails'
 
-# To use ActiveModel has_secure_password
-# gem 'bcrypt-ruby', '~> 3.0.0'
+# Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
+gem 'turbolinks'
 
 # To use Jbuilder templates for JSON
-# gem 'jbuilder'
+gem 'jbuilder'
+
+group :doc do
+  # bundle exec rake doc:rails generates the API under doc/api.
+  gem 'sdoc', require: false
+end
+
+# To use ActiveModel has_secure_password
+gem 'bcrypt-ruby', '~> 3.0.0'
 
 # Use unicorn as the web server
 # gem 'unicorn'
