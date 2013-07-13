@@ -18,6 +18,9 @@ class GeoTag < Tag
   def self.tag_for_lat_lon(lat, lon)
     return nil if lat.nil? || lon.nil?
     place_path = cached_with_long_ttl("%.6f:%.6f" % [lat, lon]) do
+      if Setting.geonames_username
+        Geonames.config.username = Setting.geonames_username
+      end
       places_nearby = Geonames::WebService.find_nearby_place_name(lat, lon) || []
       nearest = places_nearby.first
       return nil if nearest.nil? || nearest.geoname_id.to_i == 0

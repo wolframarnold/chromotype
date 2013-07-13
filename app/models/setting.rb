@@ -6,7 +6,7 @@ ActiveRecord::Base.with_advisory_lock("chromotype-setting") do
       :concurrency,
       :is_northern_hemisphere,
       :exclusion_patterns,
-      :geonames_user,
+      :geonames_username,
       :library_root,
       :magick_engine,
       :minimum_image_pixels,
@@ -54,8 +54,8 @@ ActiveRecord::Base.with_advisory_lock("chromotype-setting") do
       roots.select { |r| File.directory? r }
     end
 
-    def self.geonames_user
-      get_druther(:geonames_user) || ("chromotype_ci" if ENV['CI'])
+    def self.geonames_username
+      get_druther(:geonames_username) || ("chromotype_ci" if ENV['CI'] || Rails.env.test?)
     end
 
     # For thumbnails and screen-sized versions:
