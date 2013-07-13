@@ -9,21 +9,21 @@ class AssetUrl < ActiveRecord::Base
   before_create :normalize_url_and_sha
   after_save :update_asset_basename
 
-  scope :with_url, lambda { |url|
-    where(:url => url.to_uri.to_s)
-  }
+  def self.with_url(url)
+    with_any_url [url]
+  end
 
-  scope :with_any_url, lambda { |urls|
-    where(:url => urls.map { |ea| ea.to_uri.to_s })
-  }
+  def self.with_any_url(urls)
+    where(url: urls.map { |ea| ea.to_uri.to_s })
+  end
 
-  scope :with_filename, lambda { |filename|
-    where(:url => filename.to_pathname.to_uri.to_s)
-  }
+  def self.with_filename(filename)
+    with_any_filename [filename]
+  end
 
-  scope :with_any_filename, lambda { |filenames|
+  def self.with_any_filename(filenames)
     where(:url => filenames.map { |ea| ea.to_pathname.to_uri.to_s })
-  }
+  end
 
   # returns a Pathname instance. Will be nil unless the uri's scheme is "file"
   def pathname
