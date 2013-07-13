@@ -1,4 +1,6 @@
-# Chromotype [![Build Status](https://api.travis-ci.org/mceachen/chromotype.png?branch=master)](http://travis-ci.org/mceachen/chromotype)
+# Chromotype
+[![Build Status](https://travis-ci.org/mceachen/chromotype.png?branch=master)](https://travis-ci.org/mceachen/chromotype)
+[![Code Climate](https://codeclimate.com/github/mceachen/chromotype.png)](https://codeclimate.com/github/mceachen/chromotype)
 
 **Before August 12, 2011:** (noun) A sheet printed in colors by any process.
 
