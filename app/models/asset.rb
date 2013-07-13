@@ -9,44 +9,44 @@ class Asset < ActiveRecord::Base
   has_many :asset_tags
   has_many :tags, through: :asset_tags
 
-  scope :with_tag, lambda { |tag|
-    joins(:asset_tags).merge(AssetTag.find_by_tag_id(tag.id))
-  }
+  def self.with_tag(tag)
+    joins(:asset_tags).merge(AssetTag.where(tag_id: tag.id))
+  end
 
-  scope :with_tag_or_descendants, lambda { |tag|
+  def self.with_tag_or_descendants(tag)
     htn = Tag._ct.quoted_hierarchy_table_name
     joins(:asset_tags).
       joins("INNER JOIN #{htn} ON asset_tags.tag_id = #{htn}.descendant_id").
       where("#{htn}.ancestor_id" => tag.id)
-  }
-
-  scope :with_url, lambda { |url|
-    joins(:asset_urls).merge(AssetUrl.with_url(url))
-  }
-
-  scope :with_any_url, lambda { |urls|
-    joins(:asset_urls).merge(AssetUrl.with_any_url(urls))
-  }
-
-  def self.without(instance)
-    scoped.where(["#{quoted_table_name}.#{self.class.primary_key} != ?", instance.id])
   end
 
-  scope :with_filename, lambda { |filename|
+  def self.with_url(url)
+    joins(:asset_urls).merge(AssetUrl.with_url(url))
+  end
+
+  def self.with_any_url(urls)
+    joins(:asset_urls).merge(AssetUrl.with_any_url(urls))
+  end
+
+  def self.without(instance)
+    where(["#{quoted_table_name}.#{self.class.primary_key} != ?", instance.id])
+  end
+
+  def self.with_filename(filename)
     joins(:asset_urls).merge(AssetUrl.with_filename(filename))
-  }
+  end
 
-  scope :with_any_filename, lambda { |filenames|
+  def self.with_any_filename(filenames)
     joins(:asset_urls).merge(AssetUrl.with_any_filename(filenames))
-  }
+  end
 
-  scope :with_urn, lambda { |urn|
+  def self.with_urn(urn)
     joins(:asset_urls => :asset_urns).merge(AssetUrn.with_urn(urn))
-  }
+  end
 
-  scope :with_any_urn, lambda { |urns|
+  def self.with_any_urn(urns)
     joins(:asset_urls => :asset_urns).merge(AssetUrn.with_any_urn(urns))
-  }
+  end
 
   def self.deleted
     where("#{table_name}.deleted_at IS NOT NULL")
