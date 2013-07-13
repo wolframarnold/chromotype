@@ -50,8 +50,8 @@ class Setting < ActiveRecord::Base
     roots.select { |r| File.directory? r }
   end
 
-  def self.resized_root
-    (library_root + "Resized").ensure_directory
+  def self.previews_root
+    (library_root + "Previews").ensure_directory
   end
 
   def self.masters_root
@@ -68,15 +68,15 @@ class Setting < ActiveRecord::Base
   end
 
   # If set, assets found outside of the library root will be moved into originals or modified
-  def default_move_to_library
+  def self.default_move_to_library
     false
   end
 
-  def default_move_dupes_to_trash
+  def self.default_move_dupes_to_trash
     false
   end
 
-  def default_exclusion_patterns
+  def self.default_exclusion_patterns
     %w(
       caches?
       previews
@@ -90,18 +90,18 @@ class Setting < ActiveRecord::Base
     )
   end
 
-  def exclusion_regexp
+  def self.exclusion_regexp
     @regex ||= begin
       # OR-together all the patterns:
       /\A#{get_druther(:exclusion_patterns).join("|")}\Z/i
     end
   end
 
-  def default_minimum_image_pixels
+  def self.default_minimum_image_pixels
     1024 * 768 # minimum .7mp image
   end
 
-  def default_resizes
+  def self.default_resizes
     %w(
       1920x1080
       1280x720
@@ -116,13 +116,13 @@ class Setting < ActiveRecord::Base
   # Do you want to store "Firstname Lastname",
   # or "Firstname/Lastname" for face tags?
   # (See FaceTag)
-  def default_split_face_names
+  def self.default_split_face_names
     true
   end
 
   # Do you want "lastname/firstname", or "firstname/lastname"?
   # (See FaceTag)
-  def default_reverse_face_paths
+  def self.default_reverse_face_paths
     true
   end
 
@@ -140,7 +140,7 @@ class Setting < ActiveRecord::Base
   # 2560 x 1700 (Google Chromebook Pixel)
   # it takes to process an image.
 
-  def default_square_crop_sizes
+  def self.default_square_crop_sizes
     [320, 64]
   end
 

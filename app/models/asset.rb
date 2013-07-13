@@ -99,40 +99,39 @@ class Asset < ActiveRecord::Base
   end
 
   def add_tag(tag, visitor = nil)
-    asset_tags.where(tag: tag).first_or_create(visitor: visitor.to_s)
+    asset_tags.where(tag: tag).first_or_initialize.update(visitor: visitor.to_s)
   end
 
   def move_to_library
-    return unless Setting[:move_to_library]
+    return unless Setting.move_to_library
 
     # If one already is in the originals directory, it wins.
     with_same_urns.select do |ea|
-      ea.pathname.child_of? Setting[:library_root]
+      ea.pathname.child_of? Setting.library_root
     end.each do |ea|
-      if contents_match?(ea) &&
-        Setting[:move_dupes_to_trash]
+      if contents_match?(ea) && Setting.move_dupes_to_trash
         Rails.logger.warn("Moving dupe file #{pathname} into the trash. It's the same as #{ea.pathname}.")
         pathname.mv_to_trash
         return
       end
     end
 
-    move_to_originals
+    move_to_masters_root
     winner.original_asset = nil
     winner.save!
     others.each do |ea|
-      ea.move_to_derivatives
+      ea.move_to_derivatives_root
       ea.original_asset = winner
       ea.save!
     end
   end
 
-  def move_to_originals
-    mv_to(Setting[:originals_root])
+  def move_to_masters_root
+    mv_to(Setting.masters_root)
   end
 
-  def move_to_derivatives
-    mv_to(Setting[:derivatives_root])
+  def move_to_derivatives_root
+    mv_to(Setting.derivatives_root)
   end
 
   def move_to_trash
