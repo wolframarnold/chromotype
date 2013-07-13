@@ -1,5 +1,5 @@
 #expected comment
-require "minitest_helper"
+require "test_helper"
 
 describe URI::File do
   before :each do

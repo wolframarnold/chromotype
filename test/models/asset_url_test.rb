@@ -1,4 +1,4 @@
-require "minitest_helper"
+require "test_helper"
 
 describe AssetUrl do
   it "should normalize file URIs properly" do

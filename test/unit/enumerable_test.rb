@@ -1,4 +1,4 @@
-require "minitest_helper"
+require "test_helper"
 
 describe Enumerable do
   it "collects for array from hash results" do

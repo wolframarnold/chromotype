@@ -1,10 +1,11 @@
 source 'https://rubygems.org'
 
+ruby '1.9.3' # so ruby-prof works
+
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 4.0.0'
 
-gem 'sqlite3'
-gem 'mysql2'
+gem 'nokogiri'
 gem 'pg'
 
 gem 'randumb' #, :git => 'git://github.com/spilliton/randumb.git'
@@ -62,16 +63,14 @@ gem 'ruby-geonames', :git => 'git://github.com/mceachen/ruby-geonames.git'
 gem 'findler' #, :git => 'git://github.com/mceachen/findler.git'
 gem 'closure_tree' #, :git => 'git://github.com/mceachen/closure_tree.git'
 gem 'exiftoolr' #, :git => 'git://github.com/mceachen/exiftoolr.git'
-gem 'ledermann-rails-settings', :require => 'rails-settings'
 gem 'micro_magick'
 gem 'dimensions'
 gem 'attr_memoizer'
 gem 'memcache-client'
-
+gem 'dalli'
 gem 'sidekiq'
 gem 'foreman'
-
-gem 'nokogiri'
+gem 'druthers'
 
 group :development do
 # TODO: seemed cool:  gem "rails-erd"
@@ -90,4 +89,8 @@ group :test do
   #gem 'mini_backtrace' # Use Rails.backtrace_cleaner with MiniTest.
   #gem 'capybara'
   #gem 'turn'
+end
+
+group :profile do
+  gem 'ruby-prof'
 end

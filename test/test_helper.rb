@@ -1,11 +1,12 @@
 ENV["RAILS_ENV"] ||= "test"
-require File.expand_path('../../config/environment', __FILE__)
+require File.expand_path("../../config/environment", __FILE__)
+require "rails/test_help"
+require "minitest/rails"
 
 require "minitest/great_expectations"
 require "minitest/autorun"
-require "minitest/rails"
 require 'minitest/reporters'
-MiniTest::Reporters.use!
+MiniTest::Reporters.use! unless ENV['CI']
 require 'sidekiq/testing'
 
 # Uncomment if you want Capybara in acceptance/integration tests
@@ -50,7 +51,5 @@ def asset_must_include_all_tags(asset, tags_to_visitor)
     ea.visitor.must_equal(tags_to_visitor[path]) if tags_to_visitor.has_key? path
   end
 end
-
-# MiniTest::Rails.override_testunit! # <- TODO: is this necessary?
 
 require "mocha/setup"

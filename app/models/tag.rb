@@ -1,9 +1,7 @@
 class Tag < ActiveRecord::Base
   acts_as_tree
   has_many :asset_tags
-  has_many :assets, :through => :asset_tags
-
-  attr_accessible :name, :description
+  has_many :assets, through: :asset_tags
 
   def to_s
     self.name

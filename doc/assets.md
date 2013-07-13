@@ -50,7 +50,7 @@ The Chromotype library holds:
 
 ## Assets
 
-When `Settings.move_to_library` is enabled, assets are moved into the following path:
+When `Setting[:move_to_library]` is enabled, assets are moved into the following path:
 
 `#{library_directory}/Assets/YYYY/MM/DD/#{original filename}`
 

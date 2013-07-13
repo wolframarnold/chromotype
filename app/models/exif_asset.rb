@@ -29,7 +29,7 @@ class ExifAsset < Asset
   end
 
   def thumbnail_dir
-    (Settings.thumbnail_root + ymd_dirs).ensure_directory
+    (Setting[:thumbnail_root] + ymd_dirs).ensure_directory
   end
 
   def ymd_dirs

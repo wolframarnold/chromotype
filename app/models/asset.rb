@@ -3,18 +3,18 @@ class Asset < ActiveRecord::Base
   include AttrMemoizer
   attr_memoizer :pathname
 
-  has_many :asset_urls, :order => 'id desc', :dependent => :destroy
-  has_many :asset_urns, :through => :asset_urls
+  has_many :asset_urls, -> { order 'id desc' }, dependent: :destroy
+  has_many :asset_urns, through: :asset_urls
 
   has_many :asset_tags
-  has_many :tags, :through => :asset_tags
+  has_many :tags, through: :asset_tags
 
   scope :with_tag, lambda { |tag|
     joins(:asset_tags).merge(AssetTag.find_by_tag_id(tag.id))
   }
 
   scope :with_tag_or_descendants, lambda { |tag|
-    htn = Tag.quoted_hierarchy_table_name
+    htn = Tag._ct.quoted_hierarchy_table_name
     joins(:asset_tags).
       joins("INNER JOIN #{htn} ON asset_tags.tag_id = #{htn}.descendant_id").
       where("#{htn}.ancestor_id" => tag.id)
@@ -48,8 +48,13 @@ class Asset < ActiveRecord::Base
     joins(:asset_urls => :asset_urns).merge(AssetUrn.with_any_urn(urns))
   }
 
-  scope :deleted, where("#{table_name}.deleted_at IS NOT NULL")
-  scope :not_deleted, where("#{table_name}.deleted_at IS NULL")
+  def self.deleted
+    where("#{table_name}.deleted_at IS NOT NULL")
+  end
+
+  def self.not_deleted
+    where(deleted_at: nil)
+  end
 
   def pathname
     au = asset_urls.detect { |ea| ea.exist? } || asset_urls.detect { |ea| ea.pathname }
@@ -61,11 +66,11 @@ class Asset < ActiveRecord::Base
   end
 
   def add_pathname(pathname)
-    asset_urls.find_or_create_by_url(pathname.to_pathname.to_uri.to_s)
+    asset_urls.with_url(pathname.to_pathname.to_uri).first_or_create
   end
 
   def add_url(url)
-    asset_urls.find_or_create_by_url(url.to_uri.to_s)
+    asset_urls.with_url(url).first_or_create
   end
 
   def delete!
@@ -94,20 +99,18 @@ class Asset < ActiveRecord::Base
   end
 
   def add_tag(tag, visitor = nil)
-    asset_tags.find_or_create_by_tag_id(tag.id) do |ea|
-      ea.visitor = visitor.to_s
-    end
+    asset_tags.where(tag: tag).first_or_create(visitor: visitor.to_s)
   end
 
   def move_to_library
-    return unless Settings.move_to_library
+    return unless Setting[:move_to_library]
 
     # If one already is in the originals directory, it wins.
     with_same_urns.select do |ea|
-      ea.pathname.child_of? Settings.library_root
+      ea.pathname.child_of? Setting[:library_root]
     end.each do |ea|
       if contents_match?(ea) &&
-        Settings.move_dupes_to_trash
+        Setting[:move_dupes_to_trash]
         Rails.logger.warn("Moving dupe file #{pathname} into the trash. It's the same as #{ea.pathname}.")
         pathname.mv_to_trash
         return
@@ -125,11 +128,11 @@ class Asset < ActiveRecord::Base
   end
 
   def move_to_originals
-    mv_to(Settings.originals_root)
+    mv_to(Setting[:originals_root])
   end
 
   def move_to_derivatives
-    mv_to(Settings.derivatives_root)
+    mv_to(Setting[:derivatives_root])
   end
 
   def move_to_trash

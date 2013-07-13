@@ -1,8 +1,6 @@
 class Findler::Filters
   def self.skip_exclusion_patterns(children)
-    children.select do |ea|
-      !Settings.exclusion_patterns.include?(ea.basename.to_s.downcase)
-    end
+    children.select { |ea| ea !~ Setting.exclusion_regexp }
   end
 
   def self.with_minimum_resolution(children)
@@ -10,7 +8,7 @@ class Findler::Filters
     child_files = children.select { |ea| ea.file? }
     big_enough = child_files.select do |ea|
       d = Dimensions.dimensions(ea.to_s)
-      d && (d.first * d.last) >= Settings[:minimum_image_pixels]
+      d && (d.first * d.last) >= Setting.minimum_image_pixels
     end
     big_enough + child_dirs
   end

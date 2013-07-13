@@ -1,4 +1,4 @@
-require "minitest_helper"
+require "test_helper"
 
 describe NextFileProcessor do
   it "should filter files properly" do

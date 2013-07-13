@@ -1,4 +1,4 @@
-require "minitest_helper"
+require "test_helper"
 
 describe String do
   it "sha1s properly" do

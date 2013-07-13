@@ -1,4 +1,4 @@
-require "minitest_helper"
+require "test_helper"
 
 describe URI do
   it "should make absolute paths from non-relative paths for files" do

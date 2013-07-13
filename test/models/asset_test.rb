@@ -1,4 +1,4 @@
-require "minitest_helper"
+require "test_helper"
 
 describe Asset do
   before :each do

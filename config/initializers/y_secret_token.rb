@@ -7,5 +7,5 @@
 
 # This relies on an automatically generated Setting that's persisted in your RDBMS:
 ActiveSupport.migration_safe_on_load do
-  Chromotype::Application.config.secret_token = Settings.secret_token
+  Chromotype::Application.config.secret_token = Setting.secret_token
 end

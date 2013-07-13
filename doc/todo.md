@@ -46,7 +46,7 @@ User stories:
 * decompose page ajax requests
 * http://boedesign.com/demos/gritter/ for growl notification of async stuff
 * add https://github.com/rails/jquery-ujs ?
-* UI to edit the settings table
+* UI to edit the Setting[:table]
 
 ## Installation
 * http://pow.cx/

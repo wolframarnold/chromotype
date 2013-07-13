@@ -48,8 +48,8 @@ CREATE TABLE asset_urls (
     asset_id integer,
     url character varying(2000),
     url_sha character varying(40),
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
 );
 
 
@@ -117,8 +117,8 @@ CREATE TABLE assets (
     taken_at timestamp without time zone,
     lost_at timestamp without time zone,
     visited_by_version integer,
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
 );
 
 
@@ -156,12 +156,10 @@ CREATE TABLE schema_migrations (
 
 CREATE TABLE settings (
     id integer NOT NULL,
-    var character varying(255),
+    key character varying(255),
     value text,
-    target_id integer,
-    target_type character varying(30),
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
 );
 
 
@@ -205,8 +203,8 @@ CREATE TABLE tags (
     parent_id integer,
     name character varying(255),
     description character varying(255),
-    created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
 );
 
 
@@ -333,10 +331,10 @@ CREATE INDEX index_asset_tags_on_tag_id_and_asset_id ON asset_tags USING btree (
 
 
 --
--- Name: index_settings_on_target_type_and_target_id_and_var; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_settings_on_key; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
-CREATE UNIQUE INDEX index_settings_on_target_type_and_target_id_and_var ON settings USING btree (target_type, target_id, var);
+CREATE UNIQUE INDEX index_settings_on_key ON settings USING btree (key);
 
 
 --
@@ -377,6 +375,8 @@ CREATE UNIQUE INDEX unique_schema_migrations ON schema_migrations USING btree (v
 --
 -- PostgreSQL database dump complete
 --
+
+SET search_path TO "$user",public;
 
 INSERT INTO schema_migrations (version) VALUES ('20110518055213');
 

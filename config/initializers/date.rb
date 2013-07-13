@@ -10,7 +10,7 @@ class Date
   # Returns :winter, :spring, :summer, or :autumn, using UK-based month-bound seasons.
   # See http://en.wikipedia.org/wiki/Winter
   def season
-    (Settings[:is_northern_hemisphere] ? N_HEMISPHERE : S_HEMISPHERE)[self.month]
+    (Setting.is_northern_hemisphere ? N_HEMISPHERE : S_HEMISPHERE)[self.month]
   end
 
   def month_name
