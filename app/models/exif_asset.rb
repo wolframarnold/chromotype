@@ -28,8 +28,8 @@ class ExifAsset < Asset
     "#{timestamp}-#{short_sha1}"
   end
 
-  def thumbnail_dir
-    (Setting[:thumbnail_root] + ymd_dirs).ensure_directory
+  def previews_path_for_captured_at
+    (Setting.previews_root + ymd_dirs).ensure_directory
   end
 
   def ymd_dirs
@@ -37,6 +37,6 @@ class ExifAsset < Asset
   end
 
   def cache_path_for_size(width, height, suffix = 'jpg')
-    thumbnail_dir + "#{canonical_name}_#{width}x#{height}.#{suffix}"
+    previews_path_for_captured_at + "#{canonical_name}_#{width}x#{height}.#{suffix}"
   end
 end
