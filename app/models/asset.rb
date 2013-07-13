@@ -102,13 +102,17 @@ class Asset < ActiveRecord::Base
     asset_tags.where(tag: tag).first_or_initialize.update(visitor: visitor.to_s)
   end
 
+  def urn_siblings_in_library
+    with_same_urns.select do |ea|
+      ea.pathname.child_of? Setting.library_root
+    end
+  end
+
   def move_to_library
     return unless Setting.move_to_library
 
     # If one already is in the originals directory, it wins.
-    with_same_urns.select do |ea|
-      ea.pathname.child_of? Setting.library_root
-    end.each do |ea|
+    urn_siblings_in_library.each do |ea|
       if contents_match?(ea) && Setting.move_dupes_to_trash
         Rails.logger.warn("Moving dupe file #{pathname} into the trash. It's the same as #{ea.pathname}.")
         pathname.mv_to_trash
