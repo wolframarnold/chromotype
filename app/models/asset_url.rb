@@ -10,7 +10,7 @@ class AssetUrl < ActiveRecord::Base
   after_save :update_asset_basename
 
   def self.with_url(url)
-    with_any_url [url]
+    where(url: url.to_uri.to_s)
   end
 
   def self.with_any_url(urls)
@@ -18,11 +18,11 @@ class AssetUrl < ActiveRecord::Base
   end
 
   def self.with_filename(filename)
-    with_any_filename [filename]
+    where(url: filename.to_pathname.to_uri.to_s)
   end
 
   def self.with_any_filename(filenames)
-    where(:url => filenames.map { |ea| ea.to_pathname.to_uri.to_s })
+    where(url: filenames.map { |ea| ea.to_pathname.to_uri.to_s })
   end
 
   # returns a Pathname instance. Will be nil unless the uri's scheme is "file"
