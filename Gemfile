@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-ruby '1.9.3' # so ruby-prof works
+ruby '1.9.3' # so ruby-prof works (it doesn't yet with 2.0.0)
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 4.0.0'
@@ -58,7 +58,8 @@ gem 'rb-fchange', :require => false
 
 #gem 'haml-rails'
 gem 'parallel' # just for Parallel.processor_count
-gem 'ruby-geonames', :git => 'git://github.com/mceachen/ruby-geonames.git'
+#gem 'ruby-geonames', :git => 'git://github.com/mceachen/ruby-geonames.git'
+gem 'geonames'
 #gem 'geonames_api', :git => 'git@github.com:mceachen/geonames_api.git'
 gem 'findler' #, :git => 'git://github.com/mceachen/findler.git'
 gem 'closure_tree' #, :git => 'git://github.com/mceachen/closure_tree.git'

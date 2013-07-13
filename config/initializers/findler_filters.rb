@@ -1,6 +1,6 @@
 class Findler::Filters
   def self.skip_exclusion_patterns(children)
-    children.select { |ea| ea !~ Setting.exclusion_regexp }
+    children.select { |ea| ea.to_s !~ Setting.exclusion_regexp }
   end
 
   def self.with_minimum_resolution(children)

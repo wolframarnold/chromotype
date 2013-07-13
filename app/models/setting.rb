@@ -3,7 +3,7 @@ require 'securerandom'
 class Setting < ActiveRecord::Base
   def_druthers :roots,
     :concurrency,
-    :default_hemisphere,
+    :is_northern_hemisphere,
     :exclusion_patterns,
     :library_root,
     :magick_engine,
@@ -15,6 +15,8 @@ class Setting < ActiveRecord::Base
     :secret_token,
     :split_face_names,
     :square_crop_sizes
+
+  serialize :value
 
   def self.windows?
     RbConfig::CONFIG['host_os'] =~ /mswin|mingw/
@@ -145,7 +147,7 @@ class Setting < ActiveRecord::Base
   end
 
   def self.resizes
-    sort_dimensions(self[:resizes])
+    sort_dimensions(self.get_druther(:resizes))
   end
 
   def self.square_crop_sizes
@@ -160,8 +162,8 @@ class Setting < ActiveRecord::Base
 
   # Used for seasons tagging. This is expensive, so we only do it once
   # and save it, rather than just setting a default.
-  if get_druther(:default_hemisphere).nil?
-    set_druther(:default_hemisphere, IpLocation.northern_hemisphere? || true)
+  if get_druther(:is_northern_hemisphere).nil?
+    set_druther(:is_northern_hemisphere, IpLocation.northern_hemisphere? || true)
   end
 
   # How much parallelism do we allow for sidekiq? Should not exceed number of CPUs.

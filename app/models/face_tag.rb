@@ -12,8 +12,8 @@ class FaceTag < Tag
     faces = names.zip(types).collect{|name, type| name if type.to_s.downcase == "face" }.compact
 
     faces.each do |face|
-      face_path = Setting[:split_face_names] ? face.split : [face]
-      face_path.reverse! if Setting[:reverse_face_paths]
+      face_path = Setting.split_face_names ? face.split : [face]
+      face_path.reverse! if Setting.reverse_face_paths
       exif_asset.add_tag(named_root.find_or_create_by_path(face_path), self)
     end
   end

@@ -95,7 +95,7 @@ class ProtoAsset
     asset_url.asset_urns.delete_all # Prior URNs lose.
     @urners.each do |urner|
       urn = urner.urn_for_pathname(pathname)
-      asset_url.asset_urns.find_or_create_by_urn(urn)
+      asset_url.asset_urns.where(urn: urn).first_or_create
     end
     asset
   end
