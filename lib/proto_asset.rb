@@ -53,7 +53,7 @@ class ProtoAsset
   def urns
     return nil if paths.nil?
     @urners.collect_hash(ActiveSupport::OrderedHash.new) do |klass|
-      t = klass.urn(pathname, exif_result)
+      t = klass.urn_for_pathname(pathname)
       {klass => t} if t
     end
   end
